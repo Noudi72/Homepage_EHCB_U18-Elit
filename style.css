@@ -1,84 +1,80 @@
+/* Grundlayout */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Roboto, sans-serif;
   margin: 0;
-  background: #f0f0f0;
-  color: #333;
+  background: #f5f7fa;
+  color: #222;
 }
 
+/* Header mit Logo-Anordnung */
 header {
-  background-color: #d1001c;
+  background-color: #002b5c;
   color: white;
-  padding: 1rem;
   text-align: center;
+  padding: 1rem 0 2rem;
 }
 
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  height: 100px;
+  max-width: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Navigation als Buttons */
 nav ul {
   list-style: none;
   padding: 0;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
-nav a {
-  color: white;
+nav li a {
   text-decoration: none;
-  font-weight: bold;
-}
-
-main {
-  padding: 2rem;
-  background: white;
-}
-
-footer {
-  background-color: #222;
+  padding: 0.6rem 1.2rem;
+  background-color: #d1001c;
   color: white;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
 
+nav li a:hover {
+  background-color: #a00016;
+}
+
+/* Hero-Bereich */
 .hero img {
   width: 100%;
   max-height: 400px;
   object-fit: cover;
 }
 
-.players {
-  display: flex;
-  gap: 2rem;
-}
-
-.players article {
-  background: #eee;
-  padding: 1rem;
-  border-radius: 10px;
-  width: 200px;
+.hero {
   text-align: center;
+  padding: 2rem 1rem;
 }
 
-form input, form select, form textarea {
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-}
-
-button {
-  background: #d1001c;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  cursor: pointer;
-}
-.logos {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+.hero h2 {
+  font-size: 2rem;
   margin-top: 1rem;
 }
 
-.logo {
-  height: 80px;
+/* Footer */
+footer {
+  text-align: center;
+  background: #002b5c;
+  color: white;
+  padding: 1rem;
+  margin-top: 2rem;
 }
