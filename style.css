@@ -3,7 +3,6 @@
    Mobile-Optimiert, Clean, Responsive
 ====================== */
 
-/* Base Reset */
 * {
   margin: 0;
   padding: 0;
@@ -19,11 +18,8 @@ body {
   background-color: #f5f5f5;
   color: #1a1a1a;
   line-height: 1.6;
-  padding: 0;
-  margin: 0;
 }
 
-/* Header */
 header {
   background-color: #002b5c;
   color: #fff;
@@ -41,9 +37,9 @@ header {
 }
 
 .logo {
-  max-height: 80px;
+  max-height: 60px;
   width: auto;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 header h1 {
@@ -51,7 +47,7 @@ header h1 {
   margin-top: 1rem;
 }
 
-/* Navigation */
+/* Navigation als Buttons */
 nav ul {
   display: flex;
   flex-wrap: wrap;
@@ -60,6 +56,7 @@ nav ul {
   list-style: none;
   padding: 0;
   margin-top: 1.5rem;
+  flex-direction: row;
 }
 
 nav li a {
@@ -71,6 +68,8 @@ nav li a {
   font-weight: 600;
   transition: all 0.3s ease;
   font-size: 1rem;
+  display: inline-block;
+  text-align: center;
 }
 
 nav li a:hover {
@@ -78,7 +77,7 @@ nav li a:hover {
   transform: scale(1.05);
 }
 
-/* Hero Section */
+/* Hero-Bereich */
 .hero {
   text-align: center;
   padding: 2rem 1rem;
@@ -114,7 +113,7 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Responsive */
+/* Responsive Optimierung */
 @media (max-width: 768px) {
   .logos {
     flex-direction: column;
