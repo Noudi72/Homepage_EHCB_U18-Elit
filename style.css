@@ -1,6 +1,5 @@
 /* =====================
-   EHC Biel-Bienne U18-Elit – Style
-   Responsive, sauber, Vereinsfarben
+   EHC Biel-Bienne U18-Elit – Finales CSS
 ====================== */
 
 * {
@@ -77,19 +76,18 @@ nav li a:hover {
   transform: scale(1.05);
 }
 
-/* Gelber Slogan-Bereich */
+/* Gelber Slogan */
+.yellow-slogan {
+  background-color: #ffd700;
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
 .yellow-slogan p {
   font-size: 1.8rem;
   font-weight: 900;
   color: #002b5c;
-  text-align: center;
   margin: 0;
-}
-
-.yellow-slogan p {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #002b5c;
 }
 
 /* Footer */
@@ -102,9 +100,28 @@ footer {
   font-size: 0.9rem;
 }
 
+/* Sichtbarkeit für Logos */
+.desktop-logo {
+  display: inline-block;
+}
+
+.mobile-logo {
+  display: none;
+}
+
 /* Mobile Optimierung */
 @media (max-width: 768px) {
-  .logo {
+  .header-flex {
+    flex-direction: column;
+  }
+
+  .desktop-logo {
+    display: none;
+  }
+
+  .mobile-logo {
+    display: block;
+    margin-top: 1rem;
     max-height: 120px;
   }
 
