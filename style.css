@@ -71,3 +71,14 @@ button {
   border: none;
   cursor: pointer;
 }
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.logo {
+  height: 80px;
+}
