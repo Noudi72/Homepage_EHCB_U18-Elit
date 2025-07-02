@@ -77,13 +77,26 @@ nav li a:hover {
   transform: scale(1.05);
 }
 
+/* Gelber Slogan-Bereich */
+.yellow-slogan {
+  background-color: #ffd700;
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.yellow-slogan p {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #002b5c;
+}
+
 /* Footer */
 footer {
   background-color: #002b5c;
   color: white;
   text-align: center;
   padding: 1.5rem 1rem;
-  margin-top: 3rem;
+  margin-top: 0;
   font-size: 0.9rem;
 }
 
