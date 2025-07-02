@@ -1,6 +1,6 @@
 /* =====================
-   EHC Biel-Bienne U18-Elit – Modern CSS
-   Mobile-Optimiert, Responsive, Vereinsfarben
+   EHC Biel-Bienne U18-Elit – Style
+   Responsive, sauber, Vereinsfarben
 ====================== */
 
 * {
@@ -87,7 +87,7 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Responsive Optimierung */
+/* Mobile Optimierung */
 @media (max-width: 768px) {
   .logo {
     max-height: 120px;
