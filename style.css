@@ -1,6 +1,6 @@
 /* =====================
    EHC Biel-Bienne U18 – Modern CSS
-   Mobile-Optimiert, Clean, Responsive
+   Mobile-Optimiert, Responsive, Vereinsfarben
 ====================== */
 
 * {
@@ -15,11 +15,12 @@ html {
 
 body {
   font-family: 'Segoe UI', Roboto, sans-serif;
-  background-color: #f5f5f5;
+  background-image: linear-gradient(to bottom, #f5f5f5 0%, #ffd700 100%);
   color: #1a1a1a;
   line-height: 1.6;
 }
 
+/* Header */
 header {
   background-color: #002b5c;
   color: #fff;
@@ -27,36 +28,35 @@ header {
   text-align: center;
 }
 
-.logos {
+.header-flex {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 2rem;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.header-flex h1 {
+  font-size: 2rem;
+  color: white;
 }
 
 .logo {
-  max-height: 60px;
+  max-height: 90px;
   width: auto;
   border-radius: 4px;
 }
 
-header h1 {
-  font-size: 1.8rem;
-  margin-top: 1rem;
-}
-
-/* Navigation als Buttons */
+/* Navigation */
 nav ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 1rem;
   list-style: none;
   padding: 0;
   margin-top: 1.5rem;
-  flex-direction: row;
 }
 
 nav li a {
@@ -77,32 +77,6 @@ nav li a:hover {
   transform: scale(1.05);
 }
 
-/* Hero-Bereich */
-.hero {
-  text-align: center;
-  padding: 2rem 1rem;
-  background-color: #ffffff;
-}
-
-.hero img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.hero h2 {
-  font-size: 1.6rem;
-  margin-top: 1rem;
-  color: #002b5c;
-}
-
-.hero p {
-  font-size: 1rem;
-  margin-top: 0.5rem;
-  color: #444;
-}
-
 /* Footer */
 footer {
   background-color: #002b5c;
@@ -115,8 +89,8 @@ footer {
 
 /* Responsive Optimierung */
 @media (max-width: 768px) {
-  .logos {
-    flex-direction: column;
+  .logo {
+    max-height: 120px;
   }
 
   nav li a {
@@ -124,44 +98,18 @@ footer {
     padding: 0.6rem 1.2rem;
   }
 
-  .hero h2 {
-    font-size: 1.4rem;
-  }
-
-  .hero p {
-    font-size: 0.95rem;
+  .header-flex h1 {
+    font-size: 1.6rem;
   }
 }
 
 @media (max-width: 480px) {
-  header h1 {
-    font-size: 1.5rem;
-  }
-
   nav li a {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
 
-  .hero h2 {
-    font-size: 1.2rem;
+  .header-flex h1 {
+    font-size: 1.4rem;
   }
-}
-.header-flex {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  padding: 1rem;
-}
-
-.header-flex h1 {
-  font-size: 2rem;
-  color: white;
-}
-
-.logo {
-  max-height: 60px;
-  width: auto;
 }
