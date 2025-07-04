@@ -6,235 +6,236 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
+  <style>
+    .lang-switch { position:absolute; right:32px; top:25px; }
+    .lang-switch button {
+      background:#eee; color:#002b5c; border:none; font-weight:600; border-radius:4px;
+      margin-left:5px; cursor:pointer; padding:3px 10px 2px 10px;
+    }
+    .lang-switch .active { background:#002b5c; color:#fff; }
+    @media (max-width: 700px) {
+      .lang-switch { top:8px; right:8px; }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="header-flex" style="justify-content: space-between; align-items: center;">
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+    <div class="header-flex" style="position:relative;">
+      <img src="wikinger.png" alt="Viking Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
-        <select id="languageSwitcher" aria-label="Sprache wählen" style="padding: 4px 8px; font-size: 1rem;">
-          <option value="de" selected>DE</option>
-          <option value="en">EN</option>
-          <option value="fr">FR</option>
-        </select>
+      <img src="wikinger.png" alt="Viking Logo" class="logo mobile-logo" />
+      <div class="lang-switch" id="lang-switch">
+        <button onclick="changeLanguage('de')" id="btn-de">DE</button>
+        <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
+        <button onclick="changeLanguage('en')" id="btn-en">EN</button>
       </div>
     </div>
   </header>
   <nav>
     <div class="nav-cards">
-      <a href="index.html" class="nav-card">Startseite</a>
-      <a href="kalender.html" class="nav-card">MIH Kalender U18</a>
-      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank">Cardio-Programme</a>
-      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank">Sponser Sport Food</a>
-      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank">Spirit Homepage</a>
-      <a href="feedback.html" class="nav-card">Player Feedback</a>
-      <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
+      <a href="index.html" class="nav-card" id="nav-home">Startseite</a>
+      <a href="kalender.html" class="nav-card" id="nav-cal">MIH Kalender U18</a>
+      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank" id="nav-cardio">Cardio-Programme</a>
+      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank" id="nav-sponser">Sponser Sport Food</a>
+      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank" id="nav-spirit">Spirit Homepage</a>
+      <a href="feedback.html" class="nav-card" id="nav-feedback">Player Feedback</a>
+      <a href="dashboard.html" class="nav-card" id="nav-dashboard">Coach Dashboard</a>
     </div>
   </nav>
   <main>
-    <form id="feedbackForm" class="card" aria-label="Player Feedback Form">
+    <form id="feedbackForm" class="card">
       <h2 id="formTitle">💬 Player Feedback</h2>
-      
-      <label for="nameInput" id="labelName">Name *</label>
-      <input type="text" id="nameInput" name="name" required />
+      <label for="name" id="labelName">Name *</label>
+      <input type="text" id="name" name="name" required />
 
-      <label for="feelingSelect" id="labelFeeling">Wie hast du dich gefühlt?</label>
-      <select id="feelingSelect" name="feeling" required></select>
+      <label for="feeling" id="labelFeeling">Wie hast du dich gefühlt?</label>
+      <select id="feeling" name="feeling" required></select>
 
-      <label for="intensitySelect" id="labelIntensity">🏋️ Trainingsintensität <small id="labelIntensitySmall">(1 = locker – 6 = sehr hart)</small></label>
-      <select id="intensitySelect" name="intensity" required></select>
+      <label for="intensity" id="labelIntensity">🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small></label>
+      <select id="intensity" name="intensity" required></select>
 
-      <label for="performanceSelect" id="labelPerformance">🎯 Eigene Leistung <small id="labelPerformanceSmall">(1 = sehr schlecht – 6 = top)</small></label>
-      <select id="performanceSelect" name="performance" required></select>
+      <label for="performance" id="labelPerformance">🎯 Eigene Leistung <small>(1 = sehr schlecht – 6 = top)</small></label>
+      <select id="performance" name="performance" required></select>
 
-      <label for="commentTextarea" id="labelComment">📝 Kommentar <small>(optional)</small></label>
-      <textarea id="commentTextarea" name="comment" rows="2"></textarea>
+      <label for="comment" id="labelComment">📝 Kommentar <small>(optional)</small></label>
+      <textarea id="comment" name="comment" rows="2"></textarea>
 
-      <button type="submit" id="submitButton">Abschicken</button>
-      <div id="message" role="alert" aria-live="polite"></div>
+      <button type="submit" id="submitBtn">Abschicken</button>
+      <div id="message"></div>
     </form>
   </main>
-  <section class="yellow-slogan">
+  <section class="yellow-slogan" id="slogan">
     "OUR STRENGTH IS OUR UNITY!"
   </section>
   <footer>
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
-    const languageSwitcher = document.getElementById('languageSwitcher');
-    const formTitle = document.getElementById('formTitle');
-    const labelName = document.getElementById('labelName');
-    const labelFeeling = document.getElementById('labelFeeling');
-    const feelingSelect = document.getElementById('feelingSelect');
-    const labelIntensity = document.getElementById('labelIntensity');
-    const labelIntensitySmall = document.getElementById('labelIntensitySmall');
-    const intensitySelect = document.getElementById('intensitySelect');
-    const labelPerformance = document.getElementById('labelPerformance');
-    const labelPerformanceSmall = document.getElementById('labelPerformanceSmall');
-    const performanceSelect = document.getElementById('performanceSelect');
-    const labelComment = document.getElementById('labelComment');
-    const submitButton = document.getElementById('submitButton');
-    const message = document.getElementById('message');
-    const form = document.getElementById('feedbackForm');
-
-    // Text data for DE, EN, FR
-    const texts = {
+    // Sprachdaten:
+    const translations = {
       de: {
-        formTitle: "💬 Player Feedback",
-        labelName: "Name *",
-        labelFeeling: "Wie hast du dich gefühlt?",
+        nav:      ["Startseite","MIH Kalender U18","Cardio-Programme","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
+        formTitle:"💬 Player Feedback",
+        name:"Name *",
+        feeling:"Wie hast du dich gefühlt?",
         feelingOptions: [
-          {value: "🟢 Top", text: "🟢 Top"},
-          {value: "🟡 Okay", text: "🟡 Okay"},
-          {value: "🔴 Müde", text: "🔴 Müde"}
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Okay"},
+          {value:"🔴 Tired", text:"🔴 Müde"}
         ],
-        labelIntensity: "🏋️ Trainingsintensität",
-        labelIntensitySmall: "(1 = locker – 6 = sehr hart)",
+        intensity:"🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small>",
         intensityOptions: [
-          {value: "1", text: "1"},
-          {value: "2", text: "2"},
-          {value: "3", text: "3"},
-          {value: "4", text: "4"},
-          {value: "5", text: "5"},
-          {value: "6", text: "6"}
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
         ],
-        labelPerformance: "🎯 Eigene Leistung",
-        labelPerformanceSmall: "(1 = sehr schlecht – 6 = top)",
+        performance:"🎯 Eigene Leistung <small>(1 = sehr schlecht – 6 = top)</small>",
         performanceOptions: [
-          {value: "1", text: "1 – 🔴 sehr schlecht 😩"},
-          {value: "2", text: "2 – 🟠 schlecht 😕"},
-          {value: "3", text: "3 – 🟡 ok 🙂"},
-          {value: "4", text: "4 – 🟢 gut 😁"},
-          {value: "5", text: "5 – 🟢🟢 sehr gut 😃"},
-          {value: "6", text: "6 – 🟢🟢🟢 ausgezeichnet 💪🔥"}
+          { value: "1", text: "1 – 🔴 sehr schlecht 😩" },
+          { value: "2", text: "2 – 🟠 schlecht 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 gut 😁" },
+          { value: "5", text: "5 – 🟢🟢 sehr gut 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 ausgezeichnet 💪🔥" }
         ],
-        labelComment: "📝 Kommentar <small>(optional)</small>",
-        submitButton: "Abschicken",
-        successMessage: "✅ Feedback übermittelt!",
-        errorMessage: "❌ Verbindung fehlgeschlagen."
+        comment:"📝 Kommentar <small>(optional)</small>",
+        submit:"Abschicken",
+        msg_success:'✅ Feedback übermittelt!',
+        msg_error:'❌ Verbindung fehlgeschlagen.',
+        slogan:'"OUR STRENGTH IS OUR UNITY!"'
       },
       en: {
-        formTitle: "💬 Player Feedback",
-        labelName: "Name *",
-        labelFeeling: "How did you feel today?",
+        nav:      ["Home","Team Calendar","Cardio Program","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
+        formTitle:"💬 Player Feedback",
+        name:"Name *",
+        feeling:"How did you feel today?",
         feelingOptions: [
-          {value: "🟢 Top", text: "🟢 Top"},
-          {value: "🟡 Okay", text: "🟡 Okay"},
-          {value: "🔴 Müde", text: "🔴 Tired"}
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Okay"},
+          {value:"🔴 Tired", text:"🔴 Tired"}
         ],
-        labelIntensity: "🏋️ Training Intensity",
-        labelIntensitySmall: "(1 = light – 6 = very hard)",
+        intensity:"🏋️ Training/Game Intensity <small>(1 = easy – 6 = very hard)</small>",
         intensityOptions: [
-          {value: "1", text: "1"},
-          {value: "2", text: "2"},
-          {value: "3", text: "3"},
-          {value: "4", text: "4"},
-          {value: "5", text: "5"},
-          {value: "6", text: "6"}
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
         ],
-        labelPerformance: "🎯 Own Performance",
-        labelPerformanceSmall: "(1 = very bad – 6 = top)",
+        performance:"🎯 How was your performance today? <small>(1 = really bad – 6 = excellent)</small>",
         performanceOptions: [
-          {value: "1", text: "1 – 🔴 very bad 😩"},
-          {value: "2", text: "2 – 🟠 bad 😕"},
-          {value: "3", text: "3 – 🟡 ok 🙂"},
-          {value: "4", text: "4 – 🟢 good 😁"},
-          {value: "5", text: "5 – 🟢🟢 very good 😃"},
-          {value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥"}
+          { value: "1", text: "1 – 🔴 really bad 😩" },
+          { value: "2", text: "2 – 🟠 bad 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 good 😁" },
+          { value: "5", text: "5 – 🟢🟢 very good 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥" }
         ],
-        labelComment: "📝 Comment <small>(optional)</small>",
-        submitButton: "Submit",
-        successMessage: "✅ Feedback sent!",
-        errorMessage: "❌ Connection failed."
+        comment:"📝 Comment <small>(optional)</small>",
+        submit:"Submit",
+        msg_success:'✅ Feedback submitted!',
+        msg_error:'❌ Connection failed. Please try again.',
+        slogan:'"OUR STRENGTH IS OUR UNITY!"'
       },
       fr: {
-        formTitle: "💬 Retour des joueurs",
-        labelName: "Nom *",
-        labelFeeling: "Comment t'es-tu senti aujourd'hui ?",
+        nav:      ["Accueil","Calendrier équipe","Programme Cardio","Sponser Sport Food","Spirit Homepage","Feedback Joueur","Coach Dashboard"],
+        formTitle:"💬 Feedback Joueur",
+        name:"Nom *",
+        feeling:"Comment t'es-tu senti aujourd'hui ?",
         feelingOptions: [
-          {value: "🟢 Top", text: "🟢 Top"},
-          {value: "🟡 Okay", text: "🟡 Moyen"},
-          {value: "🔴 Müde", text: "🔴 Fatigué"}
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Bien"},
+          {value:"🔴 Tired", text:"🔴 Fatigué"}
         ],
-        labelIntensity: "🏋️ Intensité de l'entraînement",
-        labelIntensitySmall: "(1 = léger – 6 = très dur)",
+        intensity:"🏋️ Intensité <small>(1 = facile – 6 = très dur)</small>",
         intensityOptions: [
-          {value: "1", text: "1"},
-          {value: "2", text: "2"},
-          {value: "3", text: "3"},
-          {value: "4", text: "4"},
-          {value: "5", text: "5"},
-          {value: "6", text: "6"}
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
         ],
-        labelPerformance: "🎯 Performance personnelle",
-        labelPerformanceSmall: "(1 = très mauvais – 6 = top)",
+        performance:"🎯 Ta performance aujourd'hui <small>(1 = très mauvais – 6 = excellent)</small>",
         performanceOptions: [
-          {value: "1", text: "1 – 🔴 très mauvais 😩"},
-          {value: "2", text: "2 – 🟠 mauvais 😕"},
-          {value: "3", text: "3 – 🟡 ok 🙂"},
-          {value: "4", text: "4 – 🟢 bon 😁"},
-          {value: "5", text: "5 – 🟢🟢 très bon 😃"},
-          {value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥"}
+          { value: "1", text: "1 – 🔴 très mauvais 😩" },
+          { value: "2", text: "2 – 🟠 mauvais 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 bien 😁" },
+          { value: "5", text: "5 – 🟢🟢 très bien 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥" }
         ],
-        labelComment: "📝 Commentaire <small>(optionnel)</small>",
-        submitButton: "Envoyer",
-        successMessage: "✅ Retour envoyé !",
-        errorMessage: "❌ Connexion échouée."
+        comment:"📝 Commentaire <small>(optionnel)</small>",
+        submit:"Envoyer",
+        msg_success:'✅ Feedback envoyé!',
+        msg_error:'❌ Connexion échouée.',
+        slogan:'"NOTRE FORCE EST NOTRE UNITÉ !"'
       }
     };
 
-    function populateSelect(selectElement, options) {
-      selectElement.innerHTML = '';
-      options.forEach(opt => {
-        const option = document.createElement('option');
-        option.value = opt.value;
-        option.textContent = opt.text;
-        selectElement.appendChild(option);
+    let currentLang = localStorage.getItem('feedback_lang') || 'de';
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('feedback_lang', lang);
+
+      // Buttons im Umschalter visuell aktivieren
+      document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btn-' + lang).classList.add('active');
+
+      const t = translations[lang];
+
+      // Navigation
+      ["nav-home","nav-cal","nav-cardio","nav-sponser","nav-spirit","nav-feedback","nav-dashboard"].forEach((id,i) => {
+        const el = document.getElementById(id);
+        if (el && t.nav[i]) el.textContent = t.nav[i];
       });
+
+      document.getElementById('formTitle').textContent = t.formTitle;
+      document.getElementById('labelName').textContent = t.name;
+      document.getElementById('labelFeeling').textContent = t.feeling;
+
+      // Feeling Options
+      const selFeeling = document.getElementById('feeling');
+      selFeeling.innerHTML = "";
+      t.feelingOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selFeeling.appendChild(o);
+      });
+
+      document.getElementById('labelIntensity').innerHTML = t.intensity;
+      // Intensity Options
+      const selIntensity = document.getElementById('intensity');
+      selIntensity.innerHTML = "";
+      t.intensityOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selIntensity.appendChild(o);
+      });
+
+      document.getElementById('labelPerformance').innerHTML = t.performance;
+      // Performance Options
+      const selPerformance = document.getElementById('performance');
+      selPerformance.innerHTML = "";
+      t.performanceOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selPerformance.appendChild(o);
+      });
+
+      document.getElementById('labelComment').innerHTML = t.comment;
+      document.getElementById('submitBtn').textContent = t.submit;
+      document.getElementById('slogan').textContent = t.slogan;
     }
 
-    function updateLanguage(lang) {
-      const t = texts[lang];
-      formTitle.textContent = t.formTitle;
-      labelName.textContent = t.labelName;
-      labelFeeling.textContent = t.labelFeeling;
-      populateSelect(feelingSelect, t.feelingOptions);
-      labelIntensity.firstChild.textContent = t.labelIntensity + " ";
-      labelIntensitySmall.textContent = t.labelIntensitySmall;
-      populateSelect(intensitySelect, t.intensityOptions);
-      labelPerformance.firstChild.textContent = t.labelPerformance + " ";
-      labelPerformanceSmall.textContent = t.labelPerformanceSmall;
-      // labelPerformance contains a label text node and a small element, so we update accordingly
-      labelPerformance.childNodes.forEach(node => {
-        if(node.nodeType === Node.TEXT_NODE) {
-          node.textContent = t.labelPerformance + " ";
-        }
-      });
-      labelComment.innerHTML = t.labelComment;
-      submitButton.textContent = t.submitButton;
-
-      // Update message text if it contains success or error messages in any language to the current language
-      if(message.className === "success") {
-        message.textContent = t.successMessage;
-      } else if(message.className === "error") {
-        message.textContent = t.errorMessage;
-      }
-    }
-
-    // Initialize with default language DE
-    updateLanguage('de');
-
-    languageSwitcher.addEventListener('change', () => {
-      const selectedLang = languageSwitcher.value;
-      updateLanguage(selectedLang);
+    // Initialisierung nach Laden
+    window.addEventListener('DOMContentLoaded', () => {
+      changeLanguage(currentLang);
     });
 
+    // Formular-Handling
+    const form = document.getElementById('feedbackForm');
+    const message = document.getElementById('message');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       message.textContent = '';
-      message.className = '';
+      const t = translations[currentLang];
       const data = {
         name: form.name.value,
         feeling: form.feeling.value,
@@ -242,7 +243,6 @@
         performance: form.performance.value,
         comment: form.comment.value
       };
-      const currentLang = languageSwitcher.value;
       try {
         await fetch('https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec', {
           method: 'POST',
@@ -251,11 +251,11 @@
           body: JSON.stringify(data)
         });
         message.className = "success";
-        message.textContent = texts[currentLang].successMessage;
+        message.textContent = t.msg_success;
         form.reset();
       } catch (err) {
         message.className = "error";
-        message.textContent = texts[currentLang].errorMessage;
+        message.textContent = t.msg_error;
       }
     });
   </script>
