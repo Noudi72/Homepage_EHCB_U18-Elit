@@ -121,27 +121,33 @@
   </div>
 
   <script>
-    document.getElementById("feedbackForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+  document.getElementById("feedbackForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-      const data = {
-        name: document.getElementById("name").value,
-        feeling: document.getElementById("feeling").value,
-        intensity: document.getElementById("intensity").value,
-        performance: document.getElementById("performance").value,
-        comment: document.getElementById("comment").value,
-      };
+    const data = {
+      name: document.getElementById("name").value,
+      feeling: document.getElementById("feeling").value,
+      intensity: document.getElementById("intensity").value,
+      performance: document.getElementById("performance").value,
+      comment: document.getElementById("comment").value,
+    };
 
-      fetch("https://script.google.com/macros/s/AKfycbyrCOhzgwAcqpIfMyxmj_Spxo3XYI7nklcjn9CWro3kp7f59GUnAM26sVBJUpgVCsuy3Q/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      document.getElementById("feedbackForm").reset();
-      document.getElementById("successMsg").style.display = "block";
+    fetch("https://script.google.com/macros/s/AKfycbyrCOhzgwAcqpIfMyxmj_Spxo3XYI7nklcjn9CWro3kp7f59GUnAM26sVBJUpgVCsuy3Q/exec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(response => {
+      if (response.status === "success") {
+        document.getElementById("feedbackForm").reset();
+        document.getElementById("successMsg").style.display = "block";
+      }
+    })
+    .catch(err => {
+      alert("❌ Fehler beim Senden des Feedbacks. Bitte später erneut versuchen.");
     });
-  </script>
+  });
+</script>
 </body>
 </html>
