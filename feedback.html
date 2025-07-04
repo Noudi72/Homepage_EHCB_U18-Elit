@@ -8,7 +8,7 @@
   <style>
     :root {
       --ehc-blue: #002b5c;
-      --ehc-yellow: #ffd600;
+      --ehc-yellow: #ffe16b;
       --ehc-red: #d0021b;
       --ehc-white: #fff;
       --ehc-shadow: 0 10px 40px #00183e44;
@@ -18,33 +18,34 @@
       background: var(--ehc-blue);
       min-height: 100vh;
       font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
-      color: var(--ehc-white);
     }
     header {
-      text-align: center;
-      padding: 32px 0 18px 0;
-    }
-    .logo {
-      width: 80px;
-      margin: 0 auto 14px auto;
-      display: block;
-    }
-    h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      margin: 0;
-      letter-spacing: 2px;
+      background: var(--ehc-blue);
       color: var(--ehc-white);
+      border-bottom: 4px solid var(--ehc-red);
+      text-align: center;
+      padding: 32px 0 16px 0;
     }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-flex .logo { height: 56px; }
+    h1 { font-size: 2.2rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: var(--ehc-white);}
+    .yellow-line { width: 85px; height: 5px; background: var(--ehc-yellow); border-radius: 8px; margin: 20px auto 10px auto;}
     .lang-switch {
-      display: flex; justify-content: center; gap: 13px; margin: 20px 0 4px 0;
+      display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 5px 0; z-index: 10;
     }
     .lang-switch button {
       background: #eee; color: #002b5c; border: none; font-weight: 700;
       border-radius: 7px; cursor: pointer; padding: 6px 26px 4px 26px; font-size: 1.1rem; transition: background 0.1s, color 0.1s;
     }
     .lang-switch .active {
-      background: var(--ehc-yellow); color: var(--ehc-blue); box-shadow: 0 2px 8px #0002;
+      background: #002b5c; color: #fff; box-shadow: 0 2px 8px #0001;
     }
     .main-content {
       max-width: 500px; margin: 38px auto 0 auto; padding: 0 10px;
@@ -52,26 +53,26 @@
     .card {
       background: var(--ehc-blue);
       color: var(--ehc-white);
-      border-radius: 28px;
+      border-radius: 30px;
       margin: 0 auto;
       box-shadow: var(--ehc-shadow);
-      padding: 38px 30px 28px 30px;
+      padding: 42px 32px 32px 32px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      border: 2.8px solid var(--ehc-yellow);
+      gap: 13px;
+      border: 3px solid var(--ehc-yellow);
     }
     .card h2 {
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       font-weight: 800;
       color: var(--ehc-yellow);
     }
-    label { font-weight:700; margin:6px 0 3px 0; color:var(--ehc-yellow);}
+    label { font-weight:700; margin:7px 0 3px 0; color:var(--ehc-yellow);}
     input, select, textarea {
-      width: 100%; font-size: 1.11rem;
-      border-radius: 9px; border: 1.3px solid #bbb;
+      width: 100%; font-size: 1.12rem;
+      border-radius: 9px; border: 1.6px solid #bbb;
       padding: 7px 10px; margin: 3px 0 9px 0; background: #fff9;
       color: #002b5c;
       font-family: inherit;
@@ -79,9 +80,9 @@
     }
     button[type="submit"] {
       background: var(--ehc-red); color: var(--ehc-white); border: none;
-      border-radius: 13px; font-weight: 800; font-size: 1.19rem;
-      padding: 13px 0; margin-top: 13px; cursor: pointer; transition: background 0.15s;
-      box-shadow: 0 2px 7px #0001;
+      border-radius: 14px; font-weight: 800; font-size: 1.22rem;
+      padding: 13px 0; margin-top: 16px; cursor: pointer; transition: background 0.18s;
+      box-shadow: 0 2px 7px #0002;
     }
     button[type="submit"]:hover { background: #af0116;}
     #message.success { color: #3bbb2c; font-weight:700; margin-top:12px;}
@@ -90,41 +91,37 @@
       color: var(--ehc-yellow);
       text-align: center;
       margin: 44px 0 0 0;
-      font-size: 1.18rem;
+      font-size: 1.27rem;
       font-weight: 800;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.3px;
     }
-    .back-link {
-      display:block; text-align:center; margin-top:24px; font-size:1.1rem;
-      color: var(--ehc-yellow); text-decoration: none; font-weight: bold;
-      background: #002b5c; padding: 8px 0; border-radius: 9px; max-width:200px; margin-left:auto; margin-right:auto; border:2px solid #ffd600;
-      transition: background .18s, color .18s;
-    }
-    .back-link:hover { background: #ffd600; color: #002b5c; }
     footer {
       margin-top: 65px;
       background: var(--ehc-blue);
-      color: #ffd600;
+      color: #ffe16b;
       text-align: center;
       padding: 13px 0 10px 0;
-      font-size: 1.01rem;
-      opacity: 0.86;
+      font-size: 1.04rem;
+      opacity: 0.87;
       border-top: 2px solid var(--ehc-red);
     }
     @media (max-width: 600px) {
-      .main-content { padding: 0 2px;}
-      .card { font-size: 1.01rem; padding: 15px 4px 13px 4px;}
-      .lang-switch { gap: 7px; margin: 13px 0 8px 0;}
-      .lang-switch button { padding: 4px 10px 3px 10px; font-size: .98rem;}
-      .logo { width: 54px; }
-      h1 { font-size: 1.19rem;}
+      .header-flex { flex-direction: column; gap: 7px;}
+      .main-content { padding: 0 4px;}
+      .card { font-size: 1.03rem; padding: 19px 5px 16px 5px;}
+      .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
+      .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="wikinger.png" class="logo" alt="Logo" />
-    <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+    <div class="header-flex">
+      <img src="wikinger.png" class="logo" alt="Logo" />
+      <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+      <img src="wikinger.png" class="logo" alt="Logo" />
+    </div>
+    <div class="yellow-line"></div>
     <div class="lang-switch" id="lang-switch">
       <button onclick="changeLanguage('de')" id="btn-de">DE</button>
       <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
@@ -132,7 +129,7 @@
     </div>
   </header>
   <div class="main-content">
-    <form id="feedbackForm" class="card" autocomplete="off">
+    <form id="feedbackForm" class="card">
       <h2 id="formTitle">💬 Player Feedback</h2>
       <label for="name" id="labelName">Name *</label>
       <input type="text" id="name" name="name" required />
@@ -152,7 +149,6 @@
       <button type="submit" id="submitBtn">Abschicken</button>
       <div id="message"></div>
     </form>
-    <a class="back-link" href="index.html">← Zurück / Back</a>
   </div>
   <section class="yellow-slogan" id="slogan">
     "OUR STRENGTH IS OUR UNITY!"
