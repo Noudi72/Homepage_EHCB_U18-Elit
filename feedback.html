@@ -7,14 +7,33 @@
   <link rel="stylesheet" href="style.css"/>
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
   <style>
-    .lang-switch { position:absolute; right:32px; top:25px; }
-    .lang-switch button {
-      background:#eee; color:#002b5c; border:none; font-weight:600; border-radius:4px;
-      margin-left:5px; cursor:pointer; padding:3px 10px 2px 10px;
+    .lang-switch {
+      position: absolute;
+      right: 32px;
+      top: 25px;
+      display: flex;
+      gap: 6px;
+      z-index: 3;
+      flex-direction: row;
     }
-    .lang-switch .active { background:#002b5c; color:#fff; }
+    .lang-switch button {
+      background: #eee;
+      color: #002b5c;
+      border: none;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 4px 16px 2px 16px;
+      font-size: 1rem;
+      transition: background 0.1s, color 0.1s;
+    }
+    .lang-switch .active {
+      background: #002b5c;
+      color: #fff;
+    }
     @media (max-width: 700px) {
-      .lang-switch { top:8px; right:8px; }
+      .lang-switch { top: 8px; right: 8px; }
+      .lang-switch button { padding: 3px 7px 2px 7px; font-size: 0.95rem;}
     }
   </style>
 </head>
@@ -244,12 +263,12 @@
         comment: form.comment.value
       };
       try {
-        await fetch('https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec', {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
+        await fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
+  method: 'POST',
+  mode: 'no-cors',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+});
         message.className = "success";
         message.textContent = t.msg_success;
         form.reset();

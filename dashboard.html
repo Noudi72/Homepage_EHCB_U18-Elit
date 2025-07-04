@@ -121,23 +121,22 @@
       renderChart(filtered);
     }
 
-    // Online-Löschen im Google Sheet!
+    // NEU: Löschen mit FormData (funktioniert immer mit Google Apps Script!)
     function deleteEntry(index) {
-  const entry = rawData[index];
-  if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
-  fetch('https://script.google.com/macros/s/AKfycbw0gx4CM5KCodI007l1ZD7WSGO1X0pNlatYo1U822NcyQF9usty0VY2MvphyEMtAJF31w/exec', {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      action: "delete",
-      timestamp: entry.Date
-    })
-  })
-  .then(() => {
-    setTimeout(loadData, 1200); // ca. 1,2 Sekunden warten, damit das Sheet synchron nachlädt
-  })
-  .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
-}
+      const entry = rawData[index];
+      if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
+
+      const formData = new FormData();
+      formData.append("action", "delete");
+      formData.append("timestamp", entry.Date);
+
+      fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
+        method: "POST",
+        body: formData
+      })
+      .then(() => setTimeout(loadData, 1500))
+      .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
+    }
 
     function renderChart(data) {
       const ctx = document.getElementById('performanceChart').getContext('2d');
