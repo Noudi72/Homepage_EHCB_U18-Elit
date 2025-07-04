@@ -6,143 +6,138 @@
   <title>Player Feedback</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #002f5f, #004080);
+      background-color: #002147;
       color: white;
       display: flex;
-      justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
     }
-
-    .feedback-container {
-      background: #003366;
-      border-radius: 12px;
+    .container {
+      background-color: #04395e;
       padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
       width: 90%;
-      max-width: 450px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
-
     h2 {
       text-align: center;
-      color: white;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
-
     label {
       font-weight: bold;
-      display: block;
       margin-top: 15px;
-      margin-bottom: 5px;
+      display: block;
     }
-
     input, select, textarea {
       width: 100%;
       padding: 10px;
+      margin-top: 5px;
       border-radius: 6px;
       border: none;
-      margin-bottom: 10px;
       font-size: 1em;
     }
-
     textarea {
+      height: 80px;
       resize: vertical;
     }
-
     button {
-      background-color: #d50000;
+      background-color: #e50914;
       color: white;
       border: none;
       padding: 12px;
-      width: 100%;
-      font-size: 1em;
-      font-weight: bold;
       border-radius: 6px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    button:hover {
-      background-color: #ff1744;
-    }
-
-    .success-message {
-      text-align: center;
-      color: #90ee90;
+      font-size: 1em;
+      width: 100%;
       margin-top: 20px;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 20px;
+      text-align: center;
       font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="feedback-container">
+  <div class="container">
     <h2>💬 Player Feedback</h2>
     <form id="feedbackForm">
       <label for="name">Name *</label>
-      <input type="text" id="name" name="name" required />
+      <input type="text" id="name" name="name" required>
 
       <label for="feeling">How did you feel today?</label>
-      <select id="feeling" name="feeling">
-        <option>🟢 Top</option>
-        <option>🟡 Okay</option>
-        <option>🔴 Not great</option>
+      <select id="feeling" name="feeling" required>
+        <option value="🟢 Top">🟢 Top</option>
+        <option value="🟡 OK">🟡 OK</option>
+        <option value="🟠 Tired">🟠 Tired</option>
+        <option value="🔴 In Pain">🔴 In Pain</option>
       </select>
 
       <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
-<select id="intensity" name="intensity" required>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-</select>
+      <select id="intensity" name="intensity" required>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
 
       <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
       <select id="performance" name="performance" required>
-        <option value="1">1 - 🔴 really bad 😬</option>
-        <option value="2">2 - 🟠 bad 😕</option>
-        <option value="3">3 - 🟡 okay 😐</option>
-        <option value="4">4 - 🟢 good 🙂</option>
-        <option value="5">5 - 🟢🟢 very good 😃</option>
-        <option value="6">6 - 🟢🟢🟢 awesome 💪🏅</option>
+        <option value="1">1 – 🔴 really bad 😩</option>
+        <option value="2">2 – 🟠 bad 😕</option>
+        <option value="3">3 – 🟡 okay 🙂</option>
+        <option value="4">4 – 🟢 good 😎</option>
+        <option value="5">5 – 🟢🟢 very good 😃</option>
+        <option value="6">6 – 🟢🟢🟢 excellent 💪🔥</option>
       </select>
 
       <label for="comment">📝 Comment (optional)</label>
-      <textarea id="comment" name="comment" rows="4"></textarea>
+      <textarea id="comment" name="comment" placeholder="Your message to the coach..."></textarea>
 
       <button type="submit">Submit</button>
-      <div class="success-message" id="successMsg" style="display:none;">
-        ✅ Feedback submitted. Thank you!
-      </div>
+      <div class="message" id="messageBox"></div>
     </form>
   </div>
 
   <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyTM91QqT9OzmwSldxqphn-KalIdfu5g3X7WJu9AkXnPJwyDq3PAWiIsJKVWBETVWucGw/exec";
+
     document.getElementById("feedbackForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       const data = {
-        name: document.getElementById("name").value.trim(),
+        name: document.getElementById("name").value,
         feeling: document.getElementById("feeling").value,
-        intensity: parseInt(document.getElementById("intensity").value),
-        performance: parseInt(document.getElementById("performance").value),
-        comment: document.getElementById("comment").value.trim()
+        intensity: document.getElementById("intensity").value,
+        performance: document.getElementById("performance").value,
+        comment: document.getElementById("comment").value
       };
 
-      fetch("https://script.google.com/macros/s/AKfycbxbdeThlic-FhLSsbHZPzu5Rea_aMz0Zy-to_litHI50b4xey_RrfNbYwcFnkJlZYv-VA/exec", {
+      fetch(scriptURL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
       })
-      .then(() => {
-        document.getElementById("feedbackForm").reset();
-        document.getElementById("successMsg").style.display = "block";
+      .then(response => response.json())
+      .then(res => {
+        if (res.status === "success") {
+          document.getElementById("messageBox").textContent = "✅ Feedback submitted successfully!";
+          document.getElementById("feedbackForm").reset();
+        } else {
+          document.getElementById("messageBox").textContent = "❌ Error: " + res.message;
+        }
       })
-      .catch(() => {
-        alert("Error sending feedback.");
+      .catch(error => {
+        console.error("Error!", error.message);
+        document.getElementById("messageBox").textContent = "❌ Error sending feedback. Please try again.";
       });
     });
   </script>
