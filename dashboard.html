@@ -2,171 +2,262 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+  <title>💬 Player Feedback</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coach Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .lang-switch { position:absolute; right:32px; top:25px; }
+    .lang-switch button {
+      background:#eee; color:#002b5c; border:none; font-weight:600; border-radius:4px;
+      margin-left:5px; cursor:pointer; padding:3px 10px 2px 10px;
+    }
+    .lang-switch .active { background:#002b5c; color:#fff; }
+    @media (max-width: 700px) {
+      .lang-switch { top:8px; right:8px; }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="header-flex">
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+    <div class="header-flex" style="position:relative;">
+      <img src="wikinger.png" alt="Viking Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+      <img src="wikinger.png" alt="Viking Logo" class="logo mobile-logo" />
+      <div class="lang-switch" id="lang-switch">
+        <button onclick="changeLanguage('de')" id="btn-de">DE</button>
+        <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
+        <button onclick="changeLanguage('en')" id="btn-en">EN</button>
+      </div>
     </div>
   </header>
   <nav>
     <div class="nav-cards">
-      <a href="index.html" class="nav-card">Startseite</a>
-      <a href="kalender.html" class="nav-card">MIH Kalender U18</a>
-      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank">Cardio-Programme</a>
-      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank">Sponser Sport Food</a>
-      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank">Spirit Homepage</a>
-      <a href="feedback.html" class="nav-card">Player Feedback</a>
-      <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
+      <a href="index.html" class="nav-card" id="nav-home">Startseite</a>
+      <a href="kalender.html" class="nav-card" id="nav-cal">MIH Kalender U18</a>
+      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank" id="nav-cardio">Cardio-Programme</a>
+      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank" id="nav-sponser">Sponser Sport Food</a>
+      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank" id="nav-spirit">Spirit Homepage</a>
+      <a href="feedback.html" class="nav-card" id="nav-feedback">Player Feedback</a>
+      <a href="dashboard.html" class="nav-card" id="nav-dashboard">Coach Dashboard</a>
     </div>
   </nav>
   <main>
-    <!-- Login Card -->
-    <section class="card" id="login-section" style="max-width:420px;margin:2.7rem auto;">
-      <h2 style="color:#002b5c;text-align:center;font-size:1.5rem;margin-bottom:1.6rem;">🔐 Coach Login</h2>
-      <input type="password" id="password" placeholder="Passwort eingeben" />
-      <button onclick="checkPassword()">Login</button>
-      <div id="login-msg" class="error"></div>
-    </section>
+    <form id="feedbackForm" class="card">
+      <h2 id="formTitle">💬 Player Feedback</h2>
+      <label for="name" id="labelName">Name *</label>
+      <input type="text" id="name" name="name" required />
 
-    <!-- Dashboard Card -->
-    <section class="card" id="dashboard-section" style="display:none;max-width:1150px;margin:2.7rem auto 2.4rem auto;">
-      <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;margin-bottom:2.5rem;">
-        <img src="wikinger.png" alt="EHC Biel Logo" style="height:60px;">
-        <h1 style="color:#002b5c;font-size:2.1rem;font-weight:900;margin:0;">📊 Coach Dashboard</h1>
-      </div>
-      <div class="coach-filter" style="margin-bottom:2.6rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem;justify-content:center;">
-        <label for="date-filter" style="font-weight:700;">Date:</label>
-        <input type="date" id="date-filter" style="margin-right:1rem;">
-        <label for="name-filter" style="font-weight:700;">Player:</label>
-        <input type="text" id="name-filter" placeholder="Name" style="width:200px;">
-        <button onclick="filterData()" class="btn" style="margin-left:1.2rem;">Filter</button>
-      </div>
-      <canvas id="performanceChart" style="margin:2rem auto;display:block;max-width:400px;"></canvas>
-      <div style="overflow-x:auto;">
-        <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
-          <thead>
-            <tr>
-              <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+      <label for="feeling" id="labelFeeling">Wie hast du dich gefühlt?</label>
+      <select id="feeling" name="feeling" required></select>
+
+      <label for="intensity" id="labelIntensity">🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small></label>
+      <select id="intensity" name="intensity" required></select>
+
+      <label for="performance" id="labelPerformance">🎯 Eigene Leistung <small>(1 = sehr schlecht – 6 = top)</small></label>
+      <select id="performance" name="performance" required></select>
+
+      <label for="comment" id="labelComment">📝 Kommentar <small>(optional)</small></label>
+      <textarea id="comment" name="comment" rows="2"></textarea>
+
+      <button type="submit" id="submitBtn">Abschicken</button>
+      <div id="message"></div>
+    </form>
   </main>
-  <section class="yellow-slogan">
+  <section class="yellow-slogan" id="slogan">
     "OUR STRENGTH IS OUR UNITY!"
   </section>
   <footer>
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
-    const correctPassword = "Coach7274";
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      const msg = document.getElementById("login-msg");
-      if (input === correctPassword) {
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("dashboard-section").style.display = "block";
-        loadData();
-      } else {
-        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
+    // Sprachdaten:
+    const translations = {
+      de: {
+        nav:      ["Startseite","MIH Kalender U18","Cardio-Programme","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
+        formTitle:"💬 Player Feedback",
+        name:"Name *",
+        feeling:"Wie hast du dich gefühlt?",
+        feelingOptions: [
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Okay"},
+          {value:"🔴 Tired", text:"🔴 Müde"}
+        ],
+        intensity:"🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small>",
+        intensityOptions: [
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
+        ],
+        performance:"🎯 Eigene Leistung <small>(1 = sehr schlecht – 6 = top)</small>",
+        performanceOptions: [
+          { value: "1", text: "1 – 🔴 sehr schlecht 😩" },
+          { value: "2", text: "2 – 🟠 schlecht 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 gut 😁" },
+          { value: "5", text: "5 – 🟢🟢 sehr gut 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 ausgezeichnet 💪🔥" }
+        ],
+        comment:"📝 Kommentar <small>(optional)</small>",
+        submit:"Abschicken",
+        msg_success:'✅ Feedback übermittelt!',
+        msg_error:'❌ Verbindung fehlgeschlagen.',
+        slogan:'"OUR STRENGTH IS OUR UNITY!"'
+      },
+      en: {
+        nav:      ["Home","Team Calendar","Cardio Program","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
+        formTitle:"💬 Player Feedback",
+        name:"Name *",
+        feeling:"How did you feel today?",
+        feelingOptions: [
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Okay"},
+          {value:"🔴 Tired", text:"🔴 Tired"}
+        ],
+        intensity:"🏋️ Training/Game Intensity <small>(1 = easy – 6 = very hard)</small>",
+        intensityOptions: [
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
+        ],
+        performance:"🎯 How was your performance today? <small>(1 = really bad – 6 = excellent)</small>",
+        performanceOptions: [
+          { value: "1", text: "1 – 🔴 really bad 😩" },
+          { value: "2", text: "2 – 🟠 bad 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 good 😁" },
+          { value: "5", text: "5 – 🟢🟢 very good 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥" }
+        ],
+        comment:"📝 Comment <small>(optional)</small>",
+        submit:"Submit",
+        msg_success:'✅ Feedback submitted!',
+        msg_error:'❌ Connection failed. Please try again.',
+        slogan:'"OUR STRENGTH IS OUR UNITY!"'
+      },
+      fr: {
+        nav:      ["Accueil","Calendrier équipe","Programme Cardio","Sponser Sport Food","Spirit Homepage","Feedback Joueur","Coach Dashboard"],
+        formTitle:"💬 Feedback Joueur",
+        name:"Nom *",
+        feeling:"Comment t'es-tu senti aujourd'hui ?",
+        feelingOptions: [
+          {value:"🟢 Top", text:"🟢 Top"},
+          {value:"🟡 Okay", text:"🟡 Bien"},
+          {value:"🔴 Tired", text:"🔴 Fatigué"}
+        ],
+        intensity:"🏋️ Intensité <small>(1 = facile – 6 = très dur)</small>",
+        intensityOptions: [
+          {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
+          {value:"4",text:"4"}, {value:"5",text:"5"}, {value:"6",text:"6"}
+        ],
+        performance:"🎯 Ta performance aujourd'hui <small>(1 = très mauvais – 6 = excellent)</small>",
+        performanceOptions: [
+          { value: "1", text: "1 – 🔴 très mauvais 😩" },
+          { value: "2", text: "2 – 🟠 mauvais 😕" },
+          { value: "3", text: "3 – 🟡 ok 🙂" },
+          { value: "4", text: "4 – 🟢 bien 😁" },
+          { value: "5", text: "5 – 🟢🟢 très bien 😃" },
+          { value: "6", text: "6 – 🟢🟢🟢 excellent 💪🔥" }
+        ],
+        comment:"📝 Commentaire <small>(optionnel)</small>",
+        submit:"Envoyer",
+        msg_success:'✅ Feedback envoyé!',
+        msg_error:'❌ Connexion échouée.',
+        slogan:'"NOTRE FORCE EST NOTRE UNITÉ !"'
       }
+    };
+
+    let currentLang = localStorage.getItem('feedback_lang') || 'de';
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('feedback_lang', lang);
+
+      // Buttons im Umschalter visuell aktivieren
+      document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btn-' + lang).classList.add('active');
+
+      const t = translations[lang];
+
+      // Navigation
+      ["nav-home","nav-cal","nav-cardio","nav-sponser","nav-spirit","nav-feedback","nav-dashboard"].forEach((id,i) => {
+        const el = document.getElementById(id);
+        if (el && t.nav[i]) el.textContent = t.nav[i];
+      });
+
+      document.getElementById('formTitle').textContent = t.formTitle;
+      document.getElementById('labelName').textContent = t.name;
+      document.getElementById('labelFeeling').textContent = t.feeling;
+
+      // Feeling Options
+      const selFeeling = document.getElementById('feeling');
+      selFeeling.innerHTML = "";
+      t.feelingOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selFeeling.appendChild(o);
+      });
+
+      document.getElementById('labelIntensity').innerHTML = t.intensity;
+      // Intensity Options
+      const selIntensity = document.getElementById('intensity');
+      selIntensity.innerHTML = "";
+      t.intensityOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selIntensity.appendChild(o);
+      });
+
+      document.getElementById('labelPerformance').innerHTML = t.performance;
+      // Performance Options
+      const selPerformance = document.getElementById('performance');
+      selPerformance.innerHTML = "";
+      t.performanceOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selPerformance.appendChild(o);
+      });
+
+      document.getElementById('labelComment').innerHTML = t.comment;
+      document.getElementById('submitBtn').textContent = t.submit;
+      document.getElementById('slogan').textContent = t.slogan;
     }
-    let rawData = [];
-    function loadData() {
-      fetch('https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback')
-        .then(response => response.json())
-        .then(data => {
-          rawData = data;
-          renderTable(data);
-          renderChart(data);
+
+    // Initialisierung nach Laden
+    window.addEventListener('DOMContentLoaded', () => {
+      changeLanguage(currentLang);
+    });
+
+    // Formular-Handling
+    const form = document.getElementById('feedbackForm');
+    const message = document.getElementById('message');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.textContent = '';
+      const t = translations[currentLang];
+      const data = {
+        name: form.name.value,
+        feeling: form.feeling.value,
+        intensity: form.intensity.value,
+        performance: form.performance.value,
+        comment: form.comment.value
+      };
+      try {
+        await fetch('https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
-    }
-    function renderTable(data) {
-      const tbody = document.querySelector("#feedbackTable tbody");
-      tbody.innerHTML = "";
-      data.forEach((entry, index) => {
-        const date = new Date(entry.Date);
-        tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${isNaN(date) ? entry.Date : date.toLocaleString()}</td>
-          <td>${entry.Name}</td>
-          <td>${entry.Feeling}</td>
-          <td>${entry.Performance}</td>
-          <td>${entry.Intensity}</td>
-          <td>${entry.Comment}</td>
-          <td><button class="delete-btn" onclick="deleteEntry(${index})">🗑️</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-    function filterData() {
-      const dateValue = document.getElementById("date-filter").value;
-      const nameValue = document.getElementById("name-filter").value.toLowerCase();
-      const filtered = rawData.filter(entry => {
-        const matchesDate = !dateValue || entry.Date.startsWith(dateValue);
-        const matchesName = !nameValue || entry.Name.toLowerCase().includes(nameValue);
-        return matchesDate && matchesName;
-      });
-      renderTable(filtered);
-      renderChart(filtered);
-    }
-
-    // NEU: Online-Löschen im Google Sheet!
-    function deleteEntry(index) {
-      const entry = rawData[index];
-      if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
-      fetch('https://script.google.com/macros/s/AKfycbw0gx4CM5KCodI007l1ZD7WSGO1X0pNlatYo1U822NcyQF9usty0VY2MvphyEMtAJF31w/exec', {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          action: "delete",
-          timestamp: entry.Date // Wert aus Spalte A im Google Sheet
-        })
-      })
-      .then(res => res.json())
-      .then(result => {
-        if(result.status === "success") {
-          loadData();
-        } else if(result.status === "not_found") {
-          alert("Eintrag nicht gefunden!");
-        } else {
-          alert("Löschen fehlgeschlagen: " + (result.message || ""));
-        }
-      })
-      .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
-    }
-
-    function renderChart(data) {
-      const ctx = document.getElementById('performanceChart').getContext('2d');
-      const labels = [...new Set(data.map(d => d.Performance))];
-      const counts = labels.map(val => data.filter(d => d.Performance == val).length);
-      if (window.performanceChart) window.performanceChart.destroy();
-      window.performanceChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: counts,
-            backgroundColor: ['#1abc9c', '#3498db', '#9b59b6', '#e67e22', '#e74c3c'],
-          }]
-        },
-        options: {
-          plugins: {
-            legend: { labels: { color: "#002b5c" } }
-          }
-        }
-      });
-    }
+        message.className = "success";
+        message.textContent = t.msg_success;
+        form.reset();
+      } catch (err) {
+        message.className = "error";
+        message.textContent = t.msg_error;
+      }
+    });
   </script>
 </body>
 </html>
