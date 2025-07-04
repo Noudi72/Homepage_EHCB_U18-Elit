@@ -59,11 +59,22 @@ nav li a {
   transition: all 0.3s ease;
   font-size: 1rem;
   display: inline-block;
+  min-width: 240px; /* einheitliche Breite */
+  text-align: center;
 }
 
 nav li a:hover {
   background-color: #a00016;
   transform: scale(1.05);
+}
+
+/* =============== NÄCHSTE EINHEIT =============== */
+.training-info {
+  background: #002b5c;
+  color: #fff;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.2rem;
 }
 
 /* =============== KALENDER =============== */
@@ -93,7 +104,6 @@ footer {
   color: white;
   text-align: center;
   padding: 1.5rem 1rem;
-  margin-top: 0;
   font-size: 0.9rem;
 }
 
@@ -147,11 +157,4 @@ footer {
   .header-flex h1 {
     font-size: 1.4rem;
   }
-}
-.training-info {
-  background: #002b5c;
-  color: #fff;
-  padding: 1.5rem;
-  text-align: center;
-  font-size: 1.2rem;
 }
