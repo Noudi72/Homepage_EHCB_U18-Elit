@@ -4,21 +4,83 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Player Feedback</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #03254e;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #003366;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ffffff;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      background-color: #e30613;
+      color: white;
+      padding: 10px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c30010;
+    }
+
+    .response-message {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="form-container">
     <h2>💬 Player Feedback</h2>
-
-    <form id="feedbackForm">
+    <form id="feedback-form">
       <label for="name">Name *</label>
       <input type="text" id="name" name="name" required />
 
       <label for="feeling">How did you feel today?</label>
       <select id="feeling" name="feeling">
+        <option value="🔴 Not great">🔴 Not great</option>
+        <option value="🟠 Okay">🟠 Okay</option>
         <option value="🟢 Top">🟢 Top</option>
-        <option value="🟡 Okay">🟡 Okay</option>
-        <option value="🔴 Tired">🔴 Tired</option>
       </select>
 
       <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
@@ -34,10 +96,10 @@
       <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
       <select id="performance" name="performance">
         <option value="1">1 – 🔴 really bad 😩</option>
-        <option value="2">2 – 🟠 bad 😕</option>
-        <option value="3">3 – 🟡 average 😐</option>
+        <option value="2">2 – 🟠 bad 🙁</option>
+        <option value="3">3 – 🟡 okay 😐</option>
         <option value="4">4 – 🟢 good 🙂</option>
-        <option value="5">5 – 🟢🟢 very good 😁</option>
+        <option value="5">5 – 🟢🟢 very good 😃</option>
         <option value="6">6 – 🟢🟢🟢 excellent 💪🔥</option>
       </select>
 
@@ -47,43 +109,47 @@
       <button type="submit">Submit</button>
     </form>
 
-    <p id="responseMsg" class="response-message"></p>
+    <div class="response-message" id="response-message"></div>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzsLlL7a6-1KyqW5QP9p4CLD8HLDkiilDgUVx4xMebvEv5OakzEfhO3om4yb7QTwQ4qCQ/exec";
+    const form = document.getElementById('feedback-form');
+    const message = document.getElementById('response-message');
 
-    document.getElementById("feedbackForm").addEventListener("submit", function (e) {
+    form.addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const form = e.target;
-      const data = {
-        name: form.name.value.trim(),
+      const formData = {
+        name: form.name.value,
         feeling: form.feeling.value,
         intensity: form.intensity.value,
         performance: form.performance.value,
-        comment: form.comment.value.trim()
+        comment: form.comment.value
       };
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
-        },
-      })
-      .then(res => res.json())
-      .then(result => {
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzsLlL7a6-1KyqW5QP9p4CLD8HLDkiilDgUVx4xMebvEv5OakzEfhO3om4yb7QTwQ4qCQ/exec', {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
         if (result.status === "success") {
-          document.getElementById("responseMsg").textContent = "✅ Feedback sent successfully!";
+          message.style.color = "lightgreen";
+          message.textContent = "✅ Feedback submitted successfully!";
           form.reset();
         } else {
-          document.getElementById("responseMsg").textContent = "❌ Error: " + (result.message || "Failed to send feedback.");
+          message.style.color = "red";
+          message.textContent = "❌ Error sending feedback. Try again.";
         }
-      })
-      .catch(() => {
-        document.getElementById("responseMsg").textContent = "❌ Error sending feedback. Please try again.";
-      });
+      } catch (error) {
+        message.style.color = "red";
+        message.textContent = "❌ Connection failed. Please try later.";
+      }
     });
   </script>
 </body>
