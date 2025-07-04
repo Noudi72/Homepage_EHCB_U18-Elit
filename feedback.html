@@ -133,7 +133,7 @@
       status.textContent = "Senden…";
 
       const data = new FormData(this);
-      fetch("DEIN_GOOGLE_SCRIPT_URL", {
+      fetch("https://script.google.com/macros/s/AKfycbxCMN5u8g_irsSdadZNedMFiwvOWLpXJ7_W_0XW-7g__K4CFkbzzAR6jsFZRZwgbQwHOA/exec", {
         method: "POST",
         body: data
       })
