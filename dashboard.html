@@ -123,28 +123,21 @@
 
     // Online-Löschen im Google Sheet!
     function deleteEntry(index) {
-      const entry = rawData[index];
-      if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
-      fetch('https://script.google.com/macros/s/AKfycbw0gx4CM5KCodI007l1ZD7WSGO1X0pNlatYo1U822NcyQF9usty0VY2MvphyEMtAJF31w/exec', {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          action: "delete",
-          timestamp: entry.Date // Wert aus Spalte A im Google Sheet
-        })
-      })
-      .then(res => res.json())
-      .then(result => {
-        if(result.status === "success") {
-          loadData();
-        } else if(result.status === "not_found") {
-          alert("Eintrag nicht gefunden!");
-        } else {
-          alert("Löschen fehlgeschlagen: " + (result.message || ""));
-        }
-      })
-      .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
-    }
+  const entry = rawData[index];
+  if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
+  fetch('https://script.google.com/macros/s/AKfycbw0gx4CM5KCodI007l1ZD7WSGO1X0pNlatYo1U822NcyQF9usty0VY2MvphyEMtAJF31w/exec', {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      action: "delete",
+      timestamp: entry.Date
+    })
+  })
+  .then(() => {
+    setTimeout(loadData, 1200); // ca. 1,2 Sekunden warten, damit das Sheet synchron nachlädt
+  })
+  .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
+}
 
     function renderChart(data) {
       const ctx = document.getElementById('performanceChart').getContext('2d');
