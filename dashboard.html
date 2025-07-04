@@ -7,225 +7,219 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      background-color: #062e52;
-      font-family: Arial, sans-serif;
-      color: white;
       margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #08284e;
+      color: white;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
       padding: 20px;
     }
 
-    .container {
-      background: #08396b;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 1000px;
-      margin: auto;
+    .header img {
+      height: 60px;
+      margin-right: 20px;
     }
 
-    h1 {
-      text-align: center;
-      color: #ffffff;
-      font-size: 32px;
+    .header h1 {
+      margin: 0;
+      font-size: 2rem;
     }
 
-    .logo {
-      display: block;
-      margin: 0 auto 10px;
-      max-width: 120px;
-    }
-
-    label {
-      font-weight: bold;
+    .filter-section {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 0 20px 20px 20px;
     }
 
     input, button {
       padding: 10px;
-      margin: 10px 5px;
       border-radius: 5px;
       border: none;
-      font-size: 14px;
     }
 
-    input[type="password"], input[type="text"], input[type="date"] {
-      width: 180px;
-    }
-
-    .filter-btn {
+    button {
       background-color: #e74c3c;
       color: white;
       cursor: pointer;
     }
 
-    .hidden {
-      display: none;
-    }
-
     table {
-      width: 100%;
+      width: 95%;
+      margin: 0 auto 40px auto;
       border-collapse: collapse;
-      margin-top: 15px;
+      background-color: white;
+      color: black;
+      border-radius: 10px;
+      overflow: hidden;
     }
 
     th, td {
-      padding: 10px;
-      background-color: white;
-      color: black;
+      padding: 12px;
       text-align: center;
       border-bottom: 1px solid #ccc;
     }
 
     th {
-      background-color: #002c50;
+      background-color: #002c54;
       color: white;
+    }
+
+    .feeling {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feeling span {
+      margin-left: 5px;
     }
 
     .delete-btn {
       background-color: #e74c3c;
-      border: none;
-      padding: 5px 8px;
       color: white;
-      border-radius: 4px;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
       cursor: pointer;
     }
 
-    #chart-container {
-      max-width: 400px;
-      margin: 20px auto;
+    .chart-container {
+      width: 400px;
+      margin: 0 auto 40px auto;
     }
   </style>
 </head>
 <body>
 
-  <img src="https://noudi72.github.io/wikinger.png" alt="Vikings Logo" class="logo">
-
-  <div class="container" id="login-section">
-    <h1>🔒 Coach Login</h1>
-    <input type="password" id="password" placeholder="Enter password">
-    <button onclick="checkPassword()" class="filter-btn">Login</button>
-  </div>
-
-  <div class="container hidden" id="dashboard-section">
+  <div class="header">
+    <img src="https://noudi72.github.io/wikinger.png" alt="Logo" />
     <h1>📊 Coach Dashboard</h1>
-
-    <label for="filter-date">Date:</label>
-    <input type="date" id="filter-date">
-
-    <label for="filter-player">Player:</label>
-    <input type="text" id="filter-player" placeholder="Search by name">
-
-    <button class="filter-btn" onclick="loadData()">Filter</button>
-
-    <div id="chart-container">
-      <canvas id="performanceChart"></canvas>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Feeling</th>
-          <th>Performance</th>
-          <th>Intensity</th>
-          <th>Comment</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="feedback-table">
-        <!-- Filled by JS -->
-      </tbody>
-    </table>
   </div>
+
+  <div class="filter-section">
+    <label for="filter-date"><strong>Date:</strong></label>
+    <input type="date" id="filter-date" />
+    <label for="filter-player"><strong>Player:</strong></label>
+    <input type="text" id="filter-player" placeholder="Search by name" />
+    <button onclick="filterData()">Filter</button>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="performanceChart"></canvas>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Feeling</th>
+        <th>Performance</th>
+        <th>Intensity</th>
+        <th>Comment</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="feedback-body">
+      <!-- Feedback rows will appear here -->
+    </tbody>
+  </table>
 
   <script>
-    const SHEET_URL = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
+    const sheetUrl = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
+    let rawData = [];
 
-    function checkPassword() {
-      const pw = document.getElementById("password").value;
-      if (pw === "Coach7274") {
-        document.getElementById("login-section").classList.add("hidden");
-        document.getElementById("dashboard-section").classList.remove("hidden");
-        loadData();
-      } else {
-        alert("Incorrect password");
+    async function fetchData() {
+      const res = await fetch(sheetUrl);
+      const data = await res.json();
+      rawData = data;
+      renderTable(data);
+      renderChart(data);
+    }
+
+    function renderTable(data) {
+      const tbody = document.getElementById("feedback-body");
+      tbody.innerHTML = "";
+
+      data.forEach((row, index) => {
+        const tr = document.createElement("tr");
+
+        const date = new Date(row.Date);
+        const dateStr = isNaN(date) ? row.Date : date.toLocaleString("de-CH");
+
+        tr.innerHTML = `
+          <td>${dateStr}</td>
+          <td>${row.Name}</td>
+          <td class="feeling">🟢 <span>${row.Feeling}</span></td>
+          <td>${row.Performance}</td>
+          <td>${row.Intensity}</td>
+          <td>${row.Comment}</td>
+          <td><button class="delete-btn" onclick="deleteRow(${index})">🗑</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderChart(data) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      const performanceCounts = {};
+
+      data.forEach(row => {
+        const value = row.Performance;
+        performanceCounts[value] = (performanceCounts[value] || 0) + 1;
+      });
+
+      const labels = Object.keys(performanceCounts);
+      const values = Object.values(performanceCounts);
+
+      if (window.performanceChart) {
+        window.performanceChart.destroy();
       }
-    }
 
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      if (isNaN(date)) return "Invalid Date";
-      return date.toLocaleString("de-DE");
-    }
-
-    function loadData() {
-      fetch(SHEET_URL)
-        .then(response => response.json())
-        .then(data => {
-          const filterDate = document.getElementById("filter-date").value;
-          const filterPlayer = document.getElementById("filter-player").value.toLowerCase();
-          const tableBody = document.getElementById("feedback-table");
-          tableBody.innerHTML = "";
-
-          const performanceCount = {};
-
-          data.forEach((entry, index) => {
-            const entryDate = new Date(entry.Date);
-            const matchDate = filterDate ? new Date(filterDate).toDateString() === entryDate.toDateString() : true;
-            const matchPlayer = filterPlayer ? entry.Name.toLowerCase().includes(filterPlayer) : true;
-
-            if (matchDate && matchPlayer) {
-              const row = document.createElement("tr");
-
-              row.innerHTML = `
-                <td>${formatDate(entry.Date)}</td>
-                <td>${entry.Name}</td>
-                <td>${entry.Feeling}</td>
-                <td>${entry.Performance}</td>
-                <td>${entry.Intensity}</td>
-                <td>${entry.Comment}</td>
-                <td><button class="delete-btn" onclick="deleteRow(${index})">🗑️</button></td>
-              `;
-
-              tableBody.appendChild(row);
-
-              // For chart
-              const perf = entry.Performance || "N/A";
-              performanceCount[perf] = (performanceCount[perf] || 0) + 1;
-            }
-          });
-
-          drawChart(performanceCount);
-        });
-    }
-
-    function drawChart(counts) {
-      const ctx = document.getElementById("performanceChart").getContext("2d");
-      if (window.myChart) window.myChart.destroy();
-
-      window.myChart = new Chart(ctx, {
-        type: "doughnut",
+      window.performanceChart = new Chart(ctx, {
+        type: 'doughnut',
         data: {
-          labels: Object.keys(counts),
+          labels,
           datasets: [{
-            data: Object.values(counts),
-            backgroundColor: [
-              "#2ecc71", "#3498db", "#e74c3c", "#f1c40f", "#9b59b6", "#1abc9c"
-            ]
+            data: values,
+            backgroundColor: ['#2ecc71', '#3498db', '#e67e22', '#e74c3c', '#f1c40f', '#9b59b6']
           }]
         },
         options: {
           plugins: {
             legend: {
-              labels: { color: "white" }
+              position: 'top'
             }
           }
         }
       });
     }
 
-    function deleteRow(index) {
-      alert("To delete this row, please remove it manually from the Google Sheet (row: " + (index + 2) + ").");
+    function filterData() {
+      const dateInput = document.getElementById("filter-date").value;
+      const playerInput = document.getElementById("filter-player").value.toLowerCase();
+
+      const filtered = rawData.filter(row => {
+        const dateMatch = !dateInput || row.Date.includes(dateInput);
+        const playerMatch = !playerInput || row.Name.toLowerCase().includes(playerInput);
+        return dateMatch && playerMatch;
+      });
+
+      renderTable(filtered);
+      renderChart(filtered);
     }
+
+    function deleteRow(index) {
+      alert("Delete-Funktion müsste über Google Apps Script API implementiert werden.");
+    }
+
+    fetchData();
   </script>
+
 </body>
 </html>
