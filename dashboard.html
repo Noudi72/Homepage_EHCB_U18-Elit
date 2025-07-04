@@ -11,21 +11,21 @@
   <style>
     .lang-switch {
       position: absolute;
-      top: 22px;
-      right: 32px;
+      top: 18px;
+      right: 28px;
       display: flex;
-      gap: 10px;
-      z-index: 11;
+      gap: 8px;
+      z-index: 20;
     }
     .lang-switch button {
       background: #eee;
       color: #002b5c;
       border: none;
       font-weight: 700;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
-      padding: 4px 18px 2px 18px;
-      font-size: 1.13rem;
+      padding: 4px 15px 2px 15px;
+      font-size: 1.1rem;
       transition: background 0.1s, color 0.1s;
     }
     .lang-switch .active {
@@ -33,25 +33,45 @@
       color: #fff;
     }
     @media (max-width: 700px) {
-      .lang-switch {top: 7px; right: 7px;}
-      .lang-switch button {padding: 2px 9px 1px 9px; font-size: 0.98rem;}
+      .lang-switch {top: 8px; right: 8px;}
+      .lang-switch button {padding: 3px 8px 2px 8px; font-size: 0.97rem;}
     }
-    #performanceChart { background: #fff; border-radius: 16px; box-shadow: 0 4px 18px #0001; margin-bottom: 1.8rem;}
-    .delete-btn { background: #d0021b; color: #fff; border:none; border-radius:8px; font-size: 1.45rem; padding:2px 16px; cursor:pointer; }
+    #performanceChart { 
+      background: #fff; 
+      border-radius: 16px; 
+      box-shadow: 0 4px 18px #0001; 
+      margin-bottom: 1.5rem;
+      max-width: 320px;
+      height: auto !important;
+      width: 98vw;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .delete-btn { background: #d0021b; color: #fff; border:none; border-radius:8px; font-size: 1.2rem; padding:4px 16px; cursor:pointer; }
     .delete-btn:hover { background: #a0021b; }
+    .table-scroll { overflow-x: auto; }
+    #dashboard-section { margin-top:2rem; }
+    #deleteErrorMsg {
+      color: #b20000;
+      font-size: 1rem;
+      text-align: right;
+      margin-bottom: 1rem;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <header style="position: relative;">
-    <div class="header-flex">
+  <header style="position: relative; min-height: 60px;">
+    <div class="lang-switch" id="lang-switch">
+      <button class="active">DE</button>
+      <button>FR</button>
+      <button>EN</button>
+    </div>
+    <div class="header-flex" style="justify-content:space-between;align-items:center;">
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
-      <div class="lang-switch" id="lang-switch">
-        <button class="active">DE</button>
-        <button>FR</button>
-        <button>EN</button>
-      </div>
     </div>
   </header>
   <nav>
@@ -76,19 +96,22 @@
 
     <!-- Dashboard Card -->
     <section class="card" id="dashboard-section" style="display:none;max-width:1150px;margin:2.7rem auto 2.4rem auto;">
-      <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;margin-bottom:2.5rem;">
-        <img src="wikinger.png" alt="EHC Biel Logo" style="height:60px;">
-        <h1 style="color:#002b5c;font-size:2.1rem;font-weight:900;margin:0;">📊 Coach Dashboard</h1>
+      <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;margin-bottom:2.2rem;">
+        <img src="wikinger.png" alt="EHC Biel Logo" style="height:54px;">
+        <h1 style="color:#002b5c;font-size:1.6rem;font-weight:900;margin:0;">📊 Coach Dashboard</h1>
       </div>
-      <div class="coach-filter" style="margin-bottom:2.6rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem;justify-content:center;">
+      <div style="margin-bottom:1.2rem;">
+        <span id="deleteErrorMsg"></span>
+      </div>
+      <div class="coach-filter" style="margin-bottom:1.4rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.1rem;justify-content:center;">
         <label for="date-filter" style="font-weight:700;">Date:</label>
         <input type="date" id="date-filter" style="margin-right:1rem;">
         <label for="name-filter" style="font-weight:700;">Player:</label>
-        <input type="text" id="name-filter" placeholder="Name" style="width:200px;">
+        <input type="text" id="name-filter" placeholder="Name" style="width:180px;">
         <button onclick="filterData()" class="btn" style="margin-left:1.2rem;">Filter</button>
       </div>
-      <canvas id="performanceChart" width="350" height="350"></canvas>
-      <div style="overflow-x:auto;">
+      <canvas id="performanceChart" width="300" height="300"></canvas>
+      <div class="table-scroll">
         <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
           <thead>
             <tr>
@@ -107,6 +130,15 @@
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
+    // Optional: Language switch demo, keine echten Übersetzungen im Dashboard:
+    document.querySelectorAll('.lang-switch button').forEach((btn, idx) => {
+      btn.onclick = () => {
+        document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+
+    // Login und Daten
     const correctPassword = "Coach7274";
     function checkPassword() {
       const input = document.getElementById("password").value;
@@ -119,6 +151,7 @@
         msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
       }
     }
+
     let rawData = [];
     function loadData() {
       fetch('https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback')
@@ -129,6 +162,7 @@
           renderChart(data);
         });
     }
+
     function renderTable(data) {
       const tbody = document.querySelector("#feedbackTable tbody");
       tbody.innerHTML = "";
@@ -147,6 +181,7 @@
         tbody.appendChild(tr);
       });
     }
+
     function filterData() {
       const dateValue = document.getElementById("date-filter").value;
       const nameValue = document.getElementById("name-filter").value.toLowerCase();
@@ -159,11 +194,11 @@
       renderChart(filtered);
     }
 
-    // Löschen mit FormData (funktioniert immer mit Google Apps Script!)
+    // Löschfunktion mit Fehlerausgabe
     function deleteEntry(index) {
       const entry = rawData[index];
       if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
-
+      document.getElementById('deleteErrorMsg').style.display = 'none';
       const formData = new FormData();
       formData.append("action", "delete");
       formData.append("timestamp", entry.Date);
@@ -172,11 +207,17 @@
         method: "POST",
         body: formData
       })
-      .then(() => setTimeout(loadData, 1500))
-      .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
+      .then(response => {
+        // Backend antwortet immer "ok", kein echtes Feedback möglich wegen no-cors
+        setTimeout(loadData, 1300);
+      })
+      .catch(() => {
+        document.getElementById('deleteErrorMsg').textContent = "❌ Verbindung zum Server fehlgeschlagen!";
+        document.getElementById('deleteErrorMsg').style.display = 'block';
+      });
     }
 
-    // Chart.js
+    // Chart.js klein, kompakt
     let performanceChart = null;
     function renderChart(data) {
       const ctx = document.getElementById('performanceChart').getContext('2d');
@@ -196,7 +237,10 @@
         options: {
           plugins: {
             legend: { labels: { color: "#002b5c", font: {size: 14} } }
-          }
+          },
+          cutout: '70%',
+          responsive: true,
+          maintainAspectRatio: false
         }
       });
     }
