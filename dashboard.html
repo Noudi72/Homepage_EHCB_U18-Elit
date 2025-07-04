@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -13,6 +12,18 @@
       color: white;
     }
 
+    .login-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .dashboard {
+      display: none;
+    }
+
     .header {
       display: flex;
       align-items: center;
@@ -21,23 +32,23 @@
 
     .header img {
       height: 60px;
-      margin-right: 20px;
+      margin-right: 15px;
     }
 
     .header h1 {
-      margin: 0;
       font-size: 2rem;
+      margin: 0;
     }
 
     .filter-section {
+      padding: 10px 20px;
       display: flex;
       gap: 10px;
       align-items: center;
-      padding: 0 20px 20px 20px;
     }
 
     input, button {
-      padding: 10px;
+      padding: 8px;
       border-radius: 5px;
       border: none;
     }
@@ -50,7 +61,7 @@
 
     table {
       width: 95%;
-      margin: 0 auto 40px auto;
+      margin: 20px auto;
       border-collapse: collapse;
       background-color: white;
       color: black;
@@ -59,24 +70,13 @@
     }
 
     th, td {
-      padding: 12px;
+      padding: 10px;
       text-align: center;
-      border-bottom: 1px solid #ccc;
     }
 
     th {
-      background-color: #002c54;
+      background-color: #003366;
       color: white;
-    }
-
-    .feeling {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .feeling span {
-      margin-left: 5px;
     }
 
     .delete-btn {
@@ -90,49 +90,73 @@
 
     .chart-container {
       width: 400px;
-      margin: 0 auto 40px auto;
+      margin: 20px auto;
+    }
+
+    .login-box input {
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <img src="https://noudi72.github.io/wikinger.png" alt="Logo" />
-    <h1>📊 Coach Dashboard</h1>
+  <div class="login-section" id="login-box">
+    <h2>🔐 Coach Login</h2>
+    <input type="password" id="password-input" placeholder="Enter password"/>
+    <button onclick="checkPassword()">Login</button>
   </div>
 
-  <div class="filter-section">
-    <label for="filter-date"><strong>Date:</strong></label>
-    <input type="date" id="filter-date" />
-    <label for="filter-player"><strong>Player:</strong></label>
-    <input type="text" id="filter-player" placeholder="Search by name" />
-    <button onclick="filterData()">Filter</button>
-  </div>
+  <div class="dashboard" id="dashboard">
+    <div class="header">
+      <img src="https://noudi72.github.io/wikinger.png" alt="Logo" />
+      <h1>📊 Coach Dashboard</h1>
+    </div>
 
-  <div class="chart-container">
-    <canvas id="performanceChart"></canvas>
-  </div>
+    <div class="filter-section">
+      <label><strong>Date:</strong></label>
+      <input type="date" id="filter-date" />
+      <label><strong>Player:</strong></label>
+      <input type="text" id="filter-player" placeholder="Search by name" />
+      <button onclick="filterData()">Filter</button>
+    </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Name</th>
-        <th>Feeling</th>
-        <th>Performance</th>
-        <th>Intensity</th>
-        <th>Comment</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="feedback-body">
-      <!-- Feedback rows will appear here -->
-    </tbody>
-  </table>
+    <div class="chart-container">
+      <canvas id="performanceChart"></canvas>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Feeling</th>
+          <th>Performance</th>
+          <th>Intensity</th>
+          <th>Comment</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="feedback-body"></tbody>
+    </table>
+  </div>
 
   <script>
+    const PASSWORD = "Coach7274";
     const sheetUrl = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
     let rawData = [];
+
+    function checkPassword() {
+      const input = document.getElementById("password-input").value;
+      if (input === PASSWORD) {
+        document.getElementById("login-box").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        fetchData();
+      } else {
+        alert("Incorrect password");
+      }
+    }
 
     async function fetchData() {
       const res = await fetch(sheetUrl);
@@ -147,15 +171,14 @@
       tbody.innerHTML = "";
 
       data.forEach((row, index) => {
-        const tr = document.createElement("tr");
-
         const date = new Date(row.Date);
         const dateStr = isNaN(date) ? row.Date : date.toLocaleString("de-CH");
 
+        const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${dateStr}</td>
           <td>${row.Name}</td>
-          <td class="feeling">🟢 <span>${row.Feeling}</span></td>
+          <td>🟢 ${row.Feeling}</td>
           <td>${row.Performance}</td>
           <td>${row.Intensity}</td>
           <td>${row.Comment}</td>
@@ -215,10 +238,8 @@
     }
 
     function deleteRow(index) {
-      alert("Delete-Funktion müsste über Google Apps Script API implementiert werden.");
+      alert("Delete-Funktion müsste über Apps Script API realisiert werden.");
     }
-
-    fetchData();
   </script>
 
 </body>
