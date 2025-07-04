@@ -8,32 +8,33 @@
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
   <style>
     .lang-switch {
-      position: absolute;
-      right: 32px;
-      top: 25px;
       display: flex;
-      gap: 6px;
-      z-index: 3;
-      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin: 16px 0 10px 0;
+      z-index: 10;
+      position: static;
     }
     .lang-switch button {
       background: #eee;
       color: #002b5c;
       border: none;
-      font-weight: 600;
-      border-radius: 4px;
+      font-weight: 700;
+      border-radius: 7px;
       cursor: pointer;
-      padding: 4px 16px 2px 16px;
-      font-size: 1rem;
+      padding: 6px 30px 4px 30px;
+      font-size: 1.1rem;
       transition: background 0.1s, color 0.1s;
     }
     .lang-switch .active {
       background: #002b5c;
       color: #fff;
+      box-shadow: 0 2px 8px #0001;
     }
-    @media (max-width: 700px) {
-      .lang-switch { top: 8px; right: 8px; }
-      .lang-switch button { padding: 3px 7px 2px 7px; font-size: 0.95rem;}
+    @media (max-width: 600px) {
+      .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
+      .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
     }
   </style>
 </head>
@@ -42,12 +43,11 @@
     <div class="header-flex" style="position:relative;">
       <img src="wikinger.png" alt="Viking Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
-      <img src="wikinger.png" alt="Viking Logo" class="logo mobile-logo" />
-      <div class="lang-switch" id="lang-switch">
-        <button onclick="changeLanguage('de')" id="btn-de">DE</button>
-        <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
-        <button onclick="changeLanguage('en')" id="btn-en">EN</button>
-      </div>
+    </div>
+    <div class="lang-switch" id="lang-switch">
+      <button onclick="changeLanguage('de')" id="btn-de">DE</button>
+      <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
+      <button onclick="changeLanguage('en')" id="btn-en">EN</button>
     </div>
   </header>
   <nav>
@@ -264,11 +264,11 @@
       };
       try {
         await fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
-  method: 'POST',
-  mode: 'no-cors',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(data)
-});
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
         message.className = "success";
         message.textContent = t.msg_success;
         form.reset();

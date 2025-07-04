@@ -6,35 +6,36 @@
   <title>Coach Dashboard</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
-  <!-- Chart.js UMD -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     .lang-switch {
-      position: absolute;
-      top: 18px;
-      right: 28px;
       display: flex;
-      gap: 8px;
-      z-index: 20;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin: 16px 0 10px 0;
+      z-index: 10;
+      position: static;
     }
     .lang-switch button {
       background: #eee;
       color: #002b5c;
       border: none;
       font-weight: 700;
-      border-radius: 6px;
+      border-radius: 7px;
       cursor: pointer;
-      padding: 4px 15px 2px 15px;
+      padding: 6px 30px 4px 30px;
       font-size: 1.1rem;
       transition: background 0.1s, color 0.1s;
     }
     .lang-switch .active {
       background: #002b5c;
       color: #fff;
+      box-shadow: 0 2px 8px #0001;
     }
-    @media (max-width: 700px) {
-      .lang-switch {top: 8px; right: 8px;}
-      .lang-switch button {padding: 3px 8px 2px 8px; font-size: 0.97rem;}
+    @media (max-width: 600px) {
+      .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
+      .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
     }
     #performanceChart { 
       background: #fff; 
@@ -62,16 +63,16 @@
   </style>
 </head>
 <body>
-  <header style="position: relative; min-height: 60px;">
-    <div class="lang-switch" id="lang-switch">
-      <button class="active">DE</button>
-      <button>FR</button>
-      <button>EN</button>
-    </div>
+  <header style="min-height: 60px;">
     <div class="header-flex" style="justify-content:space-between;align-items:center;">
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+    </div>
+    <div class="lang-switch" id="lang-switch">
+      <button class="active">DE</button>
+      <button>FR</button>
+      <button>EN</button>
     </div>
   </header>
   <nav>
@@ -85,165 +86,170 @@
       <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
     </div>
   </nav>
-  <main>
-    <!-- Login Card -->
-    <section class="card" id="login-section" style="max-width:420px;margin:2.7rem auto;">
-      <h2 style="color:#002b5c;text-align:center;font-size:1.5rem;margin-bottom:1.6rem;">🔐 Coach Login</h2>
-      <input type="password" id="password" placeholder="Passwort eingeben" />
-      <button onclick="checkPassword()">Login</button>
-      <div id="login-msg" class="error"></div>
-    </section>
-
-    <!-- Dashboard Card -->
-    <section class="card" id="dashboard-section" style="display:none;max-width:1150px;margin:2.7rem auto 2.4rem auto;">
-      <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;margin-bottom:2.2rem;">
-        <img src="wikinger.png" alt="EHC Biel Logo" style="height:54px;">
-        <h1 style="color:#002b5c;font-size:1.6rem;font-weight:900;margin:0;">📊 Coach Dashboard</h1>
-      </div>
-      <div style="margin-bottom:1.2rem;">
-        <span id="deleteErrorMsg"></span>
-      </div>
-      <div class="coach-filter" style="margin-bottom:1.4rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.1rem;justify-content:center;">
-        <label for="date-filter" style="font-weight:700;">Date:</label>
-        <input type="date" id="date-filter" style="margin-right:1rem;">
-        <label for="name-filter" style="font-weight:700;">Player:</label>
-        <input type="text" id="name-filter" placeholder="Name" style="width:180px;">
-        <button onclick="filterData()" class="btn" style="margin-left:1.2rem;">Filter</button>
-      </div>
-      <canvas id="performanceChart" width="300" height="300"></canvas>
-      <div class="table-scroll">
-        <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
-          <thead>
-            <tr>
-              <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <main id="dashboard-section">
+    <div style="display:flex;align-items:center;gap:18px;">
+      <img src="wikinger.png" alt="Logo" style="height:40px;"/>
+      <h2 id="dashboardTitle">📊 Coach Dashboard</h2>
+    </div>
+    <form id="filterForm" style="margin:18px 0 28px 0;display:flex;gap:22px;align-items:center;flex-wrap:wrap;">
+      <label for="date" style="font-weight:600;">Date:</label>
+      <input type="date" id="date" name="date" style="padding:3px 10px;border-radius:7px;border:1.5px solid #ccc; font-size:1.08rem;">
+      <label for="player" style="font-weight:600;">Player:</label>
+      <input type="text" id="player" name="player" placeholder="Name" style="padding:3px 10px;border-radius:7px;border:1.5px solid #ccc; font-size:1.08rem;">
+      <button type="submit" style="background:#d0021b;color:#fff;padding:10px 70px;border-radius:10px;font-size:1.3rem;font-weight:700; border:none;cursor:pointer;">Filter</button>
+    </form>
+    <div id="deleteErrorMsg"></div>
+    <canvas id="performanceChart"></canvas>
+    <div class="table-scroll">
+      <table style="border-spacing:0;width:100%;max-width:100%;margin:auto;text-align:left;">
+        <thead>
+          <tr>
+            <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="feedbackTableBody"></tbody>
+      </table>
+    </div>
   </main>
-  <section class="yellow-slogan">
-    "OUR STRENGTH IS OUR UNITY!"
-  </section>
   <footer>
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
-    // Optional: Language switch demo, keine echten Übersetzungen im Dashboard:
+    // Sprachumschalter-Logik
+    const langs = ['de','fr','en'];
+    const navs = {
+      de: ["Startseite","MIH Kalender U18","Cardio-Programme","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
+      fr: ["Accueil","Calendrier équipe","Programme Cardio","Sponser Sport Food","Spirit Homepage","Feedback Joueur","Coach Dashboard"],
+      en: ["Home","Team Calendar","Cardio Program","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"]
+    };
+    let dashboardLang = localStorage.getItem('dashboard_lang') || 'de';
+
+    function setLang(l) {
+      dashboardLang = l;
+      localStorage.setItem('dashboard_lang', l);
+      // Aktiver Button
+      document.querySelectorAll('.lang-switch button').forEach((b, idx) => {
+        b.classList.toggle('active', langs[idx] === l);
+      });
+      // Titel
+      document.getElementById('dashboardTitle').textContent =
+        l === 'fr' ? '📊 Coach Dashboard'
+        : l === 'en' ? '📊 Coach Dashboard'
+        : '📊 Coach Dashboard';
+      // Navigation
+      document.querySelectorAll('.nav-card').forEach((el, idx) => {
+        el.textContent = navs[l][idx];
+      });
+      // Filter-Labels (nur wenn gewünscht)
+      document.querySelector("label[for=date]").textContent =
+        l==='fr'?'Date :':l==='en'?'Date:':'Date:';
+      document.querySelector("label[for=player]").textContent =
+        l==='fr'?'Joueur :':l==='en'?'Player:':'Player:';
+      document.getElementById('filterForm').querySelector('button').textContent =
+        l==='fr'?'Filtrer':l==='en'?'Filter':'Filter';
+    }
+
     document.querySelectorAll('.lang-switch button').forEach((btn, idx) => {
-      btn.onclick = () => {
-        document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      }
+      btn.onclick = ()=>setLang(langs[idx]);
     });
+    setLang(dashboardLang);
 
-    // Login und Daten
-    const correctPassword = "Coach7274";
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      const msg = document.getElementById("login-msg");
-      if (input === correctPassword) {
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("dashboard-section").style.display = "block";
-        loadData();
-      } else {
-        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
+    // Daten laden
+    let feedbackData = [];
+    async function loadFeedback() {
+      try {
+        const res = await fetch("https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback");
+        feedbackData = await res.json();
+        renderTable(feedbackData);
+        renderChart(feedbackData);
+      } catch (e) {
+        document.getElementById('feedbackTableBody').innerHTML = '<tr><td colspan="7" style="color:#a00;font-size:1.1rem;">Keine Daten gefunden!</td></tr>';
       }
     }
+    loadFeedback();
 
-    let rawData = [];
-    function loadData() {
-      fetch('https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback')
-        .then(response => response.json())
-        .then(data => {
-          rawData = data;
-          renderTable(data);
-          renderChart(data);
-        });
-    }
-
+    // Tabelle und Filter
     function renderTable(data) {
-      const tbody = document.querySelector("#feedbackTable tbody");
-      tbody.innerHTML = "";
-      data.forEach((entry, index) => {
-        const date = new Date(entry.Date);
-        tr = document.createElement("tr");
+      const tbody = document.getElementById('feedbackTableBody');
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="7">No feedback found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = '';
+      data.forEach(row => {
+        const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${isNaN(date) ? entry.Date : date.toLocaleString()}</td>
-          <td>${entry.Name}</td>
-          <td>${entry.Feeling}</td>
-          <td>${entry.Performance}</td>
-          <td>${entry.Intensity}</td>
-          <td>${entry.Comment}</td>
-          <td><button class="delete-btn" onclick="deleteEntry(${index})">🗑️</button></td>
+          <td>${row['Date']||''}</td>
+          <td>${row['Name']||''}</td>
+          <td>${row['Feeling']||''}</td>
+          <td>${row['Performance']||''}</td>
+          <td>${row['Intensity']||''}</td>
+          <td>${row['Comment']||''}</td>
+          <td><button class="delete-btn" onclick="deleteRow('${row['Date']}')">🗑️</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    function filterData() {
-      const dateValue = document.getElementById("date-filter").value;
-      const nameValue = document.getElementById("name-filter").value.toLowerCase();
-      const filtered = rawData.filter(entry => {
-        const matchesDate = !dateValue || entry.Date.startsWith(dateValue);
-        const matchesName = !nameValue || entry.Name.toLowerCase().includes(nameValue);
-        return matchesDate && matchesName;
-      });
+    document.getElementById('filterForm').onsubmit = function(e){
+      e.preventDefault();
+      const dateVal = document.getElementById('date').value;
+      const playerVal = document.getElementById('player').value.trim().toLowerCase();
+      let filtered = feedbackData;
+      if(dateVal) filtered = filtered.filter(r=>r['Date'] && r['Date'].startsWith(dateVal.split('-').reverse().join('.')));
+      if(playerVal) filtered = filtered.filter(r=>(r['Name']||'').toLowerCase().includes(playerVal));
       renderTable(filtered);
       renderChart(filtered);
     }
 
-    // Löschfunktion mit Fehlerausgabe
-    function deleteEntry(index) {
-      const entry = rawData[index];
-      if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
-      document.getElementById('deleteErrorMsg').style.display = 'none';
-      const formData = new FormData();
-      formData.append("action", "delete");
-      formData.append("timestamp", entry.Date);
-
-      fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
-        method: "POST",
-        body: formData
-      })
-      .then(response => {
-        // Backend antwortet immer "ok", kein echtes Feedback möglich wegen no-cors
-        setTimeout(loadData, 1300);
-      })
-      .catch(() => {
-        document.getElementById('deleteErrorMsg').textContent = "❌ Verbindung zum Server fehlgeschlagen!";
-        document.getElementById('deleteErrorMsg').style.display = 'block';
-      });
-    }
-
-    // Chart.js klein, kompakt
-    let performanceChart = null;
+    // Chart
+    let chart;
     function renderChart(data) {
+      // Werte für Performance
+      const performanceCounts = [0,0,0,0,0,0];
+      data.forEach(r => {
+        const val = parseInt(r['Performance']);
+        if(val >=1 && val <=6) performanceCounts[val-1]++;
+      });
       const ctx = document.getElementById('performanceChart').getContext('2d');
-      const allLabels = ['1','2','3','4','5','6'];
-      const counts = allLabels.map(val => data.filter(d => d.Performance == val).length);
-
-      if (performanceChart) performanceChart.destroy();
-      performanceChart = new Chart(ctx, {
+      if(chart) chart.destroy();
+      chart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: ['1 (schlecht)','2','3','4','5','6 (top)'],
+          labels: ['1','2','3','4','5','6'],
           datasets: [{
-            data: counts,
-            backgroundColor: ['#e74c3c', '#e67e22', '#f1c40f', '#3498db', '#2ecc71', '#27ae60'],
+            data: performanceCounts,
+            backgroundColor: ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'],
+            borderWidth: 2,
           }]
         },
         options: {
-          plugins: {
-            legend: { labels: { color: "#002b5c", font: {size: 14} } }
-          },
-          cutout: '70%',
+          cutout: '65%',
           responsive: true,
-          maintainAspectRatio: false
+          plugins: {
+            legend: { display: false }
+          }
         }
       });
     }
+
+    // Löschen
+    async function deleteRow(timestamp) {
+      if(!confirm('Wirklich löschen?')) return;
+      try {
+        document.getElementById('deleteErrorMsg').style.display = 'none';
+        await fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "delete", timestamp })
+        });
+        await loadFeedback();
+      } catch (e) {
+        document.getElementById('deleteErrorMsg').textContent = 'Fehler beim Löschen!';
+        document.getElementById('deleteErrorMsg').style.display = 'block';
+      }
+    }
+    window.deleteRow = deleteRow;
   </script>
 </body>
 </html>
