@@ -96,7 +96,7 @@
       tbody.innerHTML = "";
       data.forEach((entry, index) => {
         const date = new Date(entry.Date);
-        const tr = document.createElement("tr");
+        tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${isNaN(date) ? entry.Date : date.toLocaleString()}</td>
           <td>${entry.Name}</td>
@@ -120,11 +120,32 @@
       renderTable(filtered);
       renderChart(filtered);
     }
+
+    // NEU: Online-Löschen im Google Sheet!
     function deleteEntry(index) {
-      rawData.splice(index, 1);
-      renderTable(rawData);
-      renderChart(rawData);
+      const entry = rawData[index];
+      if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
+      fetch('https://script.google.com/macros/s/AKfycbw0gx4CM5KCodI007l1ZD7WSGO1X0pNlatYo1U822NcyQF9usty0VY2MvphyEMtAJF31w/exec', {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          action: "delete",
+          timestamp: entry.Date // Wert aus Spalte A im Google Sheet
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if(result.status === "success") {
+          loadData();
+        } else if(result.status === "not_found") {
+          alert("Eintrag nicht gefunden!");
+        } else {
+          alert("Löschen fehlgeschlagen: " + (result.message || ""));
+        }
+      })
+      .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
     }
+
     function renderChart(data) {
       const ctx = document.getElementById('performanceChart').getContext('2d');
       const labels = [...new Set(data.map(d => d.Performance))];
