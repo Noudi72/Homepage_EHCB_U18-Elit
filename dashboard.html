@@ -3,127 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coach Dashboard</title>
+  <title>📊 Coach Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .filter-section {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2c3e50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .no-data {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      color: #888;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📊 Coach Dashboard</h1>
+  <h1>📊 Coach Dashboard</h1>
 
-    <div class="filters">
-      <label for="dateFilter">📅 Date:</label>
-      <input type="date" id="dateFilter" />
-
-      <label for="playerFilter">👤 Player:</label>
-      <input type="text" id="playerFilter" placeholder="Name contains..." />
-
-      <button onclick="applyFilters()">🔍 Filter</button>
-    </div>
-
-    <canvas id="performanceChart"></canvas>
-    <canvas id="intensityChart"></canvas>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Feeling</th>
-          <th>Performance</th>
-          <th>Intensity</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody id="feedbackTable"></tbody>
-    </table>
+  <div class="filter-section">
+    <label>Date: <input type="date" id="filterDate" /></label>
+    <label>Player: <input type="text" id="filterName" placeholder="Search by name"/></label>
+    <button onclick="filterData()">Filter</button>
   </div>
 
+  <table id="feedbackTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Feeling</th>
+        <th>Performance</th>
+        <th>Intensity</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="no-data" id="noDataMessage" style="display: none;">No feedback entries found.</div>
+
   <script>
-    const SHEET_URL = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/gviz/tq?tqx=out:json";
+
     let allData = [];
 
-    async function fetchFeedback() {
+    async function fetchData() {
       try {
-        const res = await fetch(SHEET_URL);
-        const data = await res.json();
-        allData = data.filter(entry => entry.Name);
-        updateDashboard(allData);
-      } catch (e) {
-        console.error("Error fetching sheet data:", e);
+        const response = await fetch(SHEET_URL);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+
+        allData = json.table.rows.map(row => ({
+          date: row.c[0]?.f || "",
+          email: row.c[1]?.v || "",
+          name: row.c[2]?.v || "",
+          feeling: row.c[3]?.v || "",
+          performance: row.c[4]?.v || "",
+          intensity: row.c[5]?.v || "",
+          comment: row.c[6]?.v || ""
+        }));
+
+        displayData(allData);
+      } catch (error) {
+        console.error("Error loading data:", error);
       }
     }
 
-    function updateDashboard(data) {
-      const table = document.getElementById("feedbackTable");
-      table.innerHTML = "";
+    function displayData(data) {
+      const tbody = document.querySelector("#feedbackTable tbody");
+      const noDataMsg = document.getElementById("noDataMessage");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        noDataMsg.style.display = "block";
+        return;
+      }
+
+      noDataMsg.style.display = "none";
 
       data.forEach(entry => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${entry.Date}</td>
-          <td>${entry.Name}</td>
-          <td>${entry.Feeling}</td>
-          <td>${entry.Performance}</td>
-          <td>${entry.Intensity}</td>
-          <td>${entry.Comment}</td>
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${entry.date}</td>
+          <td>${entry.name}</td>
+          <td>${entry.feeling}</td>
+          <td>${entry.performance}</td>
+          <td>${entry.intensity}</td>
+          <td>${entry.comment}</td>
         `;
-        table.appendChild(row);
+        tbody.appendChild(tr);
       });
-
-      updateCharts(data);
     }
 
-    function applyFilters() {
-      const date = document.getElementById("dateFilter").value;
-      const player = document.getElementById("playerFilter").value.toLowerCase();
+    function filterData() {
+      const filterDate = document.getElementById("filterDate").value;
+      const filterName = document.getElementById("filterName").value.toLowerCase();
 
       const filtered = allData.filter(entry => {
-        const matchDate = date ? entry.Date.includes(date) : true;
-        const matchPlayer = player ? entry.Name.toLowerCase().includes(player) : true;
-        return matchDate && matchPlayer;
+        const matchesDate = !filterDate || entry.date.startsWith(filterDate);
+        const matchesName = !filterName || entry.name.toLowerCase().includes(filterName);
+        return matchesDate && matchesName;
       });
 
-      updateDashboard(filtered);
+      displayData(filtered);
     }
 
-    function updateCharts(data) {
-      const labels = data.map(entry => entry.Date);
-      const performanceData = data.map(entry => parseInt(entry.Performance) || 0);
-      const intensityData = data.map(entry => parseInt(entry.Intensity) || 0);
-
-      renderChart("performanceChart", "📈 Performance", labels, performanceData, "green");
-      renderChart("intensityChart", "🔥 Intensity", labels, intensityData, "red");
-    }
-
-    function renderChart(canvasId, label, labels, data, color) {
-      const ctx = document.getElementById(canvasId).getContext("2d");
-      if (window[canvasId]) window[canvasId].destroy();
-      window[canvasId] = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: labels,
-          datasets: [{
-            label: label,
-            data: data,
-            fill: false,
-            borderColor: color,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: "top" },
-          },
-          scales: {
-            y: { beginAtZero: true, max: 6 }
-          }
-        }
-      });
-    }
-
-    fetchFeedback();
+    fetchData();
   </script>
 </body>
 </html>
