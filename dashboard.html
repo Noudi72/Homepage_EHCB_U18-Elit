@@ -2,279 +2,273 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #001f3f;
+      font-family: 'Arial', sans-serif;
+      background-color: #002e5d;
       color: white;
     }
 
-    .login-container {
-      display: flex;
+    .login-container, .dashboard-container {
+      display: none;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(to bottom, #001f3f, #004080);
+      flex-direction: column;
     }
 
     .login-box {
-      background-color: #003366;
-      padding: 30px;
+      background: white;
+      padding: 2em;
       border-radius: 10px;
-      text-align: center;
-      color: white;
+      color: #002e5d;
+      box-shadow: 0 0 10px #00000055;
     }
 
     .login-box input {
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
+      padding: 0.5em;
+      margin-top: 1em;
       width: 100%;
-      border-radius: 6px;
-      border: none;
     }
 
     .login-box button {
-      background-color: #ff1744;
+      background-color: #e50914;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 0.5em 1em;
+      margin-top: 1em;
       cursor: pointer;
-      font-weight: bold;
-      border-radius: 6px;
     }
 
     .dashboard {
       padding: 20px;
-      display: none;
+      max-width: 1200px;
+      margin: auto;
     }
 
-    .header {
+    header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .header img {
-      height: 50px;
+    header img {
+      height: 60px;
+      margin-right: 15px;
     }
 
-    h1 {
-      color: #ffd700;
+    header h1 {
+      font-size: 28px;
+      margin: 0;
     }
 
-    .controls {
-      margin: 20px 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
+    .filters {
+      margin-bottom: 20px;
     }
 
-    .controls input {
-      padding: 8px;
-      font-size: 16px;
-      border-radius: 5px;
+    .filters input {
+      margin-right: 10px;
+      padding: 5px;
+    }
+
+    .filters button {
+      padding: 6px 12px;
+      background-color: #e50914;
       border: none;
-    }
-
-    .controls button {
-      background-color: #ff1744;
       color: white;
-      border: none;
-      padding: 10px 20px;
       cursor: pointer;
-      font-weight: bold;
-      border-radius: 6px;
+    }
+
+    canvas {
+      max-width: 300px;
+      margin: 20px auto;
+      display: block;
     }
 
     table {
       width: 100%;
-      margin-top: 20px;
       border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+      color: black;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    th {
-      background-color: #004080;
-      color: #ffd700;
-      padding: 10px;
-    }
-
-    td {
-      background-color: #002244;
-      color: white;
+    th, td {
       padding: 10px;
       text-align: center;
     }
 
-    td button {
-      background-color: #ff1744;
-      border: none;
+    th {
+      background-color: #003d80;
+      color: yellow;
+    }
+
+    td {
+      border-bottom: 1px solid #ddd;
+    }
+
+    .delete-btn {
+      background-color: #e50914;
       color: white;
-      padding: 5px 10px;
+      border: none;
+      padding: 6px 10px;
       cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .charts {
-      max-width: 600px;
-      margin: 30px auto;
-    }
-
-    canvas {
-      background: white;
-      border-radius: 10px;
-      padding: 10px;
-      max-width: 100%;
-      height: auto;
     }
   </style>
 </head>
 <body>
 
-<div class="login-container" id="login-screen">
+<!-- Login -->
+<div class="login-container" id="loginContainer">
   <div class="login-box">
     <h2>🔐 Coach Login</h2>
-    <input type="password" id="password" placeholder="Enter password">
-    <br>
+    <input type="password" id="passwordInput" placeholder="Enter password" />
     <button onclick="checkPassword()">Login</button>
   </div>
 </div>
 
-<div class="dashboard" id="dashboard">
-  <div class="header">
-    <img src="wikinger.png" alt="Logo">
-    <h1>📊 Coach Dashboard</h1>
-  </div>
+<!-- Dashboard -->
+<div class="dashboard-container" id="dashboardContainer">
+  <div class="dashboard">
+    <header>
+      <img src="wikinger.png" alt="Logo">
+      <h1><img src="https://img.icons8.com/color/48/000000/combo-chart--v1.png" width="32"/> Coach Dashboard</h1>
+    </header>
 
-  <div class="controls">
-    <label><strong>Date:</strong></label>
-    <input type="date" id="dateInput">
-    <label><strong>Player:</strong></label>
-    <input type="text" id="nameInput" placeholder="Search by name">
-    <button onclick="filterData()">Filter</button>
-  </div>
+    <div class="filters">
+      <label for="date">Date:</label>
+      <input type="date" id="filterDate" />
+      <label for="name">Player:</label>
+      <input type="text" id="filterName" placeholder="Search by name" />
+      <button onclick="filterData()">Filter</button>
+    </div>
 
-  <div class="charts">
     <canvas id="performanceChart"></canvas>
-  </div>
 
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Name</th>
-        <th>Feeling</th>
-        <th>Performance</th>
-        <th>Intensity</th>
-        <th>Comment</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Feeling</th>
+          <th>Performance</th>
+          <th>Intensity</th>
+          <th>Comment</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec";
-  let originalData = [];
-  let performanceChart;
+  const SHEET_ID = '1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE';
+  const SHEET_NAME = 'Feedback';
+  const API_KEY = 'AIzaSyCF_Xplv4oWuhmYIqZy0GIOIYwXKhqFcZg';
+
+  let rawData = [];
 
   function checkPassword() {
-    const pw = document.getElementById("password").value;
-    if (pw === "Coach7274") {
-      document.getElementById("login-screen").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      fetchData();
+    const input = document.getElementById('passwordInput').value;
+    if (input === 'Coach7274') {
+      document.getElementById('loginContainer').style.display = 'none';
+      document.getElementById('dashboardContainer').style.display = 'flex';
+      loadData();
     } else {
-      alert("❌ Incorrect password");
+      alert('Wrong password!');
     }
   }
 
-  function fetchData() {
-    fetch(scriptURL)
+  function formatDate(str) {
+    const date = new Date(str);
+    return !isNaN(date) ? date.toLocaleString('de-CH') : 'Invalid Date';
+  }
+
+  function loadData() {
+    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`)
       .then(res => res.json())
       .then(data => {
-        originalData = data.filter(e => e.Name && e.Feeling && e.Performance);
-        renderTable(originalData);
-        renderChart(originalData);
+        const rows = data.values.slice(1);
+        rawData = rows.map(r => ({
+          date: formatDate(r[0]),
+          name: r[2],
+          feeling: r[3],
+          performance: r[4],
+          intensity: r[5],
+          comment: r[6]
+        }));
+        renderTable(rawData);
+        renderChart(rawData);
       });
   }
 
   function renderTable(data) {
-    const tbody = document.querySelector("#dataTable tbody");
-    tbody.innerHTML = "";
-    data.forEach((row, index) => {
-      const formattedDate = new Date(row.Date).toLocaleDateString("de-DE");
-      const tr = document.createElement("tr");
+    const tbody = document.getElementById('dataBody');
+    tbody.innerHTML = '';
+    data.forEach(row => {
+      const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${isNaN(Date.parse(row.Date)) ? "Invalid Date" : formattedDate}</td>
-        <td>${row.Name}</td>
-        <td>${row.Feeling}</td>
-        <td>${row.Performance}</td>
-        <td>${row.Intensity}</td>
-        <td>${row.Comment}</td>
-        <td><button onclick="deleteRow(${index})">🗑️</button></td>
+        <td>${row.date}</td>
+        <td>${row.name}</td>
+        <td>${row.feeling}</td>
+        <td>${row.performance}</td>
+        <td>${row.intensity}</td>
+        <td>${row.comment}</td>
+        <td><button class="delete-btn" onclick="deleteRow('${row.date}')">🗑</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  function deleteRow(index) {
-    if (confirm("Are you sure you want to delete this entry?")) {
-      originalData.splice(index, 1);
-      renderTable(originalData);
-      renderChart(originalData);
-    }
-  }
-
   function renderChart(data) {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
     const counts = {};
-    data.forEach(row => {
-      const p = row.Performance;
-      counts[p] = (counts[p] || 0) + 1;
-    });
+    data.forEach(r => counts[r.performance] = (counts[r.performance] || 0) + 1);
 
-    const ctx = document.getElementById("performanceChart").getContext("2d");
-    if (performanceChart) performanceChart.destroy();
-    performanceChart = new Chart(ctx, {
-      type: "doughnut",
+    if (window.performanceChart) window.performanceChart.destroy();
+    window.performanceChart = new Chart(ctx, {
+      type: 'doughnut',
       data: {
         labels: Object.keys(counts),
         datasets: [{
-          label: "Performance",
           data: Object.values(counts),
-          backgroundColor: ["#00e676", "#00bfa5", "#2979ff", "#ff8f00", "#d50000", "#6a1b9a"]
+          backgroundColor: ['#00ff99', '#00ccff', '#ffcc00', '#ff6666']
         }]
       },
       options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' },
-          title: {
-            display: true,
-            text: 'Performance Distribution',
-            color: 'white'
-          }
-        }
+        plugins: { legend: { labels: { color: "white" } } }
       }
     });
   }
 
   function filterData() {
-    const name = document.getElementById("nameInput").value.toLowerCase();
-    const date = document.getElementById("dateInput").value;
-    const filtered = originalData.filter(row => {
-      const matchName = !name || row.Name.toLowerCase().includes(name);
-      const matchDate = !date || new Date(row.Date).toISOString().slice(0, 10) === date;
-      return matchName && matchDate;
+    const date = document.getElementById('filterDate').value;
+    const name = document.getElementById('filterName').value.toLowerCase();
+
+    const filtered = rawData.filter(row => {
+      const matchDate = !date || row.date.startsWith(date.split("-").reverse().join("."));
+      const matchName = !name || row.name.toLowerCase().includes(name);
+      return matchDate && matchName;
     });
+
     renderTable(filtered);
     renderChart(filtered);
   }
+
+  function deleteRow(date) {
+    alert(`Eintrag mit Datum "${date}" löschen (Funktion zur Löschung muss mit Google Apps Script verbunden werden).`);
+  }
+
+  // Startseite erst Login anzeigen
+  document.getElementById('loginContainer').style.display = 'flex';
 </script>
 
 </body>
