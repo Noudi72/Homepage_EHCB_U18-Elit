@@ -4,180 +4,198 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/2/2f/Viking_helmet_icon.svg" />
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #002b5c;
+      font-family: Arial, sans-serif;
+      background-color: #022b45;
+      color: #fff;
       margin: 0;
       padding: 20px;
-      color: #fff;
     }
-
-    .dashboard-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background-color: #003366;
-      padding: 30px;
-      border-radius: 10px;
-    }
-
     h1 {
       text-align: center;
-      margin-bottom: 20px;
-      color: #ffffff;
     }
-
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: #083b63;
+      padding: 20px;
+      border-radius: 10px;
+    }
     .filters {
       display: flex;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 20px;
       flex-wrap: wrap;
-      justify-content: center;
     }
-
-    input[type="date"], input[type="text"], input[type="password"] {
-      padding: 10px;
-      border: none;
+    input, button {
+      padding: 8px;
       border-radius: 5px;
-      font-size: 1em;
+      border: none;
     }
-
     button {
-      background-color: #e74c3c;
-      border: none;
+      background-color: #e63946;
       color: white;
-      padding: 10px 20px;
-      font-size: 1em;
-      border-radius: 5px;
+      font-weight: bold;
       cursor: pointer;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
-      background-color: #fff;
-      color: #333;
+      background-color: white;
+      color: #000;
     }
-
     th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
     }
-
     th {
-      background-color: #001f3f;
+      background-color: #003049;
       color: white;
     }
-
     .login {
       text-align: center;
-      margin-bottom: 20px;
+      background: #022b45;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 50px auto;
     }
-
-    #loginForm {
-      margin-top: 10px;
-    }
-
-    #dashboardContent {
-      display: none;
-    }
-
-    .password-input {
-      margin-right: 10px;
+    #chart_div {
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="login" id="loginContainer">
-      <h1>🔒 Coach Login</h1>
-      <form id="loginForm">
-        <input class="password-input" type="password" id="passwordInput" placeholder="Enter password..." required />
-        <button type="submit">Login</button>
-      </form>
-    </div>
 
-    <div id="dashboardContent">
-      <h1>📊 Coach Dashboard</h1>
-      <div class="filters">
-        <label>
-          Date:
-          <input type="date" id="filterDate" />
-        </label>
-        <label>
-          Player:
-          <input type="text" id="filterPlayer" placeholder="Search by name" />
-        </label>
-        <button onclick="loadData()">Filter</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Feeling</th>
-            <th>Performance</th>
-            <th>Intensity</th>
-            <th>Comment</th>
-          </tr>
-        </thead>
-        <tbody id="dataTableBody"></tbody>
-      </table>
-    </div>
+<div class="container" id="dashboard" style="display:none;">
+  <h1>📊 Coach Dashboard</h1>
+
+  <div class="filters">
+    <label>Date: <input type="date" id="dateFilter" /></label>
+    <label>Player: <input type="text" id="playerFilter" placeholder="Search by name" /></label>
+    <button onclick="filterData()">Filter</button>
   </div>
 
-  <script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/gviz/tq?tqx=out:json&sheet=Feedback';
-    const PASSWORD = 'Coach7274';
+  <div id="chart_div" style="height: 300px;"></div>
 
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const pw = document.getElementById('passwordInput').value;
-      if (pw === PASSWORD) {
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('dashboardContent').style.display = 'block';
-        loadData();
-      } else {
-        alert('Incorrect password');
-      }
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Feeling</th>
+        <th>Performance</th>
+        <th>Intensity</th>
+        <th>Comment</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="feedbackBody"></tbody>
+  </table>
+</div>
+
+<div class="login" id="loginBox">
+  <h2>🔐 Coach Login</h2>
+  <input type="password" id="passwordInput" placeholder="Enter password" />
+  <br /><br />
+  <button onclick="checkPassword()">Login</button>
+</div>
+
+<script>
+const correctPassword = "Coach7274";
+const sheetURL = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
+let dataRows = [];
+
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  if (input === correctPassword) {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    loadData();
+  } else {
+    alert("Incorrect password");
+  }
+}
+
+function formatDate(d) {
+  const date = new Date(d);
+  return date.toLocaleString("de-DE");
+}
+
+function loadData() {
+  fetch(sheetURL)
+    .then(res => res.json())
+    .then(data => {
+      dataRows = data;
+      renderTable(data);
+      drawChart(data);
     });
+}
 
-    function loadData() {
-      fetch(SHEET_URL)
-        .then(res => res.text())
-        .then(data => {
-          const json = JSON.parse(data.substr(47).slice(0, -2));
-          const rows = json.table.rows;
-          const headers = json.table.cols.map(col => col.label);
+function renderTable(data) {
+  const tbody = document.getElementById("feedbackBody");
+  tbody.innerHTML = "";
+  data.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${formatDate(row.Date)}</td>
+      <td>${row.Name}</td>
+      <td>${row.Feeling}</td>
+      <td>${row.Performance}</td>
+      <td>${row.Intensity}</td>
+      <td>${row.Comment}</td>
+      <td><button onclick="deleteRow(${i})">🗑️</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-          const dateFilter = document.getElementById('filterDate').value;
-          const nameFilter = document.getElementById('filterPlayer').value.toLowerCase();
-          const tbody = document.getElementById('dataTableBody');
-          tbody.innerHTML = '';
+function filterData() {
+  const date = document.getElementById("dateFilter").value;
+  const player = document.getElementById("playerFilter").value.toLowerCase();
+  const filtered = dataRows.filter(row => {
+    const matchDate = !date || row.Date.startsWith(date);
+    const matchPlayer = !player || row.Name.toLowerCase().includes(player);
+    return matchDate && matchPlayer;
+  });
+  renderTable(filtered);
+  drawChart(filtered);
+}
 
-          rows.forEach(row => {
-            const cells = row.c.map(cell => (cell ? cell.v : ''));
-            const [date, , name, feeling, performance, intensity, comment] = cells;
+function deleteRow(index) {
+  if (confirm("Delete this row?")) {
+    dataRows.splice(index, 1);
+    renderTable(dataRows);
+    drawChart(dataRows);
+  }
+}
 
-            if ((name.toLowerCase().includes(nameFilter)) &&
-                (!dateFilter || (date && date.includes(dateFilter)))) {
-              const tr = document.createElement('tr');
-              [date, name, feeling, performance, intensity, comment].forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value;
-                tr.appendChild(td);
-              });
-              tbody.appendChild(tr);
-            }
-          });
-        })
-        .catch(err => {
-          alert('Error loading data.');
-          console.error(err);
-        });
-    }
-  </script>
+google.charts.load('current', {'packages':['corechart']});
+function drawChart(data) {
+  const countMap = {};
+  data.forEach(row => {
+    const value = row.Performance || "N/A";
+    countMap[value] = (countMap[value] || 0) + 1;
+  });
+
+  const chartData = [["Performance", "Count"]];
+  for (let key in countMap) {
+    chartData.push([key, countMap[key]]);
+  }
+
+  const chart = new google.visualization.PieChart(document.getElementById("chart_div"));
+  chart.draw(google.visualization.arrayToDataTable(chartData), {
+    title: "Performance Distribution",
+    backgroundColor: "transparent",
+    titleTextStyle: { color: "white" },
+    legend: { textStyle: { color: "white" } }
+  });
+}
+</script>
 </body>
 </html>
