@@ -3,180 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Feedback – EHC Biel-Bienne U18-Elit</title>
+  <title>Feedback – EHC BIEL-BIENNE U18-ELIT</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="icon" href="ehcb-icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="ehcb-icon.png" />
   <style>
     body {
+      background-color: #002b5c;
+      color: white;
       font-family: Arial, sans-serif;
-      background: #f8f8f8;
-      color: #111;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
 
     header {
-      background-color: #002f5f;
+      text-align: center;
       padding: 1rem;
-      color: white;
+      background-color: #002b5c;
     }
 
-    h1 {
+    header h1 {
+      font-size: 1.8rem;
       margin: 0.5rem 0;
     }
 
-    .flags {
-      margin: 1rem 0;
-    }
-
-    .flag {
-      width: 32px;
-      height: 22px;
-      margin: 0 8px;
-      cursor: pointer;
-      border: 2px solid transparent;
-    }
-
-    .flag.active {
-      border: 2px solid #d0021b;
-    }
-
-    form {
-      background: white;
-      margin: 1rem auto;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      max-width: 500px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      display: none;
-    }
-
-    form.active {
-      display: block;
-    }
-
-    label {
-      display: block;
-      margin: 1rem 0 0.3rem;
-      text-align: left;
-    }
-
-    input, textarea, select, button {
-      width: 100%;
-      padding: 0.6rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-
-    button {
-      background: #d0021b;
+    .btn-back {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background-color: #c8102e;
       color: white;
-      border: none;
-      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
     }
 
-    button:hover {
-      background: #a30014;
+    .btn-back:hover {
+      background-color: #a10d25;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto;
+      height: 800px;
+      border: none;
+      background-color: white;
     }
 
     footer {
-      margin-top: 2rem;
-      color: #777;
+      background-color: #fdd835;
+      text-align: center;
+      padding: 1rem;
+      color: #002b5c;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      iframe {
+        height: 1000px;
+      }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Feedback – EHC Biel-Bienne U18-Elit</h1>
-    <div class="flags">
-      <img src="https://flagcdn.com/w40/de.png" class="flag active" id="flag-de" alt="Deutsch" onclick="switchForm('de')" />
-      <img src="https://flagcdn.com/w40/fr.png" class="flag" id="flag-fr" alt="Français" onclick="switchForm('fr')" />
-      <img src="https://flagcdn.com/w40/gb.png" class="flag" id="flag-en" alt="English" onclick="switchForm('en')" />
-    </div>
+    <h1>Feedback Training & Spiel</h1>
+    <a href="index.html" class="btn-back">← Zurück zur Startseite</a>
   </header>
 
-  <!-- Deutsch -->
-  <form id="form-de" class="active">
-    <label for="name-de">Name *</label>
-    <input type="text" id="name-de" required />
-
-    <label for="intensity-de">Wie war die Trainingsintensität?</label>
-    <select id="intensity-de">
-      <option value="">Bitte wählen</option>
-      <option value="1">1 - sehr leicht</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6 - sehr hart</option>
-    </select>
-
-    <label for="comment-de">Kommentar (optional)</label>
-    <textarea id="comment-de" rows="4"></textarea>
-
-    <button type="submit">Absenden</button>
-  </form>
-
-  <!-- Französisch -->
-  <form id="form-fr">
-    <label for="name-fr">Nom *</label>
-    <input type="text" id="name-fr" required />
-
-    <label for="intensity-fr">Quelle était l’intensité de l'entraînement ?</label>
-    <select id="intensity-fr">
-      <option value="">Choisissez une option</option>
-      <option value="1">1 - très léger</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6 - très dur</option>
-    </select>
-
-    <label for="comment-fr">Commentaire (optionnel)</label>
-    <textarea id="comment-fr" rows="4"></textarea>
-
-    <button type="submit">Envoyer</button>
-  </form>
-
-  <!-- Englisch -->
-  <form id="form-en">
-    <label for="name-en">Name *</label>
-    <input type="text" id="name-en" required />
-
-    <label for="intensity-en">How was the training intensity?</label>
-    <select id="intensity-en">
-      <option value="">Please select</option>
-      <option value="1">1 - very easy</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6 - very hard</option>
-    </select>
-
-    <label for="comment-en">Comment (optional)</label>
-    <textarea id="comment-en" rows="4"></textarea>
-
-    <button type="submit">Submit</button>
-  </form>
+  <main>
+    <iframe 
+      src="https://docs.google.com/forms/d/e/1FAIpQLSfu7cwgD1ci-h_0PYcbCIgC1l0Z991pYt9VGexyB0wQVVoi6w/viewform?embedded=true">
+      Wird geladen…
+    </iframe>
+  </main>
 
   <footer>
-    <p>© 2025 EHC Biel-Bienne U18-Elit</p>
+    © 2025 EHC Biel-Bienne U18-Elit
   </footer>
-
-  <script>
-    function switchForm(lang) {
-      const flags = document.querySelectorAll('.flag');
-      flags.forEach(flag => flag.classList.remove('active'));
-      document.getElementById('flag-' + lang).classList.add('active');
-
-      const forms = document.querySelectorAll('form');
-      forms.forEach(f => f.classList.remove('active'));
-      document.getElementById('form-' + lang).classList.add('active');
-    }
-  </script>
 </body>
 </html>
