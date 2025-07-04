@@ -13,20 +13,12 @@
       margin: 0;
       padding: 20px;
     }
-
     h1 {
       text-align: center;
       color: #ffd700;
     }
-
-    .login, .content {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
-
+    .login, .content { display: none; }
+    .active { display: block; }
     .login input {
       padding: 12px;
       border-radius: 6px;
@@ -35,7 +27,6 @@
       border: none;
       text-align: center;
     }
-
     .login button {
       margin-top: 10px;
       padding: 10px 20px;
@@ -45,7 +36,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
     .calendar ul {
       list-style: none;
       padding: 0;
@@ -54,40 +44,33 @@
       gap: 8px;
       justify-content: center;
     }
-
     .calendar li {
       padding: 8px 14px;
       border-radius: 6px;
       cursor: pointer;
       color: white;
     }
-
     .calendar li.low { background: #b71c1c; }
     .calendar li.mid { background: #fbc02d; }
     .calendar li.high { background: #2e7d32; }
-
     table {
       width: 100%;
       border-collapse: collapse;
       background-color: #003366;
       margin-top: 20px;
     }
-
     th, td {
       border: 1px solid #004080;
       padding: 10px;
       text-align: center;
     }
-
     th {
       background-color: #004080;
       color: #ffd700;
     }
-
     tr:nth-child(even) {
       background-color: #002244;
     }
-
     canvas {
       background: white;
       border-radius: 10px;
@@ -95,7 +78,6 @@
       margin-top: 30px;
       max-width: 100%;
     }
-
     .stats {
       background: #003366;
       padding: 10px;
@@ -104,7 +86,6 @@
       max-width: 600px;
       text-align: center;
     }
-
     .charts {
       max-width: 900px;
       margin: 0 auto;
@@ -113,310 +94,293 @@
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div class="login active" id="loginScreen">
-    <h1>Coach Login</h1>
-    <input type="password" id="passwordInput" placeholder="Enter Password" />
-    <button onclick="checkPassword()">Login</button>
-    <p id="error" style="color:red;"></p>
+<div class="login active" id="loginScreen">
+  <h1>Coach Login</h1>
+  <input type="password" id="passwordInput" placeholder="Enter Password" />
+  <button onclick="checkPassword()">Login</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div class="content" id="dashboard">
+  <h1>📊 Coach Dashboard</h1>
+
+  <div class="calendar">
+    <h3>📅 Feedback Dates</h3>
+    <ul id="calendarList"></ul>
   </div>
 
-  <!-- DASHBOARD -->
-  <div class="content" id="dashboard">
-    <h1>📊 Coach Dashboard</h1>
+  <div class="stats" id="summary">Loading...</div>
 
-    <div class="calendar">
-      <h3>📅 Feedback Dates</h3>
-      <ul id="calendarList"></ul>
-    </div>
-
-    <div class="stats" id="summary">Loading...</div>
-
-    <div class="charts">
-      <canvas id="performanceChart"></canvas>
-      <canvas id="intensityChart"></canvas>
-    </div>
-
-    <div style="text-align:center; margin: 20px auto;">
-      <button onclick="exportCSV()">📥 Export CSV</button>
-      <input type="text" id="searchInput" placeholder="🔍 Search by name or comment" oninput="applySearch()" style="padding:8px; margin-left:10px;">
-    </div>
-
-    <div id="playerProfile" style="display:none; margin: 20px auto; background:#002b4f; padding: 20px; border-radius:10px; max-width:600px;"></div>
-    <canvas id="playerLineChart" style="display:none; margin-top: 20px; max-width: 600px;"></canvas>
-
-    <table id="feedbackTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Feeling</th>
-          <th>Performance</th>
-          <th>Intensity</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="charts">
+    <canvas id="performanceChart"></canvas>
+    <canvas id="intensityChart"></canvas>
   </div>
 
-  <script>
-    const correctPassword = "Coach7274";
-    function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === correctPassword) {
-        document.getElementById("loginScreen").classList.remove("active");
-        document.getElementById("dashboard").classList.add("active");
-        loadData();
-      } else {
-        document.getElementById("error").textContent = "❌ Incorrect password";
-      }
+  <div style="text-align:center; margin: 20px auto;">
+    <button onclick="exportCSV()">📥 Export CSV</button>
+    <input type="text" id="searchInput" placeholder="🔍 Search by name or comment" oninput="applySearch()" style="padding:8px; margin-left:10px;">
+  </div>
+
+  <div id="playerProfile" style="display:none; margin: 20px auto; background:#002b4f; padding: 20px; border-radius:10px; max-width:600px;"></div>
+  <canvas id="playerLineChart" style="display:none; margin-top: 20px; max-width: 600px;"></canvas>
+
+  <table id="feedbackTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Feeling</th>
+        <th>Performance</th>
+        <th>Intensity</th>
+        <th>Comment</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+  const correctPassword = "Coach7274";
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === correctPassword) {
+      document.getElementById("loginScreen").classList.remove("active");
+      document.getElementById("dashboard").classList.add("active");
+      loadData();
+    } else {
+      document.getElementById("error").textContent = "❌ Incorrect password";
     }
+  }
 
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/gviz/tq?tqx=out:csv";
-    let allData = [];
-    let performanceChart, intensityChart;
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/gviz/tq?tqx=out:csv";
+  let allData = [];
+  let performanceChart, intensityChart;
 
-    function loadData() {
-      fetch(sheetUrl)
-        .then(res => res.text())
-        .then(csv => {
-          const rows = csv.trim().split('\n').map(r => r.split(','));
-          const data = rows.slice(1).map(r => ({
-            date: r[0],
-            email: r[1],
-            name: r[2],
-            feeling: r[3],
-            performance: parseInt(r[4]) || 0,
-            intensity: parseInt(r[5]) || 0,
-            comment: r[6] || ""
-          }));
-          allData = data;
-          renderCalendar(data);
-          renderTable(data);
-          renderCharts(data);
-          showSummary(data);
-        });
-    }
-
-    function exportCSV() {
-      let csv = 'Date,Name,Feeling,Performance,Intensity,Comment\n';
-      allData.forEach(d => {
-        csv += `${d.date},${d.name},${d.feeling},${d.performance},${d.intensity},"${d.comment.replace(/\n/g, ' ')}"\n`;
+  function loadData() {
+    fetch(sheetUrl)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.trim().split('\n').map(r => r.split(','));
+        const data = rows.slice(1).map(r => ({
+          date: r[0],
+          email: r[1],
+          name: r[2],
+          feeling: r[3],
+          performance: parseInt(r[4]) || 0,
+          intensity: parseInt(r[5]) || 0,
+          comment: r[6] || ""
+        }));
+        allData = data;
+        renderCalendar(data);
+        renderTable(data);
+        renderCharts(data);
+        showSummary(data);
       });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'feedback_export.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+  }
 
-    function applySearch() {
-      const val = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = allData.filter(d =>
-        d.name.toLowerCase().includes(val) || d.comment.toLowerCase().includes(val)
-      );
-      renderTable(filtered);
-      renderCharts(filtered);
-      showSummary(filtered);
-    }
+  function exportCSV() {
+    let csv = 'Date,Name,Feeling,Performance,Intensity,Comment\n';
+    allData.forEach(d => {
+      csv += `${d.date},${d.name},${d.feeling},${d.performance},${d.intensity},"${d.comment.replace(/\n/g, ' ')}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'feedback_export.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
-    function renderCalendar(data) {
-      const calendar = document.getElementById("calendarList");
-      const grouped = {};
-      data.forEach(d => {
-        if (!grouped[d.date]) grouped[d.date] = 0;
-        grouped[d.date]++;
-      });
+  function applySearch() {
+    const val = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = allData.filter(d =>
+      d.name.toLowerCase().includes(val) || d.comment.toLowerCase().includes(val)
+    );
+    renderTable(filtered);
+    renderCharts(filtered);
+    showSummary(filtered);
+  }
 
-      Object.keys(grouped).sort().forEach(date => {
-        const li = document.createElement("li");
-        li.textContent = date;
+  document.addEventListener("click", function(e) {
+    if (e.target && e.target.tagName === "TD" && e.target.cellIndex === 1) {
+      const player = e.target.textContent.trim();
+      const entries = allData.filter(d => d.name === player);
+      if (!entries.length) return;
 
-        if (grouped[date] >= 5) li.className = "high";
-        else if (grouped[date] >= 3) li.className = "mid";
-        else li.className = "low";
+      const avgPerf = (entries.reduce((s, d) => s + d.performance, 0) / entries.length).toFixed(2);
+      const avgInt = (entries.reduce((s, d) => s + d.intensity, 0) / entries.length).toFixed(2);
 
-        li.onclick = () => {
-          const filtered = allData.filter(d => d.date === date);
-          renderTable(filtered);
-          renderCharts(filtered);
-          showSummary(filtered);
-        };
-        calendar.appendChild(li);
-      });
-    }
-
-    function renderTable(data) {
-      const tbody = document.querySelector('#feedbackTable tbody');
-      tbody.innerHTML = "";
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.date}</td>
-          <td>${row.name}</td>
-          <td>${row.feeling}</td>
-          <td>${row.performance}</td>
-          <td>${row.intensity}</td>
-          <td>${row.comment}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function showSummary(data) {
-      if (!data.length) {
-        document.getElementById("summary").innerHTML = "No data.";
-        return;
-      }
-      const avgPerf = (data.reduce((s, d) => s + d.performance, 0) / data.length).toFixed(2);
-      const avgInt = (data.reduce((s, d) => s + d.intensity, 0) / data.length).toFixed(2);
-      document.getElementById("summary").innerHTML = `
-        🧠 Avg Performance: <b>${avgPerf}</b> &nbsp;&nbsp;
-        💪 Avg Intensity: <b>${avgInt}</b> &nbsp;&nbsp;
-        🔢 Entries: ${data.length}
+      document.getElementById("playerProfile").style.display = "block";
+      document.getElementById("playerProfile").innerHTML = `
+        <h3>👤 Profile: ${player}</h3>
+        <p>🧠 Avg Performance: <b>${avgPerf}</b></p>
+        <p>💪 Avg Intensity: <b>${avgInt}</b></p>
+        <p>📆 Entries: ${entries.length}</p>
       `;
+      renderPlayerLineChart(entries, player);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
+  });
 
-    function renderCharts(data) {
-      if (performanceChart) performanceChart.destroy();
-      if (intensityChart) intensityChart.destroy();
-
-      const players = [...new Set(data.map(d => d.name))];
-      const labels = [...new Set(data.map(d => d.date))].sort();
-
-      const perfDataset = players.map((name, i) => {
-        const color = `hsl(${(i * 50) % 360}, 80%, 60%)`;
-        return {
-          label: name,
-          data: labels.map(date => {
-            const entry = data.find(d => d.name === name && d.date === date);
-            return entry ? entry.performance : null;
-          }),
-          borderColor: color,
-          backgroundColor: color + "88",
-          tension: 0.3,
-          spanGaps: true
-        };
-      });
-
-      const intDataset = players.map((name, i) => {
-        const color = `hsl(${(i * 50 + 180) % 360}, 70%, 55%)`;
-        return {
-          label: name,
-          data: labels.map(date => {
-            const entry = data.find(d => d.name === name && d.date === date);
-            return entry ? entry.intensity : null;
-          }),
-          borderColor: color,
-          backgroundColor: color + "88",
-          tension: 0.3,
-          spanGaps: true
-        };
-      });
-
-      performanceChart = new Chart(document.getElementById("performanceChart"), {
-        type: 'line',
-        data: {
-          labels,
-          datasets: perfDataset
+  let playerLineChart;
+  function renderPlayerLineChart(entries, player) {
+    const ctx = document.getElementById("playerLineChart").getContext("2d");
+    document.getElementById("playerLineChart").style.display = "block";
+    const labels = entries.map(e => e.date);
+    const perfData = entries.map(e => e.performance);
+    const intData = entries.map(e => e.intensity);
+    if (playerLineChart) playerLineChart.destroy();
+    playerLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Performance",
+            data: perfData,
+            borderColor: "#00e676",
+            backgroundColor: "#00e67633",
+            tension: 0.3
+          },
+          {
+            label: "Intensity",
+            data: intData,
+            borderColor: "#ff5252",
+            backgroundColor: "#ff525233",
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: `📈 ${player}'s Development`
+          }
         },
-        options: {
-          responsive: true,
-          scales: {
-            y: { min: 0, max: 6, ticks: { stepSize: 1 } }
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 6,
+            ticks: { stepSize: 1 }
           }
         }
-      });
+      }
+    });
+  }
 
-      intensityChart = new Chart(document.getElementById("intensityChart"), {
-        type: 'line',
-        data: {
-          labels,
-          datasets: intDataset
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { min: 0, max: 6, ticks: { stepSize: 1 } }
-          }
-        }
-      });
+  function renderCalendar(data) {
+    const calendar = document.getElementById("calendarList");
+    const grouped = {};
+    data.forEach(d => {
+      if (!grouped[d.date]) grouped[d.date] = 0;
+      grouped[d.date]++;
+    });
+    Object.keys(grouped).sort().forEach(date => {
+      const li = document.createElement("li");
+      li.textContent = date;
+      if (grouped[date] >= 5) li.className = "high";
+      else if (grouped[date] >= 3) li.className = "mid";
+      else li.className = "low";
+      li.onclick = () => {
+        const filtered = allData.filter(d => d.date === date);
+        renderTable(filtered);
+        renderCharts(filtered);
+        showSummary(filtered);
+      };
+      calendar.appendChild(li);
+    });
+  }
+
+  function renderTable(data) {
+    const tbody = document.querySelector('#feedbackTable tbody');
+    tbody.innerHTML = "";
+    data.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td>${row.name}</td>
+        <td>${row.feeling}</td>
+        <td>${row.performance}</td>
+        <td>${row.intensity}</td>
+        <td>${row.comment}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function showSummary(data) {
+    if (!data.length) {
+      document.getElementById("summary").innerHTML = "No data.";
+      return;
     }
+    const avgPerf = (data.reduce((s, d) => s + d.performance, 0) / data.length).toFixed(2);
+    const avgInt = (data.reduce((s, d) => s + d.intensity, 0) / data.length).toFixed(2);
+    document.getElementById("summary").innerHTML = `
+      🧠 Avg Performance: <b>${avgPerf}</b> &nbsp;&nbsp;
+      💪 Avg Intensity: <b>${avgInt}</b> &nbsp;&nbsp;
+      🔢 Entries: ${data.length}
+    `;
+  }
 
-    // Einzelspielerprofil
-    document.addEventListener("click", function(e) {
-      if (e.target && e.target.tagName === "TD" && e.target.cellIndex === 1) {
-        const player = e.target.textContent.trim();
-        const entries = allData.filter(d => d.name === player);
-        if (!entries.length) return;
+  function renderCharts(data) {
+    if (performanceChart) performanceChart.destroy();
+    if (intensityChart) intensityChart.destroy();
+    const players = [...new Set(data.map(d => d.name))];
+    const labels = [...new Set(data.map(d => d.date))].sort();
+    const perfDataset = players.map((name, i) => {
+      const color = `hsl(${(i * 50) % 360}, 80%, 60%)`;
+      return {
+        label: name,
+        data: labels.map(date => {
+          const entry = data.find(d => d.name === name && d.date === date);
+          return entry ? entry.performance : null;
+        }),
+        borderColor: color,
+        backgroundColor: color + "88",
+        tension: 0.3,
+        spanGaps: true
+      };
+    });
+    const intDataset = players.map((name, i) => {
+      const color = `hsl(${(i * 50 + 180) % 360}, 70%, 55%)`;
+      return {
+        label: name,
+        data: labels.map(date => {
+          const entry = data.find(d => d.name === name && d.date === date);
+          return entry ? entry.intensity : null;
+        }),
+        borderColor: color,
+        backgroundColor: color + "88",
+        tension: 0.3,
+        spanGaps: true
+      };
+    });
 
-        const avgPerf = (entries.reduce((s, d) => s + d.performance, 0) / entries.length).toFixed(2);
-        const avgInt = (entries.reduce((s, d) => s + d.intensity, 0) / entries.length).toFixed(2);
-
-        document.getElementById("playerProfile").style.display = "block";
-        document.getElementById("playerProfile").innerHTML = `
-          <h3>👤 Profile: ${player}</h3>
-          <p>🧠 Avg Performance: <b>${avgPerf}</b></p>
-          <p>💪 Avg Intensity: <b>${avgInt}</b></p>
-          <p>📆 Entries: ${entries.length}</p>
-        `;
-        renderPlayerLineChart(entries, player);
-        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    performanceChart = new Chart(document.getElementById("performanceChart"), {
+      type: 'line',
+      data: { labels, datasets: perfDataset },
+      options: {
+        responsive: true,
+        scales: {
+          y: { min: 0, max: 6, ticks: { stepSize: 1 } }
+        }
       }
     });
 
-    function renderPlayerLineChart(entries, player) {
-      const ctx = document.getElementById("playerLineChart").getContext("2d");
-      document.getElementById("playerLineChart").style.display = "block";
-
-      const labels = entries.map(e => e.date);
-      const perfData = entries.map(e => e.performance);
-      const intData = entries.map(e => e.intensity);
-
-      if (window.playerLineChart) window.playerLineChart.destroy();
-
-      window.playerLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            {
-              label: "Performance",
-              data: perfData,
-              borderColor: "#00e676",
-              backgroundColor: "#00e67633",
-              tension: 0.3
-            },
-            {
-              label: "Intensity",
-              data: intData,
-              borderColor: "#ff5252",
-              backgroundColor: "#ff525233",
-              tension: 0.3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: `📈 ${player}'s Development`
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 6,
-              ticks: { stepSize: 1 }
-            }
-          }
+    intensityChart = new Chart(document.getElementById("intensityChart"), {
+      type: 'line',
+      data: { labels, datasets: intDataset },
+      options: {
+        responsive: true,
+        scales: {
+          y: { min: 0, max: 6, ticks: { stepSize: 1 } }
         }
-      });
-    }
-  </script>
+      }
+    });
+  }
+</script>
 </body>
 </html>
