@@ -2,159 +2,312 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
+  <title>📊 Coach Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coach Dashboard</title>
-  <link rel="stylesheet" href="style.css">
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    .lang-switch {
+    :root {
+      --ehc-blue: #002b5c;
+      --ehc-yellow: #ffe16b;
+      --ehc-red: #d0021b;
+      --ehc-white: #fff;
+      --ehc-shadow: 0 10px 40px #00183e44;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--ehc-blue);
+      min-height: 100vh;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    }
+    header {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-bottom: 4px solid var(--ehc-red);
+      text-align: center;
+      padding: 32px 0 20px 0;
+    }
+    .header-flex {
       display: flex;
+      align-items: center;
       justify-content: center;
+      gap: 26px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header-flex .logo {
+      height: 64px;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin: 0;
+      letter-spacing: 2px;
+      color: var(--ehc-white);
+    }
+    .yellow-line {
+      width: 90px;
+      height: 6px;
+      background: var(--ehc-yellow);
+      border-radius: 8px;
+      margin: 28px auto 12px auto;
+    }
+    .main-content {
+      max-width: 1100px;
+      margin: 44px auto 0 auto;
+      padding: 0 10px;
+    }
+    .dashboard-header-flex {
+      display: flex;
       align-items: center;
       gap: 16px;
-      margin: 16px 0 10px 0;
-      z-index: 10;
-      position: static;
+      justify-content: center;
+      margin-bottom: 24px;
     }
-    .lang-switch button {
-      background: #eee;
-      color: #002b5c;
-      border: none;
-      font-weight: 700;
-      border-radius: 7px;
-      cursor: pointer;
-      padding: 6px 30px 4px 30px;
-      font-size: 1.1rem;
-      transition: background 0.1s, color 0.1s;
+    .dashboard-header-flex img { height: 44px;}
+    .dashboard-header-flex h2 { font-size: 2.1rem; margin:0; color:var(--ehc-yellow);}
+    #filterForm {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
     }
-    .lang-switch .active {
-      background: #002b5c;
+    #filterForm label { font-weight:600; color:var(--ehc-yellow);}
+    #filterForm input, #filterForm button {
+      border-radius: 8px; border: 1.5px solid #ccc; font-size: 1.13rem;
+      padding: 4px 13px;
+    }
+    #filterForm button {
+      background: var(--ehc-red);
       color: #fff;
-      box-shadow: 0 2px 8px #0001;
+      border: none;
+      font-size: 1.18rem;
+      font-weight: 700;
+      padding: 8px 36px;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: background 0.2s;
     }
-    @media (max-width: 600px) {
-      .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
-      .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
+    #filterForm button:hover { background: #af0116;}
+    .chart-card {
+      background: var(--ehc-blue);
+      border-radius: 32px;
+      border: 3px solid var(--ehc-yellow);
+      box-shadow: var(--ehc-shadow);
+      padding: 32px 20px 18px 20px;
+      max-width: 390px;
+      margin: 0 auto 18px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    #performanceChart { 
-      background: #fff; 
-      border-radius: 16px; 
-      box-shadow: 0 4px 18px #0001; 
-      margin-bottom: 1.5rem;
-      max-width: 320px;
-      height: auto !important;
-      width: 98vw;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+    #performanceChart {
+      width: 260px !important;
+      height: 260px !important;
+      background: transparent;
+      margin: 0 auto;
     }
-    .delete-btn { background: #d0021b; color: #fff; border:none; border-radius:8px; font-size: 1.2rem; padding:4px 16px; cursor:pointer; }
-    .delete-btn:hover { background: #a0021b; }
-    .table-scroll { overflow-x: auto; }
-    #dashboard-section { margin-top:2rem; }
-    #deleteErrorMsg {
-      color: #b20000;
-      font-size: 1rem;
-      text-align: right;
-      margin-bottom: 1rem;
-      display: none;
+    .table-scroll {
+      overflow-x: auto;
+      margin: 34px 0;
+      border-radius: 17px;
+      background: var(--ehc-blue);
+      box-shadow: var(--ehc-shadow);
+      padding: 10px 8px 8px 8px;
+    }
+    table {
+      border-spacing: 0;
+      width: 100%;
+      font-size: 1.09rem;
+      color: var(--ehc-white);
+      background: transparent;
+    }
+    th, td { padding: 10px 10px; }
+    th { background: var(--ehc-yellow); color: var(--ehc-blue); font-weight:800; }
+    tr:nth-child(even) { background: #003574;}
+    tr:nth-child(odd) { background: #002b5c;}
+    td { vertical-align: middle;}
+    .no-data-card {
+      background: var(--ehc-blue);
+      color: var(--ehc-yellow);
+      border-radius: 30px;
+      max-width: 900px;
+      margin: 48px auto 0 auto;
+      box-shadow: var(--ehc-shadow);
+      padding: 50px 32px 44px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1rem;
+      font-weight: 700;
+      gap: 24px;
+      border: 3px solid var(--ehc-yellow);
+    }
+    .no-data-card .icon {
+      font-size: 2.5rem;
+    }
+    .btn {
+      background: var(--ehc-red);
+      color: var(--ehc-white);
+      border: none;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 12px 26px;
+      margin: 20px 12px 0 0;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .btn:hover {
+      background: #af0116;
+    }
+    /* Login Card */
+    .login-card {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-radius: 32px;
+      border: 3px solid var(--ehc-yellow);
+      box-shadow: var(--ehc-shadow);
+      padding: 50px 34px 34px 34px;
+      max-width: 420px;
+      margin: 48px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .login-card input[type="password"] {
+      font-size: 1.18rem;
+      border-radius: 12px;
+      padding: 10px 16px;
+      border: 1.6px solid #bbb;
+      color: #002b5c;
+      width: 100%;
+      margin-bottom: 10px;
+      background: #fff9;
+      font-weight:700;
+      text-align:center;
+    }
+    .login-card button {
+      background: var(--ehc-red);
+      color: var(--ehc-white);
+      border: none;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      padding: 11px 38px;
+      cursor: pointer;
+      margin: 0 auto;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #0002;
+    }
+    .login-card button:hover {
+      background: #af0116;
+    }
+    #login-msg {
+      color: #ff4d4d;
+      font-size: 1.05rem;
+      margin-top: 3px;
+      min-height: 23px;
+      text-align:center;
+    }
+    footer {
+      margin-top: 55px;
+      background: var(--ehc-blue);
+      color: #ffe16b;
+      text-align: center;
+      padding: 15px 0 13px 0;
+      font-size: 1.04rem;
+      opacity: 0.86;
+      border-top: 2px solid var(--ehc-red);
+    }
+    @media (max-width: 700px) {
+      .header-flex, .dashboard-header-flex { flex-direction: column; gap: 10px;}
+      .main-content { padding: 0 4px;}
+      .chart-card { max-width: 100%; }
+      #performanceChart { width:170px !important; height:170px !important;}
+      .dashboard-header-flex h2 { font-size:1.13rem;}
+      .no-data-card { font-size: 1.1rem; padding: 15px 3px;}
+      .login-card { padding: 22px 8px 20px 8px; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header style="min-height: 60px;">
-    <div class="header-flex" style="justify-content:space-between;align-items:center;">
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+  <header>
+    <div class="header-flex">
+      <img src="wikinger.png" class="logo" alt="Logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+      <img src="wikinger.png" class="logo" alt="Logo" />
     </div>
-    <div class="lang-switch" id="lang-switch">
-      <button class="active">DE</button>
-      <button>FR</button>
-      <button>EN</button>
-    </div>
+    <div class="yellow-line"></div>
   </header>
-  <nav>
-    <div class="nav-cards">
-      <a href="index.html" class="nav-card">Startseite</a>
-      <a href="kalender.html" class="nav-card">MIH Kalender U18</a>
-      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank">Cardio-Programme</a>
-      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank">Sponser Sport Food</a>
-      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank">Spirit Homepage</a>
-      <a href="feedback.html" class="nav-card">Player Feedback</a>
-      <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
+  <div class="main-content">
+    <!-- Admin Login -->
+    <section class="login-card" id="login-section">
+      <h2 style="color:var(--ehc-yellow);text-align:center;font-size:1.35rem;margin-bottom:1.3rem;">
+        🔐 Coach Dashboard Login
+      </h2>
+      <input type="password" id="password" placeholder="Admin Passwort eingeben" autocomplete="current-password" />
+      <button onclick="checkPassword()">Login</button>
+      <div id="login-msg"></div>
+    </section>
+    <!-- Dashboard Content (hidden by default) -->
+    <div id="dashboard-section" style="display:none;">
+      <div class="dashboard-header-flex">
+        <img src="wikinger.png" alt="Logo" />
+        <h2>📊 Coach Dashboard</h2>
+      </div>
+      <form id="filterForm">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date">
+        <label for="player">Player:</label>
+        <input type="text" id="player" name="player" placeholder="Name">
+        <button type="submit">Filter</button>
+      </form>
+      <div id="deleteErrorMsg" style="color:#b00;font-weight:600;text-align:center;margin-bottom:10px;"></div>
+      <div class="chart-card">
+        <canvas id="performanceChart"></canvas>
+      </div>
+      <div id="noDataCard" class="no-data-card" style="display:none;">
+        <span class="icon">📅</span>
+        <span>Keine Feedbacks gefunden</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th>
+            </tr>
+          </thead>
+          <tbody id="feedbackTableBody"></tbody>
+        </table>
+      </div>
+      <div style="text-align:center; margin:38px 0 0 0;">
+        <a href="index.html" class="btn">Zur Startseite</a>
+      </div>
     </div>
-  </nav>
-  <main id="dashboard-section">
-    <div style="display:flex;align-items:center;gap:18px;">
-      <img src="wikinger.png" alt="Logo" style="height:40px;"/>
-      <h2 id="dashboardTitle">📊 Coach Dashboard</h2>
-    </div>
-    <form id="filterForm" style="margin:18px 0 28px 0;display:flex;gap:22px;align-items:center;flex-wrap:wrap;">
-      <label for="date" style="font-weight:600;">Date:</label>
-      <input type="date" id="date" name="date" style="padding:3px 10px;border-radius:7px;border:1.5px solid #ccc; font-size:1.08rem;">
-      <label for="player" style="font-weight:600;">Player:</label>
-      <input type="text" id="player" name="player" placeholder="Name" style="padding:3px 10px;border-radius:7px;border:1.5px solid #ccc; font-size:1.08rem;">
-      <button type="submit" style="background:#d0021b;color:#fff;padding:10px 70px;border-radius:10px;font-size:1.3rem;font-weight:700; border:none;cursor:pointer;">Filter</button>
-    </form>
-    <div id="deleteErrorMsg"></div>
-    <canvas id="performanceChart"></canvas>
-    <div class="table-scroll">
-      <table style="border-spacing:0;width:100%;max-width:100%;margin:auto;text-align:left;">
-        <thead>
-          <tr>
-            <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
-          </tr>
-        </thead>
-        <tbody id="feedbackTableBody"></tbody>
-      </table>
-    </div>
-  </main>
+  </div>
   <footer>
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
-    // Sprachumschalter-Logik
-    const langs = ['de','fr','en'];
-    const navs = {
-      de: ["Startseite","MIH Kalender U18","Cardio-Programme","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
-      fr: ["Accueil","Calendrier équipe","Programme Cardio","Sponser Sport Food","Spirit Homepage","Feedback Joueur","Coach Dashboard"],
-      en: ["Home","Team Calendar","Cardio Program","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"]
-    };
-    let dashboardLang = localStorage.getItem('dashboard_lang') || 'de';
-
-    function setLang(l) {
-      dashboardLang = l;
-      localStorage.setItem('dashboard_lang', l);
-      // Aktiver Button
-      document.querySelectorAll('.lang-switch button').forEach((b, idx) => {
-        b.classList.toggle('active', langs[idx] === l);
-      });
-      // Titel
-      document.getElementById('dashboardTitle').textContent =
-        l === 'fr' ? '📊 Coach Dashboard'
-        : l === 'en' ? '📊 Coach Dashboard'
-        : '📊 Coach Dashboard';
-      // Navigation
-      document.querySelectorAll('.nav-card').forEach((el, idx) => {
-        el.textContent = navs[l][idx];
-      });
-      // Filter-Labels (nur wenn gewünscht)
-      document.querySelector("label[for=date]").textContent =
-        l==='fr'?'Date :':l==='en'?'Date:':'Date:';
-      document.querySelector("label[for=player]").textContent =
-        l==='fr'?'Joueur :':l==='en'?'Player:':'Player:';
-      document.getElementById('filterForm').querySelector('button').textContent =
-        l==='fr'?'Filtrer':l==='en'?'Filter':'Filter';
+    // Admin Login-Logik
+    const correctPassword = "Coach7274";
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      const msg = document.getElementById("login-msg");
+      if (input === correctPassword) {
+        document.getElementById("login-msg").textContent = '';
+        document.getElementById("dashboard-section").style.display = "block";
+        document.getElementById("login-section").style.display = "none";
+      } else {
+        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
+      }
     }
-
-    document.querySelectorAll('.lang-switch button').forEach((btn, idx) => {
-      btn.onclick = ()=>setLang(langs[idx]);
-    });
-    setLang(dashboardLang);
-
-    // Daten laden
+    // Dashboard-Logik
     let feedbackData = [];
     async function loadFeedback() {
       try {
@@ -163,16 +316,17 @@
         renderTable(feedbackData);
         renderChart(feedbackData);
       } catch (e) {
-        document.getElementById('feedbackTableBody').innerHTML = '<tr><td colspan="7" style="color:#a00;font-size:1.1rem;">Keine Daten gefunden!</td></tr>';
+        showNoData(true);
       }
     }
-    loadFeedback();
-
-    // Tabelle und Filter
+    function showNoData(isNoData){
+      document.getElementById('noDataCard').style.display = isNoData ? 'flex' : 'none';
+    }
     function renderTable(data) {
       const tbody = document.getElementById('feedbackTableBody');
+      showNoData(!data.length);
       if (!data.length) {
-        tbody.innerHTML = '<tr><td colspan="7">No feedback found.</td></tr>';
+        tbody.innerHTML = '';
         return;
       }
       tbody.innerHTML = '';
@@ -185,13 +339,12 @@
           <td>${row['Performance']||''}</td>
           <td>${row['Intensity']||''}</td>
           <td>${row['Comment']||''}</td>
-          <td><button class="delete-btn" onclick="deleteRow('${row['Date']}')">🗑️</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
-
-    document.getElementById('filterForm').onsubmit = function(e){
+    document.getElementById('filterForm') &&
+    (document.getElementById('filterForm').onsubmit = function(e){
       e.preventDefault();
       const dateVal = document.getElementById('date').value;
       const playerVal = document.getElementById('player').value.trim().toLowerCase();
@@ -200,12 +353,10 @@
       if(playerVal) filtered = filtered.filter(r=>(r['Name']||'').toLowerCase().includes(playerVal));
       renderTable(filtered);
       renderChart(filtered);
-    }
-
+    });
     // Chart
     let chart;
     function renderChart(data) {
-      // Werte für Performance
       const performanceCounts = [0,0,0,0,0,0];
       data.forEach(r => {
         const val = parseInt(r['Performance']);
@@ -224,7 +375,7 @@
           }]
         },
         options: {
-          cutout: '65%',
+          cutout: '72%',
           responsive: true,
           plugins: {
             legend: { display: false }
@@ -232,24 +383,23 @@
         }
       });
     }
-
-    // Löschen
-    async function deleteRow(timestamp) {
-      if(!confirm('Wirklich löschen?')) return;
-      try {
-        document.getElementById('deleteErrorMsg').style.display = 'none';
-        await fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: "delete", timestamp })
-        });
-        await loadFeedback();
-      } catch (e) {
-        document.getElementById('deleteErrorMsg').textContent = 'Fehler beim Löschen!';
-        document.getElementById('deleteErrorMsg').style.display = 'block';
+    // Lade Feedback nach Login
+    document.getElementById('password').addEventListener('keyup', function(e){
+      if(e.key === "Enter") checkPassword();
+    });
+    // Nach Login laden
+    window.checkPassword = function() {
+      const input = document.getElementById("password").value;
+      const msg = document.getElementById("login-msg");
+      if (input === correctPassword) {
+        document.getElementById("login-msg").textContent = '';
+        document.getElementById("dashboard-section").style.display = "block";
+        document.getElementById("login-section").style.display = "none";
+        loadFeedback();
+      } else {
+        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
       }
     }
-    window.deleteRow = deleteRow;
   </script>
 </body>
 </html>

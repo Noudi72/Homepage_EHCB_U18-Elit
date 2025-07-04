@@ -4,35 +4,111 @@
   <meta charset="UTF-8" />
   <title>💬 Player Feedback</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css"/>
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
   <style>
-    .lang-switch {
+    :root {
+      --ehc-blue: #002b5c;
+      --ehc-yellow: #ffe16b;
+      --ehc-red: #d0021b;
+      --ehc-white: #fff;
+      --ehc-shadow: 0 10px 40px #00183e44;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--ehc-blue);
+      min-height: 100vh;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    }
+    header {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-bottom: 4px solid var(--ehc-red);
+      text-align: center;
+      padding: 32px 0 16px 0;
+    }
+    .header-flex {
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 16px;
-      margin: 16px 0 10px 0;
-      z-index: 10;
-      position: static;
+      justify-content: center;
+      gap: 22px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-flex .logo { height: 56px; }
+    h1 { font-size: 2.2rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: var(--ehc-white);}
+    .yellow-line { width: 85px; height: 5px; background: var(--ehc-yellow); border-radius: 8px; margin: 20px auto 10px auto;}
+    .lang-switch {
+      display: flex; justify-content: center; align-items: center; gap: 13px; margin: 14px 0 5px 0; z-index: 10;
     }
     .lang-switch button {
-      background: #eee;
-      color: #002b5c;
-      border: none;
-      font-weight: 700;
-      border-radius: 7px;
-      cursor: pointer;
-      padding: 6px 30px 4px 30px;
-      font-size: 1.1rem;
-      transition: background 0.1s, color 0.1s;
+      background: #eee; color: #002b5c; border: none; font-weight: 700;
+      border-radius: 7px; cursor: pointer; padding: 6px 26px 4px 26px; font-size: 1.1rem; transition: background 0.1s, color 0.1s;
     }
     .lang-switch .active {
-      background: #002b5c;
-      color: #fff;
-      box-shadow: 0 2px 8px #0001;
+      background: #002b5c; color: #fff; box-shadow: 0 2px 8px #0001;
+    }
+    .main-content {
+      max-width: 500px; margin: 38px auto 0 auto; padding: 0 10px;
+    }
+    .card {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-radius: 30px;
+      margin: 0 auto;
+      box-shadow: var(--ehc-shadow);
+      padding: 42px 32px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      border: 3px solid var(--ehc-yellow);
+    }
+    .card h2 {
+      font-size: 1.7rem;
+      text-align: center;
+      margin-bottom: 18px;
+      font-weight: 800;
+      color: var(--ehc-yellow);
+    }
+    label { font-weight:700; margin:7px 0 3px 0; color:var(--ehc-yellow);}
+    input, select, textarea {
+      width: 100%; font-size: 1.12rem;
+      border-radius: 9px; border: 1.6px solid #bbb;
+      padding: 7px 10px; margin: 3px 0 9px 0; background: #fff9;
+      color: #002b5c;
+      font-family: inherit;
+      font-weight:600;
+    }
+    button[type="submit"] {
+      background: var(--ehc-red); color: var(--ehc-white); border: none;
+      border-radius: 14px; font-weight: 800; font-size: 1.22rem;
+      padding: 13px 0; margin-top: 16px; cursor: pointer; transition: background 0.18s;
+      box-shadow: 0 2px 7px #0002;
+    }
+    button[type="submit"]:hover { background: #af0116;}
+    #message.success { color: #3bbb2c; font-weight:700; margin-top:12px;}
+    #message.error   { color: #b00; font-weight:700; margin-top:12px;}
+    .yellow-slogan {
+      color: var(--ehc-yellow);
+      text-align: center;
+      margin: 44px 0 0 0;
+      font-size: 1.27rem;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+    }
+    footer {
+      margin-top: 65px;
+      background: var(--ehc-blue);
+      color: #ffe16b;
+      text-align: center;
+      padding: 13px 0 10px 0;
+      font-size: 1.04rem;
+      opacity: 0.87;
+      border-top: 2px solid var(--ehc-red);
     }
     @media (max-width: 600px) {
+      .header-flex { flex-direction: column; gap: 7px;}
+      .main-content { padding: 0 4px;}
+      .card { font-size: 1.03rem; padding: 19px 5px 16px 5px;}
       .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
       .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
     }
@@ -40,28 +116,19 @@
 </head>
 <body>
   <header>
-    <div class="header-flex" style="position:relative;">
-      <img src="wikinger.png" alt="Viking Logo" class="logo desktop-logo" />
+    <div class="header-flex">
+      <img src="wikinger.png" class="logo" alt="Logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+      <img src="wikinger.png" class="logo" alt="Logo" />
     </div>
+    <div class="yellow-line"></div>
     <div class="lang-switch" id="lang-switch">
       <button onclick="changeLanguage('de')" id="btn-de">DE</button>
       <button onclick="changeLanguage('fr')" id="btn-fr">FR</button>
       <button onclick="changeLanguage('en')" id="btn-en">EN</button>
     </div>
   </header>
-  <nav>
-    <div class="nav-cards">
-      <a href="index.html" class="nav-card" id="nav-home">Startseite</a>
-      <a href="kalender.html" class="nav-card" id="nav-cal">MIH Kalender U18</a>
-      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank" id="nav-cardio">Cardio-Programme</a>
-      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank" id="nav-sponser">Sponser Sport Food</a>
-      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank" id="nav-spirit">Spirit Homepage</a>
-      <a href="feedback.html" class="nav-card" id="nav-feedback">Player Feedback</a>
-      <a href="dashboard.html" class="nav-card" id="nav-dashboard">Coach Dashboard</a>
-    </div>
-  </nav>
-  <main>
+  <div class="main-content">
     <form id="feedbackForm" class="card">
       <h2 id="formTitle">💬 Player Feedback</h2>
       <label for="name" id="labelName">Name *</label>
@@ -82,7 +149,7 @@
       <button type="submit" id="submitBtn">Abschicken</button>
       <div id="message"></div>
     </form>
-  </main>
+  </div>
   <section class="yellow-slogan" id="slogan">
     "OUR STRENGTH IS OUR UNITY!"
   </section>
@@ -93,7 +160,6 @@
     // Sprachdaten:
     const translations = {
       de: {
-        nav:      ["Startseite","MIH Kalender U18","Cardio-Programme","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
         formTitle:"💬 Player Feedback",
         name:"Name *",
         feeling:"Wie hast du dich gefühlt?",
@@ -123,7 +189,6 @@
         slogan:'"OUR STRENGTH IS OUR UNITY!"'
       },
       en: {
-        nav:      ["Home","Team Calendar","Cardio Program","Sponser Sport Food","Spirit Homepage","Player Feedback","Coach Dashboard"],
         formTitle:"💬 Player Feedback",
         name:"Name *",
         feeling:"How did you feel today?",
@@ -153,7 +218,6 @@
         slogan:'"OUR STRENGTH IS OUR UNITY!"'
       },
       fr: {
-        nav:      ["Accueil","Calendrier équipe","Programme Cardio","Sponser Sport Food","Spirit Homepage","Feedback Joueur","Coach Dashboard"],
         formTitle:"💬 Feedback Joueur",
         name:"Nom *",
         feeling:"Comment t'es-tu senti aujourd'hui ?",
@@ -189,24 +253,14 @@
     function changeLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('feedback_lang', lang);
-
-      // Buttons im Umschalter visuell aktivieren
       document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
       document.getElementById('btn-' + lang).classList.add('active');
-
       const t = translations[lang];
-
-      // Navigation
-      ["nav-home","nav-cal","nav-cardio","nav-sponser","nav-spirit","nav-feedback","nav-dashboard"].forEach((id,i) => {
-        const el = document.getElementById(id);
-        if (el && t.nav[i]) el.textContent = t.nav[i];
-      });
 
       document.getElementById('formTitle').textContent = t.formTitle;
       document.getElementById('labelName').textContent = t.name;
       document.getElementById('labelFeeling').textContent = t.feeling;
 
-      // Feeling Options
       const selFeeling = document.getElementById('feeling');
       selFeeling.innerHTML = "";
       t.feelingOptions.forEach(opt => {
@@ -217,7 +271,6 @@
       });
 
       document.getElementById('labelIntensity').innerHTML = t.intensity;
-      // Intensity Options
       const selIntensity = document.getElementById('intensity');
       selIntensity.innerHTML = "";
       t.intensityOptions.forEach(opt => {
@@ -228,7 +281,6 @@
       });
 
       document.getElementById('labelPerformance').innerHTML = t.performance;
-      // Performance Options
       const selPerformance = document.getElementById('performance');
       selPerformance.innerHTML = "";
       t.performanceOptions.forEach(opt => {
@@ -242,13 +294,8 @@
       document.getElementById('submitBtn').textContent = t.submit;
       document.getElementById('slogan').textContent = t.slogan;
     }
+    window.addEventListener('DOMContentLoaded', () => { changeLanguage(currentLang); });
 
-    // Initialisierung nach Laden
-    window.addEventListener('DOMContentLoaded', () => {
-      changeLanguage(currentLang);
-    });
-
-    // Formular-Handling
     const form = document.getElementById('feedbackForm');
     const message = document.getElementById('message');
     form.addEventListener('submit', async (e) => {

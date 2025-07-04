@@ -3,17 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MIH Kalender U18</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>📅 MIH Kalender U18</title>
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
+  <style>
+    :root {
+      --ehc-blue: #002b5c;
+      --ehc-yellow: #ffe16b;
+      --ehc-red: #d0021b;
+      --ehc-white: #fff;
+      --ehc-shadow: 0 10px 40px #00183e44;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--ehc-blue);
+      min-height: 100vh;
+      font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    }
+    header {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-bottom: 4px solid var(--ehc-red);
+      text-align: center;
+      padding: 32px 0 16px 0;
+    }
+    .header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-flex .logo { height: 56px; }
+    h1 { font-size: 2.2rem; font-weight: 800; margin: 0; letter-spacing: 2px; color: var(--ehc-white);}
+    .yellow-line { width: 85px; height: 5px; background: var(--ehc-yellow); border-radius: 8px; margin: 20px auto 10px auto;}
+    nav .nav-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+      padding: 20px 0 20px 0;
+      background: var(--ehc-blue);
+      margin-bottom: 12px;
+    }
+    .nav-card {
+      background: var(--ehc-red);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 34px;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 4px 24px #0001;
+      transition: transform 0.1s, background 0.2s;
+      margin: 0;
+    }
+    .nav-card:hover {
+      background: #af0116;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .main-content {
+      max-width: 950px;
+      margin: 36px auto 0 auto;
+      padding: 0 8px;
+    }
+    .card {
+      background: var(--ehc-blue);
+      color: var(--ehc-white);
+      border-radius: 30px;
+      margin: 0 auto;
+      box-shadow: var(--ehc-shadow);
+      padding: 32px 18px 18px 18px;
+      border: 3px solid var(--ehc-yellow);
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .card h2 {
+      color: var(--ehc-yellow);
+      text-align: center;
+      margin-bottom: 1.3rem;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .yellow-slogan {
+      color: var(--ehc-yellow);
+      text-align: center;
+      margin: 44px 0 0 0;
+      font-size: 1.18rem;
+      font-weight: 800;
+      letter-spacing: 1.1px;
+    }
+    footer {
+      margin-top: 45px;
+      background: var(--ehc-blue);
+      color: #ffe16b;
+      text-align: center;
+      padding: 13px 0 10px 0;
+      font-size: 1.02rem;
+      opacity: 0.87;
+      border-top: 2px solid var(--ehc-red);
+    }
+    @media (max-width: 700px) {
+      .header-flex { flex-direction: column; gap: 7px;}
+      nav .nav-cards { gap: 8px; padding: 10px;}
+      .nav-card { font-size: 0.97rem; padding: 9px 10px;}
+      .main-content { padding: 0 2px;}
+      .card { padding: 13px 2px 7px 2px; font-size:1rem;}
+      .card h2 { font-size:1.1rem;}
+    }
+  </style>
 </head>
 <body>
   <header>
     <div class="header-flex">
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
-      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo" />
     </div>
+    <div class="yellow-line"></div>
   </header>
   <nav>
     <div class="nav-cards">
@@ -26,20 +138,20 @@
       <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
     </div>
   </nav>
-  <main>
-    <section class="card" style="max-width:750px;width:98vw;">
-      <h2 style="color:#002b5c;text-align:center;margin-bottom:1.3rem;">
-        📅 MIH Kalender U18
-      </h2>
+  <div class="main-content">
+    <section class="card">
+      <h2>📅 MIH Kalender U18</h2>
       <iframe 
         src="https://calendar.google.com/calendar/embed?src=mubk4n72crsbuptn4drqpt77rjsial8g%40import.calendar.google.com&ctz=Europe%2FZurich&mode=AGENDA" 
-        style="border: 0; width: 100%; height: 600px; background:#f5f5f5; border-radius:10px; box-shadow:0 4px 18px #002b5c33;" 
+        style="border: 0; width: 100%; height: 600px; background:#fff; border-radius:15px; box-shadow:0 4px 18px #002b5c33;" 
         frameborder="0" 
         scrolling="no">
       </iframe>
-      <p style="text-align:center;color:#888;font-size:0.95rem;margin-top:1.1rem;">(Für eine bessere Übersicht rechts oben auf „Agenda“ klicken)</p>
+      <p style="text-align:center;color:#ffe16b;font-size:0.99rem;margin-top:1.1rem;">
+        (Für eine bessere Übersicht rechts oben auf „Agenda“ klicken)
+      </p>
     </section>
-  </main>
+  </div>
   <section class="yellow-slogan">
     "OUR STRENGTH IS OUR UNITY!"
   </section>
