@@ -1,275 +1,148 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="ehcb-icon.png" type="image/png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #002e5d;
-      color: white;
-    }
-
-    .login-container, .dashboard-container {
-      display: none;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-
-    .login-box {
-      background: white;
-      padding: 2em;
-      border-radius: 10px;
-      color: #002e5d;
-      box-shadow: 0 0 10px #00000055;
-    }
-
-    .login-box input {
-      padding: 0.5em;
-      margin-top: 1em;
-      width: 100%;
-    }
-
-    .login-box button {
-      background-color: #e50914;
-      color: white;
-      border: none;
-      padding: 0.5em 1em;
-      margin-top: 1em;
-      cursor: pointer;
-    }
-
-    .dashboard {
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    header img {
-      height: 60px;
-      margin-right: 15px;
-    }
-
-    header h1 {
-      font-size: 28px;
-      margin: 0;
-    }
-
-    .filters {
-      margin-bottom: 20px;
-    }
-
-    .filters input {
-      margin-right: 10px;
-      padding: 5px;
-    }
-
-    .filters button {
-      padding: 6px 12px;
-      background-color: #e50914;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    canvas {
-      max-width: 300px;
-      margin: 20px auto;
-      display: block;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background-color: white;
-      color: black;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #003d80;
-      color: yellow;
-    }
-
-    td {
-      border-bottom: 1px solid #ddd;
-    }
-
-    .delete-btn {
-      background-color: #e50914;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
+  <header>
+    <div class="header-flex">
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+      <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+    </div>
+    <nav>
+      <ul class="nav-vertical">
+        <li><a href="index.html">Startseite</a></li>
+        <li><a href="kalender.html">MIH Kalender U18</a></li>
+        <li><a href="feedback.html">Player Feedback</a></li>
+        <li><a href="dashboard.html">Coach Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<!-- Login -->
-<div class="login-container" id="loginContainer">
-  <div class="login-box">
-    <h2>🔐 Coach Login</h2>
-    <input type="password" id="passwordInput" placeholder="Enter password" />
-    <button onclick="checkPassword()">Login</button>
-  </div>
-</div>
-
-<!-- Dashboard -->
-<div class="dashboard-container" id="dashboardContainer">
-  <div class="dashboard">
-    <header>
-      <img src="wikinger.png" alt="Logo">
-      <h1><img src="https://img.icons8.com/color/48/000000/combo-chart--v1.png" width="32"/> Coach Dashboard</h1>
-    </header>
-
-    <div class="filters">
-      <label for="date">Date:</label>
-      <input type="date" id="filterDate" />
-      <label for="name">Player:</label>
-      <input type="text" id="filterName" placeholder="Search by name" />
-      <button onclick="filterData()">Filter</button>
+  <main>
+    <div id="login" class="login-container">
+      <div class="login-box">
+        <h2>🔐 Coach Login</h2>
+        <input type="password" id="password" placeholder="Enter password" />
+        <br><br>
+        <button onclick="checkPassword()">Login</button>
+      </div>
     </div>
 
-    <canvas id="performanceChart"></canvas>
+    <div id="dashboard" class="dashboard" style="display:none;max-width:1200px;margin:2rem auto;">
+      <div class="header" style="display:flex;align-items:center;">
+        <img src="wikinger.png" alt="EHC Biel Logo" class="logo" style="margin-right:18px;"/>
+        <h1 style="color:#002b5c;">📊 Coach Dashboard</h1>
+      </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Feeling</th>
-          <th>Performance</th>
-          <th>Intensity</th>
-          <th>Comment</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody id="dataBody"></tbody>
-    </table>
-  </div>
-</div>
+      <div class="filter-controls" style="margin-bottom:20px;">
+        <label>Date: <input type="date" id="date-filter"></label>
+        <label>Player: <input type="text" id="name-filter" placeholder="Name"></label>
+        <button onclick="filterData()">Filter</button>
+      </div>
 
-<script>
-  const SHEET_ID = '1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE';
-  const SHEET_NAME = 'Feedback';
-  const API_KEY = 'AIzaSyCF_Xplv4oWuhmYIqZy0GIOIYwXKhqFcZg';
+      <canvas id="performanceChart" style="margin:2rem 0;"></canvas>
+      <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
+        <thead>
+          <tr>
+            <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </main>
 
-  let rawData = [];
-
-  function checkPassword() {
-    const input = document.getElementById('passwordInput').value;
-    if (input === 'Coach7274') {
-      document.getElementById('loginContainer').style.display = 'none';
-      document.getElementById('dashboardContainer').style.display = 'flex';
-      loadData();
-    } else {
-      alert('Wrong password!');
-    }
-  }
-
-  function formatDate(str) {
-    const date = new Date(str);
-    return !isNaN(date) ? date.toLocaleString('de-CH') : 'Invalid Date';
-  }
-
-  function loadData() {
-    fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`)
-      .then(res => res.json())
-      .then(data => {
-        const rows = data.values.slice(1);
-        rawData = rows.map(r => ({
-          date: formatDate(r[0]),
-          name: r[2],
-          feeling: r[3],
-          performance: r[4],
-          intensity: r[5],
-          comment: r[6]
-        }));
-        renderTable(rawData);
-        renderChart(rawData);
-      });
-  }
-
-  function renderTable(data) {
-    const tbody = document.getElementById('dataBody');
-    tbody.innerHTML = '';
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.date}</td>
-        <td>${row.name}</td>
-        <td>${row.feeling}</td>
-        <td>${row.performance}</td>
-        <td>${row.intensity}</td>
-        <td>${row.comment}</td>
-        <td><button class="delete-btn" onclick="deleteRow('${row.date}')">🗑</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function renderChart(data) {
-    const ctx = document.getElementById('performanceChart').getContext('2d');
-    const counts = {};
-    data.forEach(r => counts[r.performance] = (counts[r.performance] || 0) + 1);
-
-    if (window.performanceChart) window.performanceChart.destroy();
-    window.performanceChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: Object.keys(counts),
-        datasets: [{
-          data: Object.values(counts),
-          backgroundColor: ['#00ff99', '#00ccff', '#ffcc00', '#ff6666']
-        }]
-      },
-      options: {
-        plugins: { legend: { labels: { color: "white" } } }
+  <section class="yellow-slogan">
+    <p>"OUR STRENGTH IS OUR UNITY!"</p>
+  </section>
+  <footer>
+    <p>© 2025 EHC Biel-Bienne U18-Elit</p>
+  </footer>
+  <script>
+    const correctPassword = "ehcb2025";
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      if (input === correctPassword) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        loadData();
+      } else {
+        alert("Incorrect password");
       }
-    });
-  }
+    }
 
-  function filterData() {
-    const date = document.getElementById('filterDate').value;
-    const name = document.getElementById('filterName').value.toLowerCase();
-
-    const filtered = rawData.filter(row => {
-      const matchDate = !date || row.date.startsWith(date.split("-").reverse().join("."));
-      const matchName = !name || row.name.toLowerCase().includes(name);
-      return matchDate && matchName;
-    });
-
-    renderTable(filtered);
-    renderChart(filtered);
-  }
-
-  function deleteRow(date) {
-    alert(`Eintrag mit Datum "${date}" löschen (Funktion zur Löschung muss mit Google Apps Script verbunden werden).`);
-  }
-
-  // Startseite erst Login anzeigen
-  document.getElementById('loginContainer').style.display = 'flex';
-</script>
-
+    let rawData = [];
+    function loadData() {
+      fetch('https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback')
+        .then(response => response.json())
+        .then(data => {
+          rawData = data;
+          renderTable(data);
+          renderChart(data);
+        });
+    }
+    function renderTable(data) {
+      const tbody = document.querySelector("#feedbackTable tbody");
+      tbody.innerHTML = "";
+      data.forEach((entry, index) => {
+        const date = new Date(entry.Date);
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${isNaN(date) ? entry.Date : date.toLocaleString()}</td>
+          <td>${entry.Name}</td>
+          <td>${entry.Feeling}</td>
+          <td>${entry.Performance}</td>
+          <td>${entry.Intensity}</td>
+          <td>${entry.Comment}</td>
+          <td><button class="delete-btn" onclick="deleteEntry(${index})">🗑️</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    function filterData() {
+      const dateValue = document.getElementById("date-filter").value;
+      const nameValue = document.getElementById("name-filter").value.toLowerCase();
+      const filtered = rawData.filter(entry => {
+        const matchesDate = !dateValue || entry.Date.startsWith(dateValue);
+        const matchesName = !nameValue || entry.Name.toLowerCase().includes(nameValue);
+        return matchesDate && matchesName;
+      });
+      renderTable(filtered);
+      renderChart(filtered);
+    }
+    function deleteEntry(index) {
+      rawData.splice(index, 1);
+      renderTable(rawData);
+      renderChart(rawData);
+    }
+    function renderChart(data) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      const labels = [...new Set(data.map(d => d.Performance))];
+      const counts = labels.map(val => data.filter(d => d.Performance == val).length);
+      if (window.performanceChart) window.performanceChart.destroy();
+      window.performanceChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: counts,
+            backgroundColor: ['#1abc9c', '#3498db', '#9b59b6', '#e67e22', '#e74c3c'],
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { labels: { color: "#002b5c" } }
+          }
+        }
+      });
+    }
+  </script>
 </body>
 </html>

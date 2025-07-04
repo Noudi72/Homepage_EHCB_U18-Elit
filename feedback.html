@@ -1,112 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>💬 Player Feedback</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #002147;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background-color: #063b73;
-      padding: 30px;
-      border-radius: 10px;
-      width: 400px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 15px;
-    }
-    input, select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: none;
-      font-size: 14px;
-    }
-    button {
-      background-color: #d91c1c;
-      color: white;
-      margin-top: 20px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .success {
-      color: lightgreen;
-      text-align: center;
-      margin-top: 15px;
-    }
-    .error {
-      color: red;
-      text-align: center;
-      margin-top: 15px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="icon" href="ehcb-icon.png" type="image/png" />
 </head>
 <body>
-  <div class="container">
-    <h2>💬 Player Feedback</h2>
-    <form id="feedbackForm">
-      <label for="name">Name *</label>
-      <input type="text" id="name" name="name" required>
+  <header>
+    <div class="header-flex">
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+      <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+    </div>
+    <nav>
+      <ul class="nav-vertical">
+        <li><a href="index.html">Startseite</a></li>
+        <li><a href="kalender.html">MIH Kalender U18</a></li>
+        <li><a href="feedback.html">Player Feedback</a></li>
+        <li><a href="dashboard.html">Coach Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
 
-      <label for="feeling">How did you feel today?</label>
+  <main style="display:flex;justify-content:center;align-items:center;min-height:60vh;">
+    <form id="feedbackForm" style="background:#fff; padding:2.2rem 2rem; border-radius:15px; max-width:420px; margin:2rem auto; box-shadow:0 8px 20px #0002;">
+      <h2 style="text-align:center;color:#002b5c;">💬 Player Feedback</h2>
+      <label for="name">Name *</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="feeling">Wie hast du dich gefühlt?</label>
       <select id="feeling" name="feeling" required>
         <option value="🟢 Top">🟢 Top</option>
         <option value="🟡 Okay">🟡 Okay</option>
-        <option value="🔴 Tired">🔴 Tired</option>
+        <option value="🔴 Tired">🔴 Müde</option>
       </select>
 
-      <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
+      <label for="intensity">🏋️ Trainingsintensität (1 = locker – 6 = sehr hart)</label>
       <select id="intensity" name="intensity" required>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
+        <option value="1">1</option><option value="2">2</option>
+        <option value="3">3</option><option value="4">4</option>
+        <option value="5">5</option><option value="6">6</option>
       </select>
 
-      <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
+      <label for="performance">🎯 Eigene Leistung (1 = sehr schlecht – 6 = top)</label>
       <select id="performance" name="performance" required>
-        <option value="1">1 – 🔴 really bad 😩</option>
-        <option value="2">2 – 🟠 bad 😕</option>
+        <option value="1">1 – 🔴 sehr schlecht 😩</option>
+        <option value="2">2 – 🟠 schlecht 😕</option>
         <option value="3">3 – 🟡 ok 🙂</option>
-        <option value="4">4 – 🟢 good 😁</option>
-        <option value="5">5 – 🟢🟢 very good 😃</option>
-        <option value="6">6 – 🟢🟢🟢 excellent 💪🔥</option>
+        <option value="4">4 – 🟢 gut 😁</option>
+        <option value="5">5 – 🟢🟢 sehr gut 😃</option>
+        <option value="6">6 – 🟢🟢🟢 ausgezeichnet 💪🔥</option>
       </select>
 
-      <label for="comment">📝 Comment (optional)</label>
-      <textarea id="comment" name="comment" rows="3"></textarea>
+      <label for="comment">📝 Kommentar (optional)</label>
+      <textarea id="comment" name="comment" rows="2"></textarea>
 
-      <button type="submit">Submit</button>
+      <button type="submit" style="margin-top:1.1rem;">Abschicken</button>
+      <div id="message" style="margin-top:1rem;text-align:center;"></div>
     </form>
-
-    <div id="message" class="error"></div>
-  </div>
+  </main>
+  
+  <section class="yellow-slogan">
+    <p>"OUR STRENGTH IS OUR UNITY!"</p>
+  </section>
+  <footer>
+    <p>© 2025 EHC Biel-Bienne U18-Elit</p>
+  </footer>
 
   <script>
     const form = document.getElementById('feedbackForm');
     const message = document.getElementById('message');
-
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       message.textContent = '';
-
       const data = {
         name: form.name.value,
         feeling: form.feeling.value,
@@ -114,24 +82,19 @@
         performance: form.performance.value,
         comment: form.comment.value
       };
-
       try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbxaKZ5OD30_E5AZN5xjXXYN677DUs2VDYOQpD5GkPokGRsrGkeg8qDJyLbfcOhcFa135w/exec', {
           method: 'POST',
-          mode: 'no-cors', // <- Wichtig für Google Script ohne CORS-Header
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-
-        message.className = 'success';
-        message.textContent = '✅ Feedback submitted!';
+        message.style.color = "green";
+        message.textContent = '✅ Feedback übermittelt!';
         form.reset();
-
       } catch (err) {
-        message.className = 'error';
-        message.textContent = '❌ Connection failed. Please try later.';
+        message.style.color = "red";
+        message.textContent = '❌ Verbindung fehlgeschlagen.';
       }
     });
   </script>
