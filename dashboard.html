@@ -6,14 +6,52 @@
   <title>Coach Dashboard</title>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="ehcb-icon.png" type="image/png" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .lang-switch {
+      position: absolute;
+      top: 22px;
+      right: 32px;
+      display: flex;
+      gap: 10px;
+      z-index: 11;
+    }
+    .lang-switch button {
+      background: #eee;
+      color: #002b5c;
+      border: none;
+      font-weight: 700;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 4px 18px 2px 18px;
+      font-size: 1.13rem;
+      transition: background 0.1s, color 0.1s;
+    }
+    .lang-switch .active {
+      background: #002b5c;
+      color: #fff;
+    }
+    @media (max-width: 700px) {
+      .lang-switch {top: 7px; right: 7px;}
+      .lang-switch button {padding: 2px 9px 1px 9px; font-size: 0.98rem;}
+    }
+    #performanceChart { background: #fff; border-radius: 16px; box-shadow: 0 4px 18px #0001; margin-bottom: 1.8rem;}
+    .delete-btn { background: #d0021b; color: #fff; border:none; border-radius:8px; font-size: 1.45rem; padding:2px 16px; cursor:pointer; }
+    .delete-btn:hover { background: #a0021b; }
+  </style>
 </head>
 <body>
-  <header>
+  <header style="position: relative;">
     <div class="header-flex">
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+      <div class="lang-switch" id="lang-switch">
+        <button class="active">DE</button>
+        <button>FR</button>
+        <button>EN</button>
+      </div>
     </div>
   </header>
   <nav>
@@ -49,7 +87,7 @@
         <input type="text" id="name-filter" placeholder="Name" style="width:200px;">
         <button onclick="filterData()" class="btn" style="margin-left:1.2rem;">Filter</button>
       </div>
-      <canvas id="performanceChart" style="margin:2rem auto;display:block;max-width:400px;"></canvas>
+      <canvas id="performanceChart" width="350" height="350"></canvas>
       <div style="overflow-x:auto;">
         <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
           <thead>
@@ -121,7 +159,7 @@
       renderChart(filtered);
     }
 
-    // NEU: Löschen mit FormData (funktioniert immer mit Google Apps Script!)
+    // Löschen mit FormData (funktioniert immer mit Google Apps Script!)
     function deleteEntry(index) {
       const entry = rawData[index];
       if(!confirm("Wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.")) return;
@@ -138,23 +176,26 @@
       .catch(() => alert("Verbindung zum Server fehlgeschlagen!"));
     }
 
+    // Chart.js
+    let performanceChart = null;
     function renderChart(data) {
       const ctx = document.getElementById('performanceChart').getContext('2d');
-      const labels = [...new Set(data.map(d => d.Performance))];
-      const counts = labels.map(val => data.filter(d => d.Performance == val).length);
-      if (window.performanceChart) window.performanceChart.destroy();
-      window.performanceChart = new Chart(ctx, {
+      const allLabels = ['1','2','3','4','5','6'];
+      const counts = allLabels.map(val => data.filter(d => d.Performance == val).length);
+
+      if (performanceChart) performanceChart.destroy();
+      performanceChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-          labels: labels,
+          labels: ['1 (schlecht)','2','3','4','5','6 (top)'],
           datasets: [{
             data: counts,
-            backgroundColor: ['#1abc9c', '#3498db', '#9b59b6', '#e67e22', '#e74c3c'],
+            backgroundColor: ['#e74c3c', '#e67e22', '#f1c40f', '#3498db', '#2ecc71', '#27ae60'],
           }]
         },
         options: {
           plugins: {
-            legend: { labels: { color: "#002b5c" } }
+            legend: { labels: { color: "#002b5c", font: {size: 14} } }
           }
         }
       });
