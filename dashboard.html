@@ -1,169 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coach Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
+      font-family: 'Roboto', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #06224A;
-      font-family: 'Roboto', sans-serif;
-      color: white;
+      background-color: #002b5b;
+      color: #fff;
     }
+
     .container {
-      max-width: 960px;
-      margin: 40px auto;
-      background-color: #0c3b73;
-      border-radius: 10px;
-      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      color: #fff;
     }
-    input, button, select {
+
+    .filter-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .filter-section input {
       padding: 10px;
-      margin: 10px 5px;
+      font-size: 14px;
       border-radius: 5px;
       border: none;
-      font-size: 16px;
     }
-    input[type="date"], input[type="text"], input[type="password"] {
-      width: 180px;
-    }
-    button {
+
+    .filter-section button {
+      padding: 10px 20px;
       background-color: #e63946;
       color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      background-color: white;
-      color: black;
+      background-color: #fff;
+      color: #000;
       border-radius: 8px;
       overflow: hidden;
     }
+
     th, td {
-      padding: 12px;
-      border-bottom: 1px solid #ccc;
-      text-align: center;
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
     }
+
     th {
-      background-color: #06224A;
+      background-color: #003f88;
       color: white;
     }
-    #loginBox {
+
+    .login-section {
       text-align: center;
-      margin-top: 100px;
+      margin-top: 40px;
+    }
+
+    #password {
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    #loginButton {
+      padding: 10px 20px;
+      background-color: #e63946;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #dashboard {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="loginBox">
-    <h1>🔒 Coach Login</h1>
-    <input type="password" id="password" placeholder="Enter password">
-    <button onclick="checkPassword()">Login</button>
-  </div>
-
-  <div class="container" id="dashboard" style="display:none;">
-    <h1>📊 Coach Dashboard</h1>
-    <div style="text-align:center;">
-      <label for="filterDate">Date: </label>
-      <input type="date" id="filterDate">
-      <label for="playerSearch">Player: </label>
-      <input type="text" id="playerSearch" placeholder="Search by name">
-      <button onclick="filterData()">Filter</button>
+  <div class="container">
+    <div class="login-section" id="login">
+      <h2>🔐 Coach Login</h2>
+      <input type="password" id="password" placeholder="Enter password" />
+      <button id="loginButton">Login</button>
     </div>
-    <table id="feedbackTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Feeling</th>
-          <th>Performance</th>
-          <th>Intensity</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+
+    <div id="dashboard">
+      <h1>📊 Coach Dashboard</h1>
+      <div class="filter-section">
+        <label>Date: <input type="date" id="dateFilter" /></label>
+        <label>Player: <input type="text" id="nameFilter" placeholder="Search by name" /></label>
+        <button onclick="applyFilter()">Filter</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Feeling</th>
+            <th>Performance</th>
+            <th>Intensity</th>
+            <th>Comment</th>
+          </tr>
+        </thead>
+        <tbody id="feedbackTable"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?gid=1048970832#gid=1048970832";
+    const PASSWORD = "Coach7274";
+    let originalData = [];
 
-    function checkPassword() {
-      const password = document.getElementById("password").value;
-      if (password === "Coach7274") {
-        document.getElementById("loginBox").style.display = "none";
+    document.getElementById("loginButton").addEventListener("click", () => {
+      const enteredPassword = document.getElementById("password").value;
+      if (enteredPassword === PASSWORD) {
+        document.getElementById("login").style.display = "none";
         document.getElementById("dashboard").style.display = "block";
-        loadData();
+        fetchData();
       } else {
         alert("Incorrect password.");
       }
+    });
+
+    async function fetchData() {
+      const url = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?gid=1048970832#gid=1048970832"; // Füge hier deine CSV-URL ein
+      const response = await fetch(url);
+      const data = await response.text();
+      const rows = data.split("\n").map(row => row.split(","));
+
+      originalData = rows.slice(1).map(row => ({
+        date: row[0],
+        name: row[2],
+        feeling: row[3],
+        performance: row[4],
+        intensity: row[5],
+        comment: row[6]
+      }));
+
+      renderTable(originalData);
     }
 
-    let originalData = [];
+    function applyFilter() {
+      const date = document.getElementById("dateFilter").value;
+      const name = document.getElementById("nameFilter").value.toLowerCase();
 
-    function loadData() {
-      fetch(sheetUrl)
-        .then(response => response.text())
-        .then(data => {
-          const rows = data.trim().split("\n").map(row => row.split(","));
-          const tableBody = document.querySelector("#feedbackTable tbody");
-          tableBody.innerHTML = "";
+      const filtered = originalData.filter(entry =>
+        (!date || entry.date.includes(date)) &&
+        (!name || entry.name.toLowerCase().includes(name))
+      );
 
-          const header = rows[0];
-          const dateIndex = header.indexOf("Date");
-          const nameIndex = header.indexOf("Name");
-          const feelingIndex = header.indexOf("Feeling");
-          const performanceIndex = header.indexOf("Performance");
-          const intensityIndex = header.indexOf("Intensity");
-          const commentIndex = header.indexOf("Comment");
-
-          originalData = rows.slice(1).map(row => ({
-            date: row[dateIndex],
-            name: row[nameIndex],
-            feeling: row[feelingIndex],
-            performance: row[performanceIndex],
-            intensity: row[intensityIndex],
-            comment: row[commentIndex]
-          }));
-
-          displayRows(originalData);
-        });
+      renderTable(filtered);
     }
 
-    function displayRows(data) {
-      const tableBody = document.querySelector("#feedbackTable tbody");
+    function renderTable(data) {
+      const tableBody = document.getElementById("feedbackTable");
       tableBody.innerHTML = "";
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.date}</td>
-          <td>${row.name}</td>
-          <td>${row.feeling}</td>
-          <td>${row.performance}</td>
-          <td>${row.intensity}</td>
-          <td>${row.comment}</td>
-        `;
-        tableBody.appendChild(tr);
-      });
-    }
 
-    function filterData() {
-      const dateValue = document.getElementById("filterDate").value;
-      const nameValue = document.getElementById("playerSearch").value.toLowerCase();
-      const filtered = originalData.filter(row => {
-        const matchDate = dateValue === "" || row.date.startsWith(dateValue);
-        const matchName = nameValue === "" || row.name.toLowerCase().includes(nameValue);
-        return matchDate && matchName;
+      data.forEach(entry => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${entry.date}</td>
+          <td>${entry.name}</td>
+          <td>${entry.feeling}</td>
+          <td>${entry.performance}</td>
+          <td>${entry.intensity}</td>
+          <td>${entry.comment}</td>
+        `;
+        tableBody.appendChild(row);
       });
-      displayRows(filtered);
     }
   </script>
 </body>
