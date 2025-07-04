@@ -2,119 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Arial', sans-serif;
+      background-color: #002b5c;
       margin: 0;
-      padding: 0;
-      background-color: #002b5b;
+      padding: 20px;
       color: #fff;
     }
 
-    .container {
-      max-width: 1200px;
+    .dashboard-container {
+      max-width: 1100px;
       margin: 0 auto;
+      background-color: #003366;
       padding: 30px;
+      border-radius: 10px;
     }
 
     h1 {
       text-align: center;
-      color: #fff;
+      margin-bottom: 20px;
+      color: #ffffff;
     }
 
-    .filter-section {
+    .filters {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
+      gap: 10px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .filter-section input {
+    input[type="date"], input[type="text"], input[type="password"] {
       padding: 10px;
-      font-size: 14px;
-      border-radius: 5px;
       border: none;
+      border-radius: 5px;
+      font-size: 1em;
     }
 
-    .filter-section button {
-      padding: 10px 20px;
-      background-color: #e63946;
-      color: white;
+    button {
+      background-color: #e74c3c;
       border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1em;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 10px;
       background-color: #fff;
-      color: #000;
-      border-radius: 8px;
-      overflow: hidden;
+      color: #333;
     }
 
     th, td {
-      padding: 12px 10px;
-      text-align: left;
+      padding: 12px;
+      text-align: center;
       border-bottom: 1px solid #ddd;
     }
 
     th {
-      background-color: #003f88;
+      background-color: #001f3f;
       color: white;
     }
 
-    .login-section {
+    .login {
       text-align: center;
-      margin-top: 40px;
+      margin-bottom: 20px;
     }
 
-    #password {
-      padding: 10px;
-      font-size: 16px;
-      margin-right: 10px;
-      border-radius: 5px;
-      border: none;
+    #loginForm {
+      margin-top: 10px;
     }
 
-    #loginButton {
-      padding: 10px 20px;
-      background-color: #e63946;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #dashboard {
+    #dashboardContent {
       display: none;
+    }
+
+    .password-input {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="login-section" id="login">
-      <h2>🔐 Coach Login</h2>
-      <input type="password" id="password" placeholder="Enter password" />
-      <button id="loginButton">Login</button>
+  <div class="dashboard-container">
+    <div class="login" id="loginContainer">
+      <h1>🔒 Coach Login</h1>
+      <form id="loginForm">
+        <input class="password-input" type="password" id="passwordInput" placeholder="Enter password..." required />
+        <button type="submit">Login</button>
+      </form>
     </div>
 
-    <div id="dashboard">
+    <div id="dashboardContent">
       <h1>📊 Coach Dashboard</h1>
-      <div class="filter-section">
-        <label>Date: <input type="date" id="dateFilter" /></label>
-        <label>Player: <input type="text" id="nameFilter" placeholder="Search by name" /></label>
-        <button onclick="applyFilter()">Filter</button>
+      <div class="filters">
+        <label>
+          Date:
+          <input type="date" id="filterDate" />
+        </label>
+        <label>
+          Player:
+          <input type="text" id="filterPlayer" placeholder="Search by name" />
+        </label>
+        <button onclick="loadData()">Filter</button>
       </div>
-
       <table>
         <thead>
           <tr>
@@ -126,72 +123,60 @@
             <th>Comment</th>
           </tr>
         </thead>
-        <tbody id="feedbackTable"></tbody>
+        <tbody id="dataTableBody"></tbody>
       </table>
     </div>
   </div>
 
   <script>
-    const PASSWORD = "Coach7274";
-    let originalData = [];
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/gviz/tq?tqx=out:json&sheet=Feedback';
+    const PASSWORD = 'Coach7274';
 
-    document.getElementById("loginButton").addEventListener("click", () => {
-      const enteredPassword = document.getElementById("password").value;
-      if (enteredPassword === PASSWORD) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        fetchData();
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const pw = document.getElementById('passwordInput').value;
+      if (pw === PASSWORD) {
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('dashboardContent').style.display = 'block';
+        loadData();
       } else {
-        alert("Incorrect password.");
+        alert('Incorrect password');
       }
     });
 
-    async function fetchData() {
-      const url = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?gid=1048970832#gid=1048970832"; // Füge hier deine CSV-URL ein
-      const response = await fetch(url);
-      const data = await response.text();
-      const rows = data.split("\n").map(row => row.split(","));
+    function loadData() {
+      fetch(SHEET_URL)
+        .then(res => res.text())
+        .then(data => {
+          const json = JSON.parse(data.substr(47).slice(0, -2));
+          const rows = json.table.rows;
+          const headers = json.table.cols.map(col => col.label);
 
-      originalData = rows.slice(1).map(row => ({
-        date: row[0],
-        name: row[2],
-        feeling: row[3],
-        performance: row[4],
-        intensity: row[5],
-        comment: row[6]
-      }));
+          const dateFilter = document.getElementById('filterDate').value;
+          const nameFilter = document.getElementById('filterPlayer').value.toLowerCase();
+          const tbody = document.getElementById('dataTableBody');
+          tbody.innerHTML = '';
 
-      renderTable(originalData);
-    }
+          rows.forEach(row => {
+            const cells = row.c.map(cell => (cell ? cell.v : ''));
+            const [date, , name, feeling, performance, intensity, comment] = cells;
 
-    function applyFilter() {
-      const date = document.getElementById("dateFilter").value;
-      const name = document.getElementById("nameFilter").value.toLowerCase();
-
-      const filtered = originalData.filter(entry =>
-        (!date || entry.date.includes(date)) &&
-        (!name || entry.name.toLowerCase().includes(name))
-      );
-
-      renderTable(filtered);
-    }
-
-    function renderTable(data) {
-      const tableBody = document.getElementById("feedbackTable");
-      tableBody.innerHTML = "";
-
-      data.forEach(entry => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${entry.date}</td>
-          <td>${entry.name}</td>
-          <td>${entry.feeling}</td>
-          <td>${entry.performance}</td>
-          <td>${entry.intensity}</td>
-          <td>${entry.comment}</td>
-        `;
-        tableBody.appendChild(row);
-      });
+            if ((name.toLowerCase().includes(nameFilter)) &&
+                (!dateFilter || (date && date.includes(dateFilter)))) {
+              const tr = document.createElement('tr');
+              [date, name, feeling, performance, intensity, comment].forEach(value => {
+                const td = document.createElement('td');
+                td.textContent = value;
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            }
+          });
+        })
+        .catch(err => {
+          alert('Error loading data.');
+          console.error(err);
+        });
     }
   </script>
 </body>
