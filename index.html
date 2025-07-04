@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -16,18 +16,21 @@
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
     </div>
     <nav>
-  <ul class="nav-vertical">
-  <li><a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" target="_blank">🏃‍♂️ Cardio-Programme</a></li>
-  <li><a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" target="_blank">🥤 Sponser Sport Food</a></li>
-  <li><a href="https://www.ehcb.ch/de/teams/u18-elit" target="_blank">🔥 Spirit Homepage</a></li>
-  <li><a href="kalender.html">📅 MIH Kalender U18</a></li>
-  <li><a href="feedback.html">🗣 Feedback</a></li>
-</ul>
-</nav>
+      <ul class="nav-vertical">
+        <li><a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" target="_blank">Cardio-Programme</a></li>
+        <li><a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" target="_blank">Sponser Sport Food</a></li>
+        <li><a href="https://www.ehcb.ch/de/teams/u18-elit" target="_blank">Spirit Homepage</a></li>
+        <li><a href="kalender.html">MIH Kalender U18</a></li>
+        <li><a href="feedback.html">Player Feedback</a></li>
+        <li><a href="dashboard.html">Coach Dashboard</a></li>
+      </ul>
+    </nav>
   </header>
-<section class="training-info" id="next-training">
-  <h2>📅 Nächste Einheit wird geladen...</h2>
-</section>
+
+  <section class="training-info" id="next-training">
+    <h2>📅 Nächste Einheit wird geladen...</h2>
+  </section>
+
   <section class="yellow-slogan">
     <p>"OUR STRENGTH IS OUR UNITY!"</p>
   </section>
@@ -35,23 +38,24 @@
   <footer>
     <p>© 2025 EHC Biel-Bienne U18-Elit</p>
   </footer>
+
   <script>
-  fetch("https://script.google.com/macros/s/AKfycbyrCOhzgwAcqpIfMyxmj_Spxo3XYI7nklcjn9CWro3kp7f59GUnAM26sVBJUpgVCsuy3Q/exec")
-    .then(res => res.json())
-    .then(data => {
-      const section = document.getElementById("next-training");
-      if (data.message) {
-        section.innerHTML = `<h2>📅 ${data.message}</h2>`;
-      } else {
-        section.innerHTML = `
-          <h2>📅 Nächste Einheit</h2>
-          <p><strong>${data.date}</strong> um <strong>${data.time}</strong> – ${data.title}</p>
-        `;
-      }
-    })
-    .catch(() => {
-      document.getElementById("next-training").innerHTML = "<h2>Fehler beim Laden der Trainingsdaten</h2>";
-    });
-</script>
+    fetch("https://script.google.com/macros/s/AKfycbyrCOhzgwAcqpIfMyxmj_Spxo3XYI7nklcjn9CWro3kp7f59GUnAM26sVBJUpgVCsuy3Q/exec")
+      .then(res => res.json())
+      .then(data => {
+        const section = document.getElementById("next-training");
+        if (data.message) {
+          section.innerHTML = `<h2>📅 ${data.message}</h2>`;
+        } else {
+          section.innerHTML = `
+            <h2>📅 Nächste Einheit</h2>
+            <p><strong>${data.date}</strong> um <strong>${data.time}</strong> – ${data.title}</p>
+          `;
+        }
+      })
+      .catch(() => {
+        document.getElementById("next-training").innerHTML = "<h2>Fehler beim Laden der Trainingsdaten</h2>";
+      });
+  </script>
 </body>
 </html>

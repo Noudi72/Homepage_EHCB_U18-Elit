@@ -1,150 +1,146 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Feedback – EHC BIEL-BIENNE U18-ELIT</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="icon" href="ehcb-icon.png" type="image/png" />
+  <title>Player Feedback</title>
   <style>
     body {
-      background-color: #002b5c;
-      color: white;
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 1rem;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #002f5f, #004080);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
 
-    h1 {
+    .feedback-container {
+      background: #003366;
+      border-radius: 12px;
+      padding: 30px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
       text-align: center;
       color: white;
-    }
-
-    form {
-      max-width: 500px;
-      margin: auto;
-      background: white;
-      color: black;
-      padding: 1.5rem;
-      border-radius: 10px;
+      margin-bottom: 30px;
     }
 
     label {
       font-weight: bold;
-      margin-top: 1rem;
       display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+
+    textarea {
+      resize: vertical;
     }
 
     button {
-      background-color: #c8102e;
+      background-color: #d50000;
       color: white;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
       border: none;
-      border-radius: 5px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1em;
+      font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
+      margin-top: 15px;
     }
 
     button:hover {
-      background-color: #a10d25;
+      background-color: #ff1744;
     }
 
-    .status {
-      margin-top: 1rem;
+    .success-message {
       text-align: center;
+      color: #90ee90;
+      margin-top: 20px;
       font-weight: bold;
-    }
-
-    .coach-link {
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.9rem;
-    }
-
-    .coach-link a {
-      color: #fdd835;
-      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <h1>🗣 Spieler-Feedback</h1>
+  <div class="feedback-container">
+    <h2>💬 Player Feedback</h2>
+    <form id="feedbackForm">
+      <label for="name">Name *</label>
+      <input type="text" id="name" name="name" required />
 
-  <form id="feedbackForm">
-    <label for="name">Name *</label>
-    <input type="text" id="name" name="name" required>
+      <label for="feeling">How did you feel today?</label>
+      <select id="feeling" name="feeling">
+        <option>🟢 Top</option>
+        <option>🟡 Okay</option>
+        <option>🔴 Not great</option>
+      </select>
 
-    <label>Wie fühlst du dich?</label>
-    <select name="zustand" required>
-      <option value="">Bitte wählen</option>
-      <option value="🟢 Top">🟢 Top</option>
-      <option value="🟡 OK">🟡 OK</option>
-      <option value="🔴 Müde">🔴 Müde</option>
-    </select>
+      <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
+      <select id="intensity" name="intensity" required>
+        <option>1 ⚪😌</option>
+        <option>2 🟠🙂</option>
+        <option>3 🟡😐</option>
+        <option>4 🟢🙂</option>
+        <option>5 🟢🟢😁</option>
+        <option>6 🟢🟢🟢💪😅</option>
+      </select>
 
-    <label>Trainingsintensität (1–6)</label>
-    <select name="intensitaet" required>
-      <option value="">Bitte wählen</option>
-      <option value="1 🔴 😵‍💫">1 🔴 😵‍💫</option>
-      <option value="2 🟠 😕">2 🟠 😕</option>
-      <option value="3 🟡 😐">3 🟡 😐</option>
-      <option value="4 🟢 🙂">4 🟢 🙂</option>
-      <option value="5 🟢🟢 😃">5 🟢🟢 😃</option>
-      <option value="6 🟩🟢 💪😎">6 🟩🟢 💪😎</option>
-    </select>
+      <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
+      <select id="performance" name="performance" required>
+        <option>1 - 🔴 really bad 😬</option>
+        <option>2 - 🟠 bad 😕</option>
+        <option>3 - 🟡 okay 😐</option>
+        <option>4 - 🟢 good 🙂</option>
+        <option>5 - 🟢🟢 very good 😃</option>
+        <option>6 - 🟢🟢🟢 awesome 💪🏅</option>
+      </select>
 
-    <label>Leistung heute (1–6)</label>
-    <select name="leistung" required>
-      <option value="">Bitte wählen</option>
-      <option value="1 🔴 😵‍💫">1 🔴 😵‍💫</option>
-      <option value="2 🟠 😕">2 🟠 😕</option>
-      <option value="3 🟡 😐">3 🟡 😐</option>
-      <option value="4 🟢 🙂">4 🟢 🙂</option>
-      <option value="5 🟢🟢 😃">5 🟢🟢 😃</option>
-      <option value="6 🟩🟢 💪😎">6 🟩🟢 💪😎</option>
-    </select>
+      <label for="comment">📝 Comment (optional)</label>
+      <textarea id="comment" name="comment" rows="4"></textarea>
 
-    <label>Kommentar (optional)</label>
-    <textarea name="kommentar" rows="3"></textarea>
-
-    <button type="submit">Absenden</button>
-
-    <div class="status" id="status"></div>
-  </form>
-
-  <div class="coach-link">
-    <p>Nur für Coaches: <a href="https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?usp=sharing" target="_blank">Antworten ansehen</a></p>
+      <button type="submit">Submit</button>
+      <div class="success-message" id="successMsg" style="display:none;">
+        ✅ Feedback submitted. Thank you!
+      </div>
+    </form>
   </div>
 
   <script>
-    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    document.getElementById("feedbackForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const status = document.getElementById('status');
-      status.textContent = "Senden…";
 
-      const data = new FormData(this);
-      fetch("https://script.google.com/macros/s/AKfycbxCMN5u8g_irsSdadZNedMFiwvOWLpXJ7_W_0XW-7g__K4CFkbzzAR6jsFZRZwgbQwHOA/exec", {
+      const data = {
+        name: document.getElementById("name").value,
+        feeling: document.getElementById("feeling").value,
+        intensity: document.getElementById("intensity").value,
+        performance: document.getElementById("performance").value,
+        comment: document.getElementById("comment").value,
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbyrCOhzgwAcqpIfMyxmj_Spxo3XYI7nklcjn9CWro3kp7f59GUnAM26sVBJUpgVCsuy3Q/exec", {
         method: "POST",
-        body: data
-      })
-      .then(res => res.text())
-      .then(msg => {
-        status.textContent = "✅ Feedback erfolgreich gesendet!";
-        document.getElementById('feedbackForm').reset();
-      })
-      .catch(() => {
-        status.textContent = "❌ Fehler beim Senden. Bitte später erneut versuchen.";
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
       });
+
+      document.getElementById("feedbackForm").reset();
+      document.getElementById("successMsg").style.display = "block";
     });
   </script>
 </body>
