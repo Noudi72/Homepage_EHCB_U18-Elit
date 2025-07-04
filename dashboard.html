@@ -1,112 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📊 Coach Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Coach Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #001f3f;
+      padding: 0;
+      background-color: #06224A;
+      font-family: 'Roboto', sans-serif;
       color: white;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
     }
-
     .container {
-      max-width: 1000px;
-      margin-top: 50px;
-      padding: 30px;
-      background-color: #003366;
+      max-width: 960px;
+      margin: 40px auto;
+      background-color: #0c3b73;
       border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      padding: 20px;
     }
-
     h1 {
       text-align: center;
-      color: #ffffff;
+      margin-bottom: 30px;
     }
-
-    .filters {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    input, button {
-      padding: 8px 12px;
+    input, button, select {
+      padding: 10px;
+      margin: 10px 5px;
       border-radius: 5px;
       border: none;
       font-size: 16px;
     }
-
-    input {
+    input[type="date"], input[type="text"], input[type="password"] {
       width: 180px;
     }
-
     button {
-      background-color: #ff4136;
+      background-color: #e63946;
       color: white;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #e0291f;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 20px;
       background-color: white;
       color: black;
+      border-radius: 8px;
+      overflow: hidden;
     }
-
     th, td {
-      padding: 10px;
-      text-align: left;
+      padding: 12px;
       border-bottom: 1px solid #ccc;
+      text-align: center;
     }
-
     th {
-      background-color: #003366;
+      background-color: #06224A;
       color: white;
     }
-
-    #loginSection {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    #loginBox {
+      text-align: center;
       margin-top: 100px;
     }
-
-    #loginSection input {
-      margin: 10px 0;
-    }
-
-    .hidden {
-      display: none;
-    }
-
   </style>
 </head>
 <body>
-  <div class="container hidden" id="dashboard">
+  <div id="loginBox">
+    <h1>🔒 Coach Login</h1>
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="checkPassword()">Login</button>
+  </div>
+
+  <div class="container" id="dashboard" style="display:none;">
     <h1>📊 Coach Dashboard</h1>
-    <div class="filters">
-      <label>
-        Date:
-        <input type="date" id="dateFilter" />
-      </label>
-      <label>
-        Player:
-        <input type="text" id="nameFilter" placeholder="Search by name"/>
-      </label>
-      <button onclick="filterTable()">Filter</button>
+    <div style="text-align:center;">
+      <label for="filterDate">Date: </label>
+      <input type="date" id="filterDate">
+      <label for="playerSearch">Player: </label>
+      <input type="text" id="playerSearch" placeholder="Search by name">
+      <button onclick="filterData()">Filter</button>
     </div>
     <table id="feedbackTable">
       <thead>
@@ -123,58 +93,77 @@
     </table>
   </div>
 
-  <div id="loginSection">
-    <h1>🔐 Coach Login</h1>
-    <input type="password" id="passwordInput" placeholder="Enter Password" />
-    <button onclick="checkPassword()">Login</button>
-    <p id="errorMessage" style="color: red;"></p>
-  </div>
-
   <script>
-    const CORRECT_PASSWORD = "Coach7274";
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?gid=1048970832#gid=1048970832";
 
     function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === CORRECT_PASSWORD) {
-        document.getElementById("loginSection").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
+      const password = document.getElementById("password").value;
+      if (password === "Coach7274") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
         loadData();
       } else {
-        document.getElementById("errorMessage").innerText = "Incorrect password. Try again.";
+        alert("Incorrect password.");
       }
     }
 
-    async function loadData() {
-      const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhEjbMRj3MNd7BhUxrREPLACE_THIS_WITH_YOUR_URL/pub?output=csv";
-      const response = await fetch(sheetUrl);
-      const data = await response.text();
-      const rows = data.split("\n").slice(1);
-      const tbody = document.querySelector("#feedbackTable tbody");
-      rows.forEach(row => {
-        const cols = row.split(",");
-        if (cols.length >= 6) {
-          const tr = document.createElement("tr");
-          cols.slice(0, 6).forEach(cell => {
-            const td = document.createElement("td");
-            td.textContent = cell;
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        }
+    let originalData = [];
+
+    function loadData() {
+      fetch(sheetUrl)
+        .then(response => response.text())
+        .then(data => {
+          const rows = data.trim().split("\n").map(row => row.split(","));
+          const tableBody = document.querySelector("#feedbackTable tbody");
+          tableBody.innerHTML = "";
+
+          const header = rows[0];
+          const dateIndex = header.indexOf("Date");
+          const nameIndex = header.indexOf("Name");
+          const feelingIndex = header.indexOf("Feeling");
+          const performanceIndex = header.indexOf("Performance");
+          const intensityIndex = header.indexOf("Intensity");
+          const commentIndex = header.indexOf("Comment");
+
+          originalData = rows.slice(1).map(row => ({
+            date: row[dateIndex],
+            name: row[nameIndex],
+            feeling: row[feelingIndex],
+            performance: row[performanceIndex],
+            intensity: row[intensityIndex],
+            comment: row[commentIndex]
+          }));
+
+          displayRows(originalData);
+        });
+    }
+
+    function displayRows(data) {
+      const tableBody = document.querySelector("#feedbackTable tbody");
+      tableBody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.date}</td>
+          <td>${row.name}</td>
+          <td>${row.feeling}</td>
+          <td>${row.performance}</td>
+          <td>${row.intensity}</td>
+          <td>${row.comment}</td>
+        `;
+        tableBody.appendChild(tr);
       });
     }
 
-    function filterTable() {
-      const date = document.getElementById("dateFilter").value;
-      const name = document.getElementById("nameFilter").value.toLowerCase();
-      const rows = document.querySelectorAll("#feedbackTable tbody tr");
-      rows.forEach(row => {
-        const [dateCell, nameCell] = row.children;
-        const show =
-          (!date || dateCell.textContent.includes(date)) &&
-          (!name || nameCell.textContent.toLowerCase().includes(name));
-        row.style.display = show ? "" : "none";
+    function filterData() {
+      const dateValue = document.getElementById("filterDate").value;
+      const nameValue = document.getElementById("playerSearch").value.toLowerCase();
+      const filtered = originalData.filter(row => {
+        const matchDate = dateValue === "" || row.date.startsWith(dateValue);
+        const matchName = nameValue === "" || row.name.toLowerCase().includes(nameValue);
+        return matchDate && matchName;
       });
+      displayRows(filtered);
     }
   </script>
 </body>
