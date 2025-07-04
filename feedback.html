@@ -8,7 +8,7 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #001f3f;
+      background: linear-gradient(to bottom, #002f5f, #004080);
       color: white;
       display: flex;
       justify-content: center;
@@ -22,12 +22,12 @@
       padding: 30px;
       width: 90%;
       max-width: 450px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     h2 {
       text-align: center;
-      color: #ffffff;
+      color: white;
       margin-bottom: 30px;
     }
 
@@ -36,7 +36,6 @@
       display: block;
       margin-top: 15px;
       margin-bottom: 5px;
-      color: #ffffff;
     }
 
     input, select, textarea {
@@ -69,18 +68,11 @@
       background-color: #ff1744;
     }
 
-    .message {
+    .success-message {
       text-align: center;
+      color: #90ee90;
       margin-top: 20px;
       font-weight: bold;
-    }
-
-    .success {
-      color: #00e676;
-    }
-
-    .error {
-      color: #ff5252;
     }
   </style>
 </head>
@@ -99,46 +91,45 @@
       </select>
 
       <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
-      <select id="intensity" name="intensity" required>
-        <option>1 </option>
-        <option>2 </option>
-        <option>3 </option>
-        <option>4 </option>
-        <option>5 </option>
-        <option>6 </option>
-      </select>
+<select id="intensity" name="intensity" required>
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
 
       <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
       <select id="performance" name="performance" required>
-        <option>1 - 🔴 really bad 😬</option>
-        <option>2 - 🟠 bad 😕</option>
-        <option>3 - 🟡 okay 😐</option>
-        <option>4 - 🟢 good 🙂</option>
-        <option>5 - 🟢🟢 very good 😃</option>
-        <option>6 - 🟢🟢🟢 awesome 💪🏅</option>
+        <option value="1">1 - 🔴 really bad 😬</option>
+        <option value="2">2 - 🟠 bad 😕</option>
+        <option value="3">3 - 🟡 okay 😐</option>
+        <option value="4">4 - 🟢 good 🙂</option>
+        <option value="5">5 - 🟢🟢 very good 😃</option>
+        <option value="6">6 - 🟢🟢🟢 awesome 💪🏅</option>
       </select>
 
       <label for="comment">📝 Comment (optional)</label>
-      <textarea id="comment" name="comment" rows="4" placeholder="Write your thoughts..."></textarea>
+      <textarea id="comment" name="comment" rows="4"></textarea>
 
       <button type="submit">Submit</button>
-      <div id="responseMessage" class="message"></div>
+      <div class="success-message" id="successMsg" style="display:none;">
+        ✅ Feedback submitted. Thank you!
+      </div>
     </form>
   </div>
 
   <script>
     document.getElementById("feedbackForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const messageBox = document.getElementById("responseMessage");
-      messageBox.textContent = "";
-      messageBox.className = "message";
 
       const data = {
-        name: document.getElementById("name").value,
+        name: document.getElementById("name").value.trim(),
         feeling: document.getElementById("feeling").value,
-        intensity: document.getElementById("intensity").value,
-        performance: document.getElementById("performance").value,
-        comment: document.getElementById("comment").value,
+        intensity: parseInt(document.getElementById("intensity").value),
+        performance: parseInt(document.getElementById("performance").value),
+        comment: document.getElementById("comment").value.trim()
       };
 
       fetch("https://script.google.com/macros/s/AKfycbxbdeThlic-FhLSsbHZPzu5Rea_aMz0Zy-to_litHI50b4xey_RrfNbYwcFnkJlZYv-VA/exec", {
@@ -146,19 +137,12 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-      .then(res => {
-        if (res.ok) {
-          messageBox.textContent = "✅ Feedback submitted successfully!";
-          messageBox.classList.add("success");
-          document.getElementById("feedbackForm").reset();
-        } else {
-          throw new Error("Server response not OK");
-        }
+      .then(() => {
+        document.getElementById("feedbackForm").reset();
+        document.getElementById("successMsg").style.display = "block";
       })
-      .catch(err => {
-        messageBox.textContent = "❌ Error submitting feedback. Please try again later.";
-        messageBox.classList.add("error");
-        console.error(err);
+      .catch(() => {
+        alert("Error sending feedback.");
       });
     });
   </script>
