@@ -4,198 +4,228 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coach Dashboard</title>
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/2/2f/Viking_helmet_icon.svg" />
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
+      background-color: #062e52;
       font-family: Arial, sans-serif;
-      background-color: #022b45;
-      color: #fff;
+      color: white;
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      text-align: center;
-    }
+
     .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background-color: #083b63;
+      background: #08396b;
       padding: 20px;
       border-radius: 10px;
+      max-width: 1000px;
+      margin: auto;
     }
-    .filters {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 32px;
     }
+
+    .logo {
+      display: block;
+      margin: 0 auto 10px;
+      max-width: 120px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
     input, button {
-      padding: 8px;
+      padding: 10px;
+      margin: 10px 5px;
       border-radius: 5px;
       border: none;
+      font-size: 14px;
     }
-    button {
-      background-color: #e63946;
+
+    input[type="password"], input[type="text"], input[type="date"] {
+      width: 180px;
+    }
+
+    .filter-btn {
+      background-color: #e74c3c;
       color: white;
-      font-weight: bold;
       cursor: pointer;
     }
+
+    .hidden {
+      display: none;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: white;
-      color: #000;
+      margin-top: 15px;
     }
+
     th, td {
       padding: 10px;
-      text-align: left;
+      background-color: white;
+      color: black;
+      text-align: center;
       border-bottom: 1px solid #ccc;
     }
+
     th {
-      background-color: #003049;
+      background-color: #002c50;
       color: white;
     }
-    .login {
-      text-align: center;
-      background: #022b45;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 400px;
-      margin: 50px auto;
+
+    .delete-btn {
+      background-color: #e74c3c;
+      border: none;
+      padding: 5px 8px;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
     }
-    #chart_div {
-      margin: 20px 0;
+
+    #chart-container {
+      max-width: 400px;
+      margin: 20px auto;
     }
   </style>
 </head>
 <body>
 
-<div class="container" id="dashboard" style="display:none;">
-  <h1>📊 Coach Dashboard</h1>
+  <img src="https://noudi72.github.io/wikinger.png" alt="Vikings Logo" class="logo">
 
-  <div class="filters">
-    <label>Date: <input type="date" id="dateFilter" /></label>
-    <label>Player: <input type="text" id="playerFilter" placeholder="Search by name" /></label>
-    <button onclick="filterData()">Filter</button>
+  <div class="container" id="login-section">
+    <h1>🔒 Coach Login</h1>
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="checkPassword()" class="filter-btn">Login</button>
   </div>
 
-  <div id="chart_div" style="height: 300px;"></div>
+  <div class="container hidden" id="dashboard-section">
+    <h1>📊 Coach Dashboard</h1>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Name</th>
-        <th>Feeling</th>
-        <th>Performance</th>
-        <th>Intensity</th>
-        <th>Comment</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="feedbackBody"></tbody>
-  </table>
-</div>
+    <label for="filter-date">Date:</label>
+    <input type="date" id="filter-date">
 
-<div class="login" id="loginBox">
-  <h2>🔐 Coach Login</h2>
-  <input type="password" id="passwordInput" placeholder="Enter password" />
-  <br /><br />
-  <button onclick="checkPassword()">Login</button>
-</div>
+    <label for="filter-player">Player:</label>
+    <input type="text" id="filter-player" placeholder="Search by name">
 
-<script>
-const correctPassword = "Coach7274";
-const sheetURL = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
-let dataRows = [];
+    <button class="filter-btn" onclick="loadData()">Filter</button>
 
-function checkPassword() {
-  const input = document.getElementById("passwordInput").value;
-  if (input === correctPassword) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    loadData();
-  } else {
-    alert("Incorrect password");
-  }
-}
+    <div id="chart-container">
+      <canvas id="performanceChart"></canvas>
+    </div>
 
-function formatDate(d) {
-  const date = new Date(d);
-  return date.toLocaleString("de-DE");
-}
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Feeling</th>
+          <th>Performance</th>
+          <th>Intensity</th>
+          <th>Comment</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="feedback-table">
+        <!-- Filled by JS -->
+      </tbody>
+    </table>
+  </div>
 
-function loadData() {
-  fetch(sheetURL)
-    .then(res => res.json())
-    .then(data => {
-      dataRows = data;
-      renderTable(data);
-      drawChart(data);
-    });
-}
+  <script>
+    const SHEET_URL = "https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback";
 
-function renderTable(data) {
-  const tbody = document.getElementById("feedbackBody");
-  tbody.innerHTML = "";
-  data.forEach((row, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${formatDate(row.Date)}</td>
-      <td>${row.Name}</td>
-      <td>${row.Feeling}</td>
-      <td>${row.Performance}</td>
-      <td>${row.Intensity}</td>
-      <td>${row.Comment}</td>
-      <td><button onclick="deleteRow(${i})">🗑️</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    function checkPassword() {
+      const pw = document.getElementById("password").value;
+      if (pw === "Coach7274") {
+        document.getElementById("login-section").classList.add("hidden");
+        document.getElementById("dashboard-section").classList.remove("hidden");
+        loadData();
+      } else {
+        alert("Incorrect password");
+      }
+    }
 
-function filterData() {
-  const date = document.getElementById("dateFilter").value;
-  const player = document.getElementById("playerFilter").value.toLowerCase();
-  const filtered = dataRows.filter(row => {
-    const matchDate = !date || row.Date.startsWith(date);
-    const matchPlayer = !player || row.Name.toLowerCase().includes(player);
-    return matchDate && matchPlayer;
-  });
-  renderTable(filtered);
-  drawChart(filtered);
-}
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      if (isNaN(date)) return "Invalid Date";
+      return date.toLocaleString("de-DE");
+    }
 
-function deleteRow(index) {
-  if (confirm("Delete this row?")) {
-    dataRows.splice(index, 1);
-    renderTable(dataRows);
-    drawChart(dataRows);
-  }
-}
+    function loadData() {
+      fetch(SHEET_URL)
+        .then(response => response.json())
+        .then(data => {
+          const filterDate = document.getElementById("filter-date").value;
+          const filterPlayer = document.getElementById("filter-player").value.toLowerCase();
+          const tableBody = document.getElementById("feedback-table");
+          tableBody.innerHTML = "";
 
-google.charts.load('current', {'packages':['corechart']});
-function drawChart(data) {
-  const countMap = {};
-  data.forEach(row => {
-    const value = row.Performance || "N/A";
-    countMap[value] = (countMap[value] || 0) + 1;
-  });
+          const performanceCount = {};
 
-  const chartData = [["Performance", "Count"]];
-  for (let key in countMap) {
-    chartData.push([key, countMap[key]]);
-  }
+          data.forEach((entry, index) => {
+            const entryDate = new Date(entry.Date);
+            const matchDate = filterDate ? new Date(filterDate).toDateString() === entryDate.toDateString() : true;
+            const matchPlayer = filterPlayer ? entry.Name.toLowerCase().includes(filterPlayer) : true;
 
-  const chart = new google.visualization.PieChart(document.getElementById("chart_div"));
-  chart.draw(google.visualization.arrayToDataTable(chartData), {
-    title: "Performance Distribution",
-    backgroundColor: "transparent",
-    titleTextStyle: { color: "white" },
-    legend: { textStyle: { color: "white" } }
-  });
-}
-</script>
+            if (matchDate && matchPlayer) {
+              const row = document.createElement("tr");
+
+              row.innerHTML = `
+                <td>${formatDate(entry.Date)}</td>
+                <td>${entry.Name}</td>
+                <td>${entry.Feeling}</td>
+                <td>${entry.Performance}</td>
+                <td>${entry.Intensity}</td>
+                <td>${entry.Comment}</td>
+                <td><button class="delete-btn" onclick="deleteRow(${index})">🗑️</button></td>
+              `;
+
+              tableBody.appendChild(row);
+
+              // For chart
+              const perf = entry.Performance || "N/A";
+              performanceCount[perf] = (performanceCount[perf] || 0) + 1;
+            }
+          });
+
+          drawChart(performanceCount);
+        });
+    }
+
+    function drawChart(counts) {
+      const ctx = document.getElementById("performanceChart").getContext("2d");
+      if (window.myChart) window.myChart.destroy();
+
+      window.myChart = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: Object.keys(counts),
+          datasets: [{
+            data: Object.values(counts),
+            backgroundColor: [
+              "#2ecc71", "#3498db", "#e74c3c", "#f1c40f", "#9b59b6", "#1abc9c"
+            ]
+          }]
+        },
+        options: {
+          plugins: {
+            legend: {
+              labels: { color: "white" }
+            }
+          }
+        }
+      });
+    }
+
+    function deleteRow(index) {
+      alert("To delete this row, please remove it manually from the Google Sheet (row: " + (index + 2) + ").");
+    }
+  </script>
 </body>
 </html>
