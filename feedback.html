@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback – EHC Biel-Bienne U18-Elit</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      color: #111;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background-color: #002f5f;
+      padding: 1rem;
+      color: white;
+    }
+
+    h1 {
+      margin: 0.5rem 0;
+    }
+
+    .flags {
+      margin: 1rem 0;
+    }
+
+    .flag {
+      width: 32px;
+      height: 22px;
+      margin: 0 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .flag.active {
+      border: 2px solid #d0021b;
+    }
+
+    form {
+      background: white;
+      margin: 1rem auto;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    form.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      text-align: left;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #d0021b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #a30014;
+    }
+
+    footer {
+      margin-top: 2rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Feedback – EHC Biel-Bienne U18-Elit</h1>
+    <div class="flags">
+      <img src="https://flagcdn.com/w40/de.png" class="flag active" id="flag-de" alt="Deutsch" onclick="switchForm('de')" />
+      <img src="https://flagcdn.com/w40/fr.png" class="flag" id="flag-fr" alt="Français" onclick="switchForm('fr')" />
+      <img src="https://flagcdn.com/w40/gb.png" class="flag" id="flag-en" alt="English" onclick="switchForm('en')" />
+    </div>
+  </header>
+
+  <!-- Deutsch -->
+  <form id="form-de" class="active">
+    <label for="name-de">Name *</label>
+    <input type="text" id="name-de" required />
+
+    <label for="intensity-de">Wie war die Trainingsintensität?</label>
+    <select id="intensity-de">
+      <option value="">Bitte wählen</option>
+      <option value="1">1 - sehr leicht</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6 - sehr hart</option>
+    </select>
+
+    <label for="comment-de">Kommentar (optional)</label>
+    <textarea id="comment-de" rows="4"></textarea>
+
+    <button type="submit">Absenden</button>
+  </form>
+
+  <!-- Französisch -->
+  <form id="form-fr">
+    <label for="name-fr">Nom *</label>
+    <input type="text" id="name-fr" required />
+
+    <label for="intensity-fr">Quelle était l’intensité de l'entraînement ?</label>
+    <select id="intensity-fr">
+      <option value="">Choisissez une option</option>
+      <option value="1">1 - très léger</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6 - très dur</option>
+    </select>
+
+    <label for="comment-fr">Commentaire (optionnel)</label>
+    <textarea id="comment-fr" rows="4"></textarea>
+
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <!-- Englisch -->
+  <form id="form-en">
+    <label for="name-en">Name *</label>
+    <input type="text" id="name-en" required />
+
+    <label for="intensity-en">How was the training intensity?</label>
+    <select id="intensity-en">
+      <option value="">Please select</option>
+      <option value="1">1 - very easy</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6 - very hard</option>
+    </select>
+
+    <label for="comment-en">Comment (optional)</label>
+    <textarea id="comment-en" rows="4"></textarea>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <footer>
+    <p>© 2025 EHC Biel-Bienne U18-Elit</p>
+  </footer>
+
+  <script>
+    function switchForm(lang) {
+      const flags = document.querySelectorAll('.flag');
+      flags.forEach(flag => flag.classList.remove('active'));
+      document.getElementById('flag-' + lang).classList.add('active');
+
+      const forms = document.querySelectorAll('form');
+      forms.forEach(f => f.classList.remove('active'));
+      document.getElementById('form-' + lang).classList.add('active');
+    }
+  </script>
+</body>
+</html>
