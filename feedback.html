@@ -4,77 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Player Feedback</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #002147;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background-color: #04395e;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 15px;
-      display: block;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: none;
-      font-size: 1em;
-    }
-    textarea {
-      height: 80px;
-      resize: vertical;
-    }
-    button {
-      background-color: #e50914;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 1em;
-      width: 100%;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-    .message {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
+  <div class="form-container">
     <h2>💬 Player Feedback</h2>
+
     <form id="feedbackForm">
       <label for="name">Name *</label>
-      <input type="text" id="name" name="name" required>
+      <input type="text" id="name" name="name" required />
 
       <label for="feeling">How did you feel today?</label>
-      <select id="feeling" name="feeling" required>
+      <select id="feeling" name="feeling">
         <option value="🟢 Top">🟢 Top</option>
-        <option value="🟡 OK">🟡 OK</option>
-        <option value="🟠 Tired">🟠 Tired</option>
-        <option value="🔴 In Pain">🔴 In Pain</option>
+        <option value="🟡 Okay">🟡 Okay</option>
+        <option value="🔴 Tired">🔴 Tired</option>
       </select>
 
       <label for="intensity">🏋️ Training/Game intensity (1 = easy – 6 = very hard)</label>
@@ -88,56 +32,57 @@
       </select>
 
       <label for="performance">🎯 How was your performance today? (1 = really bad – 6 = awesome)</label>
-      <select id="performance" name="performance" required>
+      <select id="performance" name="performance">
         <option value="1">1 – 🔴 really bad 😩</option>
         <option value="2">2 – 🟠 bad 😕</option>
-        <option value="3">3 – 🟡 okay 🙂</option>
-        <option value="4">4 – 🟢 good 😎</option>
-        <option value="5">5 – 🟢🟢 very good 😃</option>
+        <option value="3">3 – 🟡 average 😐</option>
+        <option value="4">4 – 🟢 good 🙂</option>
+        <option value="5">5 – 🟢🟢 very good 😁</option>
         <option value="6">6 – 🟢🟢🟢 excellent 💪🔥</option>
       </select>
 
       <label for="comment">📝 Comment (optional)</label>
-      <textarea id="comment" name="comment" placeholder="Your message to the coach..."></textarea>
+      <textarea id="comment" name="comment" rows="4"></textarea>
 
       <button type="submit">Submit</button>
-      <div class="message" id="messageBox"></div>
     </form>
+
+    <p id="responseMsg" class="response-message"></p>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyTM91QqT9OzmwSldxqphn-KalIdfu5g3X7WJu9AkXnPJwyDq3PAWiIsJKVWBETVWucGw/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzsLlL7a6-1KyqW5QP9p4CLD8HLDkiilDgUVx4xMebvEv5OakzEfhO3om4yb7QTwQ4qCQ/exec";
 
-    document.getElementById("feedbackForm").addEventListener("submit", function(e) {
+    document.getElementById("feedbackForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
+      const form = e.target;
       const data = {
-        name: document.getElementById("name").value,
-        feeling: document.getElementById("feeling").value,
-        intensity: document.getElementById("intensity").value,
-        performance: document.getElementById("performance").value,
-        comment: document.getElementById("comment").value
+        name: form.name.value.trim(),
+        feeling: form.feeling.value,
+        intensity: form.intensity.value,
+        performance: form.performance.value,
+        comment: form.comment.value.trim()
       };
 
       fetch(scriptURL, {
         method: "POST",
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
       })
-      .then(response => response.json())
-      .then(res => {
-        if (res.status === "success") {
-          document.getElementById("messageBox").textContent = "✅ Feedback submitted successfully!";
-          document.getElementById("feedbackForm").reset();
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === "success") {
+          document.getElementById("responseMsg").textContent = "✅ Feedback sent successfully!";
+          form.reset();
         } else {
-          document.getElementById("messageBox").textContent = "❌ Error: " + res.message;
+          document.getElementById("responseMsg").textContent = "❌ Error: " + (result.message || "Failed to send feedback.");
         }
       })
-      .catch(error => {
-        console.error("Error!", error.message);
-        document.getElementById("messageBox").textContent = "❌ Error sending feedback. Please try again.";
+      .catch(() => {
+        document.getElementById("responseMsg").textContent = "❌ Error sending feedback. Please try again.";
       });
     });
   </script>
