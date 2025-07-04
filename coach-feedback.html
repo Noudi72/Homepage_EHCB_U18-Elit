@@ -1,87 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coach Login – Feedback View</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #08325f;
-      color: white;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .login-box {
-      background: #144d7c;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 400px;
-      margin: 0 auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-
-    input[type="password"] {
-      padding: 0.5rem;
-      width: 80%;
-      font-size: 1rem;
-      margin: 1rem 0;
-      border-radius: 5px;
-      border: none;
-    }
-
-    button {
-      background-color: #e30613;
-      color: white;
-      border: none;
-      padding: 0.6rem 1.5rem;
-      font-size: 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .iframe-container {
-      margin-top: 2rem;
-    }
-
-    iframe {
-      width: 100%;
-      max-width: 1000px;
-      height: 600px;
-      border: none;
-    }
-
-    .error {
-      color: yellow;
-      margin-top: 1rem;
-    }
-  </style>
+  <title>Coach Feedback – Übersicht</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="ehcb-icon.png" type="image/png" />
 </head>
 <body>
-  <h1>🔐 Coach Feedback Access</h1>
-  <div class="login-box" id="login-box">
-    <p>Please enter the coach password:</p>
-    <input type="password" id="passwordInput" placeholder="Password..." />
-    <br>
-    <button onclick="checkPassword()">Login</button>
-    <div class="error" id="error-msg"></div>
-  </div>
-
-  <div class="iframe-container" id="sheet-container" style="display:none;">
-    <h2>📊 Player Feedback Responses</h2>
-    <iframe src="https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?usp=sharing"></iframe>
-  </div>
-
+  <header>
+    <div class="header-flex">
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo desktop-logo" />
+      <h1>EHC BIEL-BIENNE U18-ELIT</h1>
+      <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
+    </div>
+  </header>
+  <nav>
+    <div class="nav-cards">
+      <a href="index.html" class="nav-card">Startseite</a>
+      <a href="kalender.html" class="nav-card">MIH Kalender U18</a>
+      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank">Cardio-Programme</a>
+      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank">Sponser Sport Food</a>
+      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank">Spirit Homepage</a>
+      <a href="feedback.html" class="nav-card">Player Feedback</a>
+      <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
+    </div>
+  </nav>
+  <main>
+    <section class="card" style="max-width:420px;margin:2.7rem auto;">
+      <h2 style="color:#002b5c;text-align:center;font-size:1.5rem;margin-bottom:1.6rem;">🔐 Coach Feedback Zugang</h2>
+      <input type="password" id="password" placeholder="Passwort eingeben" />
+      <button onclick="checkPassword()">Login</button>
+      <div id="login-msg" class="error"></div>
+    </section>
+    <section class="card" id="sheet-section" style="display:none;max-width:1100px;margin:2.7rem auto;">
+      <h2 style="color:#002b5c;text-align:center;font-size:1.3rem;margin-bottom:1.2rem;">📊 Übersicht aller Player Feedbacks</h2>
+      <iframe 
+        src="https://docs.google.com/spreadsheets/d/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/edit?usp=sharing"
+        style="width:100%;min-height:620px;border:none;border-radius:10px;background:#f5f5f5;box-shadow:0 4px 18px #002b5c33;"></iframe>
+    </section>
+  </main>
+  <section class="yellow-slogan">
+    "OUR STRENGTH IS OUR UNITY!"
+  </section>
+  <footer>
+    © 2025 EHC Biel-Bienne U18-Elit
+  </footer>
   <script>
+    const correctPassword = "Coach7274";
     function checkPassword() {
-      const input = document.getElementById('passwordInput').value;
-      const errorMsg = document.getElementById('error-msg');
-      if (input === "Coach7274") {
-        document.getElementById("login-box").style.display = "none";
-        document.getElementById("sheet-container").style.display = "block";
+      const input = document.getElementById("password").value;
+      const msg = document.getElementById("login-msg");
+      if (input === correctPassword) {
+        document.getElementById("login-msg").textContent = '';
+        document.getElementById("sheet-section").style.display = "block";
+        document.querySelector('section.card').style.display = "none";
       } else {
-        errorMsg.textContent = "❌ Incorrect password. Please try again.";
+        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
       }
     }
   </script>

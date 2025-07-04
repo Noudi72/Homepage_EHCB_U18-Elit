@@ -15,69 +15,72 @@
       <h1>EHC BIEL-BIENNE U18-ELIT</h1>
       <img src="wikinger.png" alt="Wikinger-Logo" class="logo mobile-logo" />
     </div>
-    <nav>
-      <ul class="nav-vertical">
-        <li><a href="index.html">Startseite</a></li>
-        <li><a href="kalender.html">MIH Kalender U18</a></li>
-        <li><a href="feedback.html">Player Feedback</a></li>
-        <li><a href="dashboard.html">Coach Dashboard</a></li>
-      </ul>
-    </nav>
   </header>
-
+  <nav>
+    <div class="nav-cards">
+      <a href="index.html" class="nav-card">Startseite</a>
+      <a href="kalender.html" class="nav-card">MIH Kalender U18</a>
+      <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="nav-card" target="_blank">Cardio-Programme</a>
+      <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="nav-card" target="_blank">Sponser Sport Food</a>
+      <a href="https://www.ehcb.ch/de/teams/u18-elit" class="nav-card" target="_blank">Spirit Homepage</a>
+      <a href="feedback.html" class="nav-card">Player Feedback</a>
+      <a href="dashboard.html" class="nav-card">Coach Dashboard</a>
+    </div>
+  </nav>
   <main>
-    <div id="login" class="login-container">
-      <div class="login-box">
-        <h2>🔐 Coach Login</h2>
-        <input type="password" id="password" placeholder="Enter password" />
-        <br><br>
-        <button onclick="checkPassword()">Login</button>
-      </div>
-    </div>
+    <!-- Login Card -->
+    <section class="card" id="login-section" style="max-width:420px;margin:2.7rem auto;">
+      <h2 style="color:#002b5c;text-align:center;font-size:1.5rem;margin-bottom:1.6rem;">🔐 Coach Login</h2>
+      <input type="password" id="password" placeholder="Passwort eingeben" />
+      <button onclick="checkPassword()">Login</button>
+      <div id="login-msg" class="error"></div>
+    </section>
 
-    <div id="dashboard" class="dashboard" style="display:none;max-width:1200px;margin:2rem auto;">
-      <div class="header" style="display:flex;align-items:center;">
-        <img src="wikinger.png" alt="EHC Biel Logo" class="logo" style="margin-right:18px;"/>
-        <h1 style="color:#002b5c;">📊 Coach Dashboard</h1>
+    <!-- Dashboard Card -->
+    <section class="card" id="dashboard-section" style="display:none;max-width:1150px;margin:2.7rem auto 2.4rem auto;">
+      <div style="display:flex;align-items:center;gap:1.5rem;justify-content:center;margin-bottom:2.5rem;">
+        <img src="wikinger.png" alt="EHC Biel Logo" style="height:60px;">
+        <h1 style="color:#002b5c;font-size:2.1rem;font-weight:900;margin:0;">📊 Coach Dashboard</h1>
       </div>
-
-      <div class="filter-controls" style="margin-bottom:20px;">
-        <label>Date: <input type="date" id="date-filter"></label>
-        <label>Player: <input type="text" id="name-filter" placeholder="Name"></label>
-        <button onclick="filterData()">Filter</button>
+      <div class="coach-filter" style="margin-bottom:2.6rem;display:flex;flex-wrap:wrap;align-items:center;gap:1.2rem;justify-content:center;">
+        <label for="date-filter" style="font-weight:700;">Date:</label>
+        <input type="date" id="date-filter" style="margin-right:1rem;">
+        <label for="name-filter" style="font-weight:700;">Player:</label>
+        <input type="text" id="name-filter" placeholder="Name" style="width:200px;">
+        <button onclick="filterData()" class="btn" style="margin-left:1.2rem;">Filter</button>
       </div>
-
-      <canvas id="performanceChart" style="margin:2rem 0;"></canvas>
-      <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
-        <thead>
-          <tr>
-            <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+      <canvas id="performanceChart" style="margin:2rem auto;display:block;max-width:400px;"></canvas>
+      <div style="overflow-x:auto;">
+        <table id="feedbackTable" style="width:100%;border-radius:10px;overflow:hidden;">
+          <thead>
+            <tr>
+              <th>Date</th><th>Name</th><th>Feeling</th><th>Performance</th><th>Intensity</th><th>Comment</th><th>Delete</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
   </main>
-
   <section class="yellow-slogan">
-    <p>"OUR STRENGTH IS OUR UNITY!"</p>
+    "OUR STRENGTH IS OUR UNITY!"
   </section>
   <footer>
-    <p>© 2025 EHC Biel-Bienne U18-Elit</p>
+    © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
     const correctPassword = "Coach7274";
     function checkPassword() {
       const input = document.getElementById("password").value;
+      const msg = document.getElementById("login-msg");
       if (input === correctPassword) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("dashboard-section").style.display = "block";
         loadData();
       } else {
-        alert("Incorrect password");
+        msg.textContent = "❌ Falsches Passwort. Bitte versuche es erneut.";
       }
     }
-
     let rawData = [];
     function loadData() {
       fetch('https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback')
