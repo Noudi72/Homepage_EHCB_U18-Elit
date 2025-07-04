@@ -71,20 +71,51 @@
     }
     label { font-weight:700; margin:7px 0 3px 0; color:var(--ehc-yellow);}
     input, select, textarea {
-      width: 100%; font-size: 1.12rem;
+      width: 100%;
+      max-width: 100%;
+      font-size: 1.12rem;
       border-radius: 9px; border: 1.6px solid #bbb;
       padding: 7px 10px; margin: 3px 0 9px 0; background: #fff9;
       color: #002b5c;
       font-family: inherit;
       font-weight:600;
+      box-sizing: border-box;
+    }
+    #name, #comment {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     button[type="submit"] {
       background: var(--ehc-red); color: var(--ehc-white); border: none;
       border-radius: 14px; font-weight: 800; font-size: 1.22rem;
       padding: 13px 0; margin-top: 16px; cursor: pointer; transition: background 0.18s;
       box-shadow: 0 2px 7px #0002;
+      width: 100%;
+      max-width: 100%;
     }
     button[type="submit"]:hover { background: #af0116;}
+    .back-btn {
+      background: #e5e5e5;
+      color: #1751e7;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.04rem;
+      padding: 9px 0;
+      margin-top: 7px;
+      margin-bottom: 0;
+      cursor: pointer;
+      transition: background 0.13s, color 0.13s;
+      box-shadow: 0 1px 4px #0001;
+      width: 60%;
+      align-self: center;
+      display: block;
+    }
+    .back-btn:hover {
+      background: #d3d3d3;
+      color: #002b5c;
+    }
     #message.success { color: #3bbb2c; font-weight:700; margin-top:12px;}
     #message.error   { color: #b00; font-weight:700; margin-top:12px;}
     .yellow-slogan {
@@ -111,6 +142,7 @@
       .card { font-size: 1.03rem; padding: 19px 5px 16px 5px;}
       .lang-switch { gap: 8px; margin: 10px 0 8px 0;}
       .lang-switch button { padding: 5px 12px 3px 12px; font-size: 1rem;}
+      .back-btn { width: 100%; font-size: 1rem; }
     }
   </style>
 </head>
@@ -148,6 +180,7 @@
 
       <button type="submit" id="submitBtn">Abschicken</button>
       <div id="message"></div>
+      <button type="button" class="back-btn" onclick="window.location.href='index.html'">Zurück</button>
     </form>
   </div>
   <section class="yellow-slogan" id="slogan">
