@@ -374,7 +374,9 @@
       noDataMsg: "Keine Feedbacks gefunden",
       back: "← Zurück / Back",
       slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
-      legendPerformance: ["1 – sehr schlecht", "2", "3", "4", "5", "6 – top"],
+      legendPerformance: [
+        "1 – sehr schlecht", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+      ],
       legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
     },
     fr: {
@@ -396,7 +398,9 @@
       noDataMsg: "Aucun feedback trouvé",
       back: "← Retour",
       slogan: "\"NOTRE FORCE EST NOTRE UNITÉ !\"",
-      legendPerformance: ["1 – très mauvais", "2", "3", "4", "5", "6 – top"],
+      legendPerformance: [
+        "1 – très mauvais", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+      ],
       legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
     },
     en: {
@@ -418,7 +422,9 @@
       noDataMsg: "No feedbacks found",
       back: "← Back",
       slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
-      legendPerformance: ["1 – very bad", "2", "3", "4", "5", "6 – top"],
+      legendPerformance: [
+        "1 – very bad", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+      ],
       legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
     }
   };
@@ -521,11 +527,11 @@
   // Doppel-Diagramm (Performance und EnergieLevel)
   let chart;
   function renderChart(data) {
-    // Performance 1-6 (innen)
-    const perfCounts = [0,0,0,0,0,0];
+    // Performance 1-10 (innen)
+    const perfCounts = Array(10).fill(0);
     data.forEach(r => {
       const val = parseInt(r['Performance']);
-      if(val >=1 && val <=6) perfCounts[val-1]++;
+      if(val >=1 && val <=10) perfCounts[val-1]++;
     });
     // EnergieLevel 1-10 (außen)
     const energyCounts = Array(10).fill(0);
@@ -533,20 +539,24 @@
       const val = parseInt(r['EnergyLevel'] || r['Energie-Level']); // alte+neue Schreibweise
       if(val >=1 && val <=10) energyCounts[val-1]++;
     });
+    const perfColors = [
+      '#ff4d4d', '#ff7840', '#ffa940', '#ffd600', '#ffe066',
+      '#5cb85c', '#27b276', '#249045', '#3580db', '#002b5c'
+    ];
     const ctx = document.getElementById('performanceChart').getContext('2d');
     if(chart) chart.destroy();
     chart = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: [
-          ...translations[currentLang].legendPerformance, // 1-6 Performance
+          ...translations[currentLang].legendPerformance, // 1-10 Performance
           ...translations[currentLang].legendEnergy      // 1-10 Energie
         ],
         datasets: [
           { // innen: Leistung
             label: 'Performance',
             data: perfCounts,
-            backgroundColor: ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'],
+            backgroundColor: perfColors,
             borderWidth: 2,
             radius: '65%',
             hoverOffset: 4
@@ -579,7 +589,10 @@
   // Legende für das Doppel-Diagramm
   function renderLegend() {
     const legend = document.getElementById('chartLegend');
-    const perfColors = ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'];
+    const perfColors = [
+      '#ff4d4d', '#ff7840', '#ffa940', '#ffd600', '#ffe066',
+      '#5cb85c', '#27b276', '#249045', '#3580db', '#002b5c'
+    ];
     const energyColors = [
       '#dde0f0', '#b1c5e9', '#81b1e5', '#51a1e1', '#2492db',
       '#27b276', '#5dc944', '#ffef67', '#ffd600', '#ffa940'
@@ -589,7 +602,7 @@
 
     // Leistung
     legend.innerHTML += `<div style="width:100%;font-weight:bold;margin-bottom:2px">${t.thPerformance}:</div>`;
-    for(let i=0;i<6;i++) {
+    for(let i=0;i<10;i++) {
       legend.innerHTML += `<span><span class="dot" style="background:${perfColors[i]}"></span>${t.legendPerformance[i]}</span>`;
     }
     // Energie
