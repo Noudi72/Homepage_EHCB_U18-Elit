@@ -335,6 +335,7 @@
               <th id="thName">Name</th>
               <th id="thFeeling">Feeling</th>
               <th id="thPerformance">Leistung</th>
+              <th id="thEnergy">Energie</th>
               <th id="thIntensity">Intensität</th>
               <th id="thComment">Kommentar</th>
             </tr>
@@ -352,205 +353,251 @@
     © 2025 EHC Biel-Bienne U18-Elit
   </footer>
   <script>
-    // Übersetzungen
-    const translations = {
-      de: {
-        mainTitle: "EHC BIEL-BIENNE U18-ELIT",
-        loginTitle: "🔐 Coach Dashboard Login",
-        loginBtn: "Login",
-        loginPlaceholder: "Admin Passwort eingeben",
-        dashboardTitle: "📊 Coach Dashboard",
-        labelDate: "Datum:",
-        labelPlayer: "Spieler:",
-        filterBtn: "Filter",
-        thDate: "Datum",
-        thName: "Name",
-        thFeeling: "Feeling",
-        thPerformance: "Leistung",
-        thIntensity: "Intensität",
-        thComment: "Kommentar",
-        noDataMsg: "Keine Feedbacks gefunden",
-        back: "← Zurück / Back",
-        slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
-        legend: ["1 – sehr schlecht", "2", "3", "4", "5", "6 – top"]
-      },
-      fr: {
-        mainTitle: "EHC BIEL-BIENNE U18-ÉLITE",
-        loginTitle: "🔐 Connexion Dashboard Coach",
-        loginBtn: "Connexion",
-        loginPlaceholder: "Entrer mot de passe admin",
-        dashboardTitle: "📊 Dashboard Coach",
-        labelDate: "Date:",
-        labelPlayer: "Joueur:",
-        filterBtn: "Filtrer",
-        thDate: "Date",
-        thName: "Nom",
-        thFeeling: "Feeling",
-        thPerformance: "Performance",
-        thIntensity: "Intensité",
-        thComment: "Commentaire",
-        noDataMsg: "Aucun feedback trouvé",
-        back: "← Retour",
-        slogan: "\"NOTRE FORCE EST NOTRE UNITÉ !\"",
-        legend: ["1 – très mauvais", "2", "3", "4", "5", "6 – top"]
-      },
-      en: {
-        mainTitle: "EHC BIEL-BIENNE U18-ELITE",
-        loginTitle: "🔐 Coach Dashboard Login",
-        loginBtn: "Login",
-        loginPlaceholder: "Enter admin password",
-        dashboardTitle: "📊 Coach Dashboard",
-        labelDate: "Date:",
-        labelPlayer: "Player:",
-        filterBtn: "Filter",
-        thDate: "Date",
-        thName: "Name",
-        thFeeling: "Feeling",
-        thPerformance: "Performance",
-        thIntensity: "Intensity",
-        thComment: "Comment",
-        noDataMsg: "No feedbacks found",
-        back: "← Back",
-        slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
-        legend: ["1 – very bad", "2", "3", "4", "5", "6 – top"]
-      }
-    };
-    let currentLang = localStorage.getItem('dashboard_lang') || 'de';
-    function changeLanguage(lang) {
-      currentLang = lang;
-      localStorage.setItem('dashboard_lang', lang);
-      document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('btn-' + lang).classList.add('active');
-      const t = translations[lang];
-      document.getElementById('main-title').textContent = t.mainTitle;
-      document.getElementById('loginTitle').textContent = t.loginTitle;
-      document.getElementById('loginBtn').textContent = t.loginBtn;
-      document.getElementById('password').placeholder = t.loginPlaceholder;
-      document.getElementById('dashboardTitle').textContent = t.dashboardTitle;
-      document.getElementById('labelDate').textContent = t.labelDate;
-      document.getElementById('labelPlayer').textContent = t.labelPlayer;
-      document.getElementById('filterBtn').textContent = t.filterBtn;
-      document.getElementById('thDate').textContent = t.thDate;
-      document.getElementById('thName').textContent = t.thName;
-      document.getElementById('thFeeling').textContent = t.thFeeling;
-      document.getElementById('thPerformance').textContent = t.thPerformance;
-      document.getElementById('thIntensity').textContent = t.thIntensity;
-      document.getElementById('thComment').textContent = t.thComment;
-      document.getElementById('noDataMsg').textContent = t.noDataMsg;
-      document.getElementById('backBtn').textContent = t.back;
-      document.getElementById('slogan').textContent = t.slogan;
-      // Update Legende
-      renderLegend();
+  // Übersetzungen
+  const translations = {
+    de: {
+      mainTitle: "EHC BIEL-BIENNE U18-ELIT",
+      loginTitle: "🔐 Coach Dashboard Login",
+      loginBtn: "Login",
+      loginPlaceholder: "Admin Passwort eingeben",
+      dashboardTitle: "📊 Coach Dashboard",
+      labelDate: "Datum:",
+      labelPlayer: "Spieler:",
+      filterBtn: "Filter",
+      thDate: "Datum",
+      thName: "Name",
+      thFeeling: "Feeling",
+      thPerformance: "Leistung",
+      thEnergy: "Energie",
+      thIntensity: "Intensität",
+      thComment: "Kommentar",
+      noDataMsg: "Keine Feedbacks gefunden",
+      back: "← Zurück / Back",
+      slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
+      legendPerformance: ["1 – sehr schlecht", "2", "3", "4", "5", "6 – top"],
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
+    },
+    fr: {
+      mainTitle: "EHC BIEL-BIENNE U18-ÉLITE",
+      loginTitle: "🔐 Connexion Dashboard Coach",
+      loginBtn: "Connexion",
+      loginPlaceholder: "Entrer mot de passe admin",
+      dashboardTitle: "📊 Dashboard Coach",
+      labelDate: "Date:",
+      labelPlayer: "Joueur:",
+      filterBtn: "Filtrer",
+      thDate: "Date",
+      thName: "Nom",
+      thFeeling: "Feeling",
+      thPerformance: "Performance",
+      thEnergy: "Énergie",
+      thIntensity: "Intensité",
+      thComment: "Commentaire",
+      noDataMsg: "Aucun feedback trouvé",
+      back: "← Retour",
+      slogan: "\"NOTRE FORCE EST NOTRE UNITÉ !\"",
+      legendPerformance: ["1 – très mauvais", "2", "3", "4", "5", "6 – top"],
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
+    },
+    en: {
+      mainTitle: "EHC BIEL-BIENNE U18-ELITE",
+      loginTitle: "🔐 Coach Dashboard Login",
+      loginBtn: "Login",
+      loginPlaceholder: "Enter admin password",
+      dashboardTitle: "📊 Coach Dashboard",
+      labelDate: "Date:",
+      labelPlayer: "Player:",
+      filterBtn: "Filter",
+      thDate: "Date",
+      thName: "Name",
+      thFeeling: "Feeling",
+      thPerformance: "Performance",
+      thEnergy: "Energy",
+      thIntensity: "Intensity",
+      thComment: "Comment",
+      noDataMsg: "No feedbacks found",
+      back: "← Back",
+      slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
+      legendPerformance: ["1 – very bad", "2", "3", "4", "5", "6 – top"],
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
     }
-    window.addEventListener('DOMContentLoaded', () => { changeLanguage(currentLang); });
+  };
+  let currentLang = localStorage.getItem('dashboard_lang') || 'de';
+  function changeLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('dashboard_lang', lang);
+    document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('btn-' + lang).classList.add('active');
+    const t = translations[lang];
+    document.getElementById('main-title').textContent = t.mainTitle;
+    document.getElementById('loginTitle').textContent = t.loginTitle;
+    document.getElementById('loginBtn').textContent = t.loginBtn;
+    document.getElementById('password').placeholder = t.loginPlaceholder;
+    document.getElementById('dashboardTitle').textContent = t.dashboardTitle;
+    document.getElementById('labelDate').textContent = t.labelDate;
+    document.getElementById('labelPlayer').textContent = t.labelPlayer;
+    document.getElementById('filterBtn').textContent = t.filterBtn;
+    document.getElementById('thDate').textContent = t.thDate;
+    document.getElementById('thName').textContent = t.thName;
+    document.getElementById('thFeeling').textContent = t.thFeeling;
+    document.getElementById('thPerformance').textContent = t.thPerformance;
+    document.getElementById('thEnergy').textContent = t.thEnergy;
+    document.getElementById('thIntensity').textContent = t.thIntensity;
+    document.getElementById('thComment').textContent = t.thComment;
+    document.getElementById('noDataMsg').textContent = t.noDataMsg;
+    document.getElementById('backBtn').textContent = t.back;
+    document.getElementById('slogan').textContent = t.slogan;
+    renderLegend();
+  }
+  window.addEventListener('DOMContentLoaded', () => { changeLanguage(currentLang); });
 
-    // Admin Login-Logik
-    const correctPassword = "Coach7274";
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      const msg = document.getElementById("login-msg");
-      if (input === correctPassword) {
-        msg.textContent = '';
-        document.getElementById("dashboard-section").style.display = "block";
-        document.getElementById("login-section").style.display = "none";
-        loadFeedback();
-      } else {
-        msg.textContent = "❌ Wrong password.";
-      }
+  // Admin Login-Logik
+  const correctPassword = "Coach7274";
+  function checkPassword() {
+    const input = document.getElementById("password").value;
+    const msg = document.getElementById("login-msg");
+    if (input === correctPassword) {
+      msg.textContent = '';
+      document.getElementById("dashboard-section").style.display = "block";
+      document.getElementById("login-section").style.display = "none";
+      loadFeedback();
+    } else {
+      msg.textContent = "❌ Wrong password.";
     }
-    document.getElementById('password').addEventListener('keyup', function(e){
-      if(e.key === "Enter") checkPassword();
-    });
+  }
+  document.getElementById('password').addEventListener('keyup', function(e){
+    if(e.key === "Enter") checkPassword();
+  });
 
-    // Dashboard-Logik
-    let feedbackData = [];
-    async function loadFeedback() {
-      try {
-        const res = await fetch("https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback");
-        feedbackData = await res.json();
-        renderTable(feedbackData);
-        renderChart(feedbackData);
-      } catch (e) {
-        showNoData(true);
-      }
+  // Dashboard-Logik
+  let feedbackData = [];
+  async function loadFeedback() {
+    try {
+      const res = await fetch("https://opensheet.elk.sh/1AdcOsjQqNRl8kxY1NZ1kzA9XHyMlhXJB-yoNEo6ikQE/Feedback");
+      feedbackData = await res.json();
+      renderTable(feedbackData);
+      renderChart(feedbackData);
+    } catch (e) {
+      showNoData(true);
     }
-    function showNoData(isNoData){
-      document.getElementById('noDataCard').style.display = isNoData ? 'flex' : 'none';
-    }
-    function renderTable(data) {
-      const tbody = document.getElementById('feedbackTableBody');
-      showNoData(!data.length);
-      if (!data.length) {
-        tbody.innerHTML = '';
-        return;
-      }
+  }
+  function showNoData(isNoData){
+    document.getElementById('noDataCard').style.display = isNoData ? 'flex' : 'none';
+  }
+  function renderTable(data) {
+    const tbody = document.getElementById('feedbackTableBody');
+    showNoData(!data.length);
+    if (!data.length) {
       tbody.innerHTML = '';
-      data.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${row['Date']||''}</td>
-          <td>${row['Name']||''}</td>
-          <td>${row['Feeling']||''}</td>
-          <td>${row['Performance']||''}</td>
-          <td>${row['Intensity']||''}</td>
-          <td>${row['Comment']||''}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      return;
     }
-    document.getElementById('filterForm') &&
-    (document.getElementById('filterForm').onsubmit = function(e){
-      e.preventDefault();
-      const dateVal = document.getElementById('date').value;
-      const playerVal = document.getElementById('player').value.trim().toLowerCase();
-      let filtered = feedbackData;
-      if(dateVal) filtered = filtered.filter(r=>r['Date'] && r['Date'].startsWith(dateVal.split('-').reverse().join('.')));
-      if(playerVal) filtered = filtered.filter(r=>(r['Name']||'').toLowerCase().includes(playerVal));
-      renderTable(filtered);
-      renderChart(filtered);
+    tbody.innerHTML = '';
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row['Date']||''}</td>
+        <td>${row['Name']||''}</td>
+        <td>${row['Feeling']||''}</td>
+        <td>${row['Performance']||''}</td>
+        <td>${row['EnergyLevel']||row['Energie-Level']||''}</td>
+        <td>${row['Intensity']||''}</td>
+        <td>${row['Comment']||''}</td>
+      `;
+      tbody.appendChild(tr);
     });
-    // Chart
-    let chart;
-    function renderChart(data) {
-      const performanceCounts = [0,0,0,0,0,0];
-      data.forEach(r => {
-        const val = parseInt(r['Performance']);
-        if(val >=1 && val <=6) performanceCounts[val-1]++;
-      });
-      const ctx = document.getElementById('performanceChart').getContext('2d');
-      if(chart) chart.destroy();
-      chart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['1','2','3','4','5','6'],
-          datasets: [{
-            data: performanceCounts,
+  }
+  document.getElementById('filterForm') &&
+  (document.getElementById('filterForm').onsubmit = function(e){
+    e.preventDefault();
+    const dateVal = document.getElementById('date').value;
+    const playerVal = document.getElementById('player').value.trim().toLowerCase();
+    let filtered = feedbackData;
+    if(dateVal) filtered = filtered.filter(r=>r['Date'] && r['Date'].startsWith(dateVal.split('-').reverse().join('.')));
+    if(playerVal) filtered = filtered.filter(r=>(r['Name']||'').toLowerCase().includes(playerVal));
+    renderTable(filtered);
+    renderChart(filtered);
+  });
+
+  // Doppel-Diagramm (Performance und EnergieLevel)
+  let chart;
+  function renderChart(data) {
+    // Performance 1-6 (innen)
+    const perfCounts = [0,0,0,0,0,0];
+    data.forEach(r => {
+      const val = parseInt(r['Performance']);
+      if(val >=1 && val <=6) perfCounts[val-1]++;
+    });
+    // EnergieLevel 1-10 (außen)
+    const energyCounts = Array(10).fill(0);
+    data.forEach(r => {
+      const val = parseInt(r['EnergyLevel'] || r['Energie-Level']); // alte+neue Schreibweise
+      if(val >=1 && val <=10) energyCounts[val-1]++;
+    });
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    if(chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: [
+          ...translations[currentLang].legendPerformance, // 1-6 Performance
+          ...translations[currentLang].legendEnergy      // 1-10 Energie
+        ],
+        datasets: [
+          { // innen: Leistung
+            label: 'Performance',
+            data: perfCounts,
             backgroundColor: ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'],
             borderWidth: 2,
-          }]
-        },
-        options: {
-          cutout: '72%',
-          responsive: true,
-          plugins: {
-            legend: { display: false }
+            radius: '65%',
+            hoverOffset: 4
+          },
+          { // außen: Energie-Level
+            label: 'Energy Level',
+            data: energyCounts,
+            backgroundColor: [
+              '#dde0f0', '#b1c5e9', '#81b1e5', '#51a1e1', '#2492db',
+              '#27b276', '#5dc944', '#ffef67', '#ffd600', '#ffa940'
+            ],
+            borderWidth: 2,
+            radius: '90%',
+            cutout: '68%',
+            hoverOffset: 4
           }
+        ]
+      },
+      options: {
+        cutout: '54%',
+        responsive: true,
+        plugins: {
+          legend: { display: false }
         }
-      });
-      renderLegend();
-    }
-    // Legende für das Diagramm
-    function renderLegend() {
-      const legend = document.getElementById('chartLegend');
-      const colors = ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'];
-      const t = translations[currentLang].legend;
-      legend.innerHTML = '';
-      for(let i=0;i<6;i++) {
-        const span = document.createElement('span');
-        span.innerHTML = `<span class="dot" style="background:${colors[i]}"></span>${t[i]}`;
-        legend.appendChild(span);
       }
+    });
+    renderLegend();
+  }
+
+  // Legende für das Doppel-Diagramm
+  function renderLegend() {
+    const legend = document.getElementById('chartLegend');
+    const perfColors = ['#ff4d4d','#ffa940','#ffe066','#5cb85c','#249045','#3580db'];
+    const energyColors = [
+      '#dde0f0', '#b1c5e9', '#81b1e5', '#51a1e1', '#2492db',
+      '#27b276', '#5dc944', '#ffef67', '#ffd600', '#ffa940'
+    ];
+    const t = translations[currentLang];
+    legend.innerHTML = '';
+
+    // Leistung
+    legend.innerHTML += `<div style="width:100%;font-weight:bold;margin-bottom:2px">${t.thPerformance}:</div>`;
+    for(let i=0;i<6;i++) {
+      legend.innerHTML += `<span><span class="dot" style="background:${perfColors[i]}"></span>${t.legendPerformance[i]}</span>`;
     }
+    // Energie
+    legend.innerHTML += `<div style="width:100%;font-weight:bold;margin:8px 0 2px 0">${t.thEnergy}:</div>`;
+    for(let i=0;i<10;i++) {
+      legend.innerHTML += `<span><span class="dot" style="background:${energyColors[i]}"></span>${t.legendEnergy[i]}</span>`;
+    }
+  }
   </script>
 </body>
 </html>
