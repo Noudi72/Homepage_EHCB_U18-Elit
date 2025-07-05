@@ -375,9 +375,11 @@
       back: "← Zurück / Back",
       slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
       legendPerformance: [
-        "1 – sehr schlecht", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
       ],
-      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+      legendPerformanceDesc: "Selbsteinschätzung der Leistung",
+      legendEnergyDesc: "Gefühltes Energielevel"
     },
     fr: {
       mainTitle: "EHC BIEL-BIENNE U18-ÉLITE",
@@ -399,9 +401,11 @@
       back: "← Retour",
       slogan: "\"NOTRE FORCE EST NOTRE UNITÉ !\"",
       legendPerformance: [
-        "1 – très mauvais", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
       ],
-      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+      legendPerformanceDesc: "Auto-évaluation de la performance",
+      legendEnergyDesc: "Niveau d'énergie ressenti"
     },
     en: {
       mainTitle: "EHC BIEL-BIENNE U18-ELITE",
@@ -423,9 +427,11 @@
       back: "← Back",
       slogan: "\"OUR STRENGTH IS OUR UNITY!\"",
       legendPerformance: [
-        "1 – very bad", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
       ],
-      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10 – top"]
+      legendEnergy: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+      legendPerformanceDesc: "Self-assessment of performance",
+      legendEnergyDesc: "Perceived energy level"
     }
   };
   let currentLang = localStorage.getItem('dashboard_lang') || 'de';
@@ -600,13 +606,17 @@
     const t = translations[currentLang];
     legend.innerHTML = '';
 
-    // Leistung
+    // Leistung Beschreibung
+    legend.innerHTML += `<div style="width:100%;font-weight:normal;margin-bottom:2px">${t.legendPerformanceDesc}</div>`;
+    // Leistung Titel
     legend.innerHTML += `<div style="width:100%;font-weight:bold;margin-bottom:2px">${t.thPerformance}:</div>`;
     for(let i=0;i<10;i++) {
       legend.innerHTML += `<span><span class="dot" style="background:${perfColors[i]}"></span>${t.legendPerformance[i]}</span>`;
     }
-    // Energie
-    legend.innerHTML += `<div style="width:100%;font-weight:bold;margin:8px 0 2px 0">${t.thEnergy}:</div>`;
+    // Energie Beschreibung
+    legend.innerHTML += `<div style="width:100%;font-weight:normal;margin:8px 0 2px 0">${t.legendEnergyDesc}</div>`;
+    // Energie Titel
+    legend.innerHTML += `<div style="width:100%;font-weight:bold;margin-bottom:2px">${t.thEnergy}:</div>`;
     for(let i=0;i<10;i++) {
       legend.innerHTML += `<span><span class="dot" style="background:${energyColors[i]}"></span>${t.legendEnergy[i]}</span>`;
     }
