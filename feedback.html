@@ -166,8 +166,11 @@
       <label for="name" id="labelName">Name *</label>
       <input type="text" id="name" name="name" required />
 
-      <label for="feeling" id="labelFeeling">Wie hast du dich gefühlt?</label>
+      <label for="feeling" id="labelFeeling">🧠 Wie hast du dich gefühlt?</label>
       <select id="feeling" name="feeling" required></select>
+
+      <label for="energy" id="labelEnergy">⚡️ Energie-Level (1 = sehr müde – 10 = voller Power)</label>
+      <select id="energy" name="energy" required></select>
 
       <label for="intensity" id="labelIntensity">🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small></label>
       <select id="intensity" name="intensity" required></select>
@@ -201,6 +204,19 @@
           {value:"🟡 Okay", text:"🟡 Okay"},
           {value:"🔴 Tired", text:"🔴 Müde"}
         ],
+        energy:"⚡️ Energie-Level <small>(1 = sehr müde – 10 = voller Power)</small>",
+        energyOptions: [
+          {value:"1", text:"1 – 😴 sehr müde"},
+          {value:"2", text:"2"},
+          {value:"3", text:"3"},
+          {value:"4", text:"4"},
+          {value:"5", text:"5"},
+          {value:"6", text:"6"},
+          {value:"7", text:"7"},
+          {value:"8", text:"8"},
+          {value:"9", text:"9"},
+          {value:"10", text:"10 – ⚡️ voller Power"}
+        ],
         intensity:"🏋️ Trainingsintensität <small>(1 = locker – 6 = sehr hart)</small>",
         intensityOptions: [
           {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
@@ -230,6 +246,19 @@
           {value:"🟡 Okay", text:"🟡 Okay"},
           {value:"🔴 Tired", text:"🔴 Tired"}
         ],
+        energy:"⚡️ Energy level <small>(1 = very tired – 10 = full of energy)</small>",
+        energyOptions: [
+          {value:"1", text:"1 – 😴 very tired"},
+          {value:"2", text:"2"},
+          {value:"3", text:"3"},
+          {value:"4", text:"4"},
+          {value:"5", text:"5"},
+          {value:"6", text:"6"},
+          {value:"7", text:"7"},
+          {value:"8", text:"8"},
+          {value:"9", text:"9"},
+          {value:"10", text:"10 – ⚡️ full power"}
+        ],
         intensity:"🏋️ Training/Game Intensity <small>(1 = easy – 6 = very hard)</small>",
         intensityOptions: [
           {value:"1",text:"1"}, {value:"2",text:"2"}, {value:"3",text:"3"},
@@ -258,6 +287,19 @@
           {value:"🟢 Top", text:"🟢 Top"},
           {value:"🟡 Okay", text:"🟡 Bien"},
           {value:"🔴 Tired", text:"🔴 Fatigué"}
+        ],
+        energy:"⚡️ Niveau d'énergie <small>(1 = très fatigué – 10 = plein d'énergie)</small>",
+        energyOptions: [
+          {value:"1", text:"1 – 😴 très fatigué"},
+          {value:"2", text:"2"},
+          {value:"3", text:"3"},
+          {value:"4", text:"4"},
+          {value:"5", text:"5"},
+          {value:"6", text:"6"},
+          {value:"7", text:"7"},
+          {value:"8", text:"8"},
+          {value:"9", text:"9"},
+          {value:"10", text:"10 – ⚡️ plein d'énergie"}
         ],
         intensity:"🏋️ Intensité <small>(1 = facile – 6 = très dur)</small>",
         intensityOptions: [
@@ -292,7 +334,7 @@
 
       document.getElementById('formTitle').textContent = t.formTitle;
       document.getElementById('labelName').textContent = t.name;
-      document.getElementById('labelFeeling').textContent = t.feeling;
+      document.getElementById('labelFeeling').textContent = (t.feelingIcon || "🧠") + " " + t.feeling;
 
       const selFeeling = document.getElementById('feeling');
       selFeeling.innerHTML = "";
@@ -301,6 +343,16 @@
         o.value = opt.value;
         o.textContent = opt.text;
         selFeeling.appendChild(o);
+      });
+
+      document.getElementById('labelEnergy').innerHTML = t.energy;
+      const selEnergy = document.getElementById('energy');
+      selEnergy.innerHTML = "";
+      t.energyOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.textContent = opt.text;
+        selEnergy.appendChild(o);
       });
 
       document.getElementById('labelIntensity').innerHTML = t.intensity;
@@ -338,12 +390,13 @@
       const data = {
         name: form.name.value,
         feeling: form.feeling.value,
+        energy: form.energy.value,
         intensity: form.intensity.value,
         performance: form.performance.value,
         comment: form.comment.value
       };
       try {
-        await fetch('https://script.google.com/macros/s/AKfycbyiIid-_2rgFMNPLjEdCESNArd4uvsG_s_n2k-C9p58HCBBGgJFFBNxzlVuRnefCaeeBQ/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbwL1IwFze4LFJ5vllA-s7MpnG_PTSJUMXTI-BV5Q0d54tjrscXx710xr672w3t0-ikPmw/exec', {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
