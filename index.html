@@ -81,6 +81,7 @@
   <main>
     <div class="main-buttons">
       <a href="kalender.html" class="main-btn" id="btn-kalender">MIH Kalender U18</a>
+      <a href="news.html" class="main-btn" id="btn-news">News & Info</a>
       <!-- KORREKTER LINK ZU CARDIO-APP: -->
       <a href="https://noudi72.github.io/Cardio-App-EHCB-U18/" class="main-btn" id="btn-cardio" target="_blank">Cardio-Programme</a>
       <a href="https://script.google.com/macros/s/AKfycbzkS395JUZ8Su4uxit44p8dZCKRbGDNs12fjZTdlkx_zKyTNY-9yrvymGuSedxe_pcinw/exec" class="main-btn" id="btn-sponser" target="_blank">Sponser Sport Food</a>
@@ -101,6 +102,7 @@
       de: {
         title: "EHC BIEL-BIENNE U18-ELIT",
         kalender: "MIH Kalender U18",
+        news: "News & Info",
         cardio: "Cardio-Programme",
         sponser: "Sponser Sport Food",
         spirit: "Spirit Homepage",
@@ -111,6 +113,7 @@
       fr: {
         title: "EHC BIEL-BIENNE U18-ÉLITE",
         kalender: "Calendrier MIH U18",
+        news: "News & Infos",
         cardio: "Programmes Cardio",
         sponser: "Nutrition Sponser",
         spirit: "Spirit Site officiel",
@@ -121,6 +124,7 @@
       en: {
         title: "EHC BIEL-BIENNE U18-ELITE",
         kalender: "MIH Calendar U18",
+        news: "News & Info",
         cardio: "Cardio Programs",
         sponser: "Sponser Sport Food",
         spirit: "Spirit Homepage",
@@ -145,26 +149,95 @@
       const t = translations[lang] || translations.de;
       document.getElementById('main-title').textContent = t.title;
       document.getElementById('btn-kalender').textContent = t.kalender;
+      document.getElementById('btn-news').textContent = t.news;
       document.getElementById('btn-cardio').textContent = t.cardio;
       document.getElementById('btn-sponser').textContent = t.sponser;
       document.getElementById('btn-spirit').textContent = t.spirit;
       document.getElementById('btn-feedback').textContent = t.feedback;
       document.getElementById('btn-dashboard').textContent = t.dashboard;
       document.getElementById('slogan').textContent = t.slogan;
-
-      // Highlight active language button
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-      });
     }
 
-    // Events für Sprachwechsel
+    // Highlight active language button
     document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.onclick = () => setLang(btn.dataset.lang);
+      btn.onclick = () => {
+        setLang(btn.dataset.lang);
+      };
     });
 
     // Init
     setLang(getUserLang());
+
+    // Firebase and News Module Setup
+    // Default isAdmin = false
+    let isAdmin = false;
+
+    // Load Firebase scripts and initialize only if needed
+    function loadScript(src, callback) {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = callback;
+      document.head.appendChild(script);
+    }
+
+    // Firebase config - replace with your actual config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD*******************",
+      authDomain: "ehcb-u18-news.firebaseapp.com",
+      projectId: "ehcb-u18-news",
+      storageBucket: "ehcb-u18-news.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef123456",
+      measurementId: "G-XXXXXXX"
+    };
+
+    function initFirebaseAndNews() {
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      const newsList = document.getElementById('news-list');
+      const newsUploadDiv = document.getElementById('news-upload');
+      const newsInput = document.getElementById('news-input');
+      const newsSubmitBtn = document.getElementById('news-submit');
+
+      // Show upload area only if isAdmin true
+      if (isAdmin) {
+        newsUploadDiv.style.display = 'block';
+      }
+
+      // Load news from Firestore and listen for changes
+      db.collection('news').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        newsList.innerHTML = '';
+        snapshot.forEach(doc => {
+          const li = document.createElement('li');
+          li.textContent = doc.data().text;
+          newsList.appendChild(li);
+        });
+      });
+
+      // Add new news
+      newsSubmitBtn.addEventListener('click', () => {
+        const text = newsInput.value.trim();
+        if (text.length === 0) return;
+        db.collection('news').add({
+          text,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          newsInput.value = '';
+        }).catch(err => {
+          alert('Fehler beim Hinzufügen der News: ' + err.message);
+        });
+      });
+    }
+
+    // Only load Firebase scripts and init if isAdmin true (or you can always load, but keep upload hidden)
+    // For demonstration, we load scripts anyway, but upload visible only if isAdmin true
+    loadScript("https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js", () => {
+      loadScript("https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js", () => {
+        initFirebaseAndNews();
+      });
+    });
   </script>
 </body>
 </html>
